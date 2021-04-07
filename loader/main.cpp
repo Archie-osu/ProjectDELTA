@@ -45,7 +45,7 @@ int main()
 		Sleep(50);
 	}
 
-	Sleep(1000);
+	Sleep(5000);
 
 	if (!std::filesystem::exists(std::filesystem::current_path().string() + "\\ProjectDELTA.dll"))
 	{
