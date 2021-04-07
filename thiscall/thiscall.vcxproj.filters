@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Resource Files\Dependencies">
+      <UniqueIdentifier>{82fe30d6-d8e5-469a-a1bc-d4edd9edf508}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Dependencies\ImGui">
+      <UniqueIdentifier>{acb4157a-07c1-4d83-88d5-22d56fadc45f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Dependencies\Main Module">
+      <UniqueIdentifier>{23959584-acec-4156-b1ce-69e7a3ac040c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Dependencies\MinHook">
+      <UniqueIdentifier>{23bd316c-f1e4-49d7-8689-02aadff0699d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Dependencies\Main Module\API">
+      <UniqueIdentifier>{69227d69-5a13-4ac5-a662-34b21bdcd43e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Dependencies\Main Module\Hooks">
+      <UniqueIdentifier>{3ae36ed9-f117-4ff0-b11d-09fc0557b2ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Dependencies\Main Module\Hooks\hkPresent">
+      <UniqueIdentifier>{952139b2-ec03-4c38-82ee-596a8cc00a12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Dependencies\Main Module\Menu">
+      <UniqueIdentifier>{29e3501b-4e4d-4ed3-8438-156cc83813b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Dependencies\Main Module\Hooks\hkWndProc">
+      <UniqueIdentifier>{c0b8c888-976a-47a5-9934-851159506b96}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="DllMain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGui\imgui.cpp">
+      <Filter>Resource Files\Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGui\imgui_demo.cpp">
+      <Filter>Resource Files\Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGui\imgui_draw.cpp">
+      <Filter>Resource Files\Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGui\imgui_impl_dx11.cpp">
+      <Filter>Resource Files\Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGui\imgui_impl_win32.cpp">
+      <Filter>Resource Files\Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGui\imgui_tables.cpp">
+      <Filter>Resource Files\Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGui\imgui_widgets.cpp">
+      <Filter>Resource Files\Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\API\API.cpp">
+      <Filter>Resource Files\Dependencies\Main Module\API</Filter>
+    </ClCompile>
+    <ClCompile Include="src\API\ghlib.cpp">
+      <Filter>Resource Files\Dependencies\Main Module\API</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hooks\Hooks.cpp">
+      <Filter>Resource Files\Dependencies\Main Module\Hooks</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hooks\Present.cpp">
+      <Filter>Resource Files\Dependencies\Main Module\Hooks\hkPresent</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Menu\Menu.cpp">
+      <Filter>Resource Files\Dependencies\Main Module\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hooks\WndProc.cpp">
+      <Filter>Resource Files\Dependencies\Main Module\Hooks\hkWndProc</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Dependencies\ImGui\imconfig.h">
+      <Filter>Resource Files\Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imgui.h">
+      <Filter>Resource Files\Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imgui_impl_dx11.h">
+      <Filter>Resource Files\Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imgui_impl_win32.h">
+      <Filter>Resource Files\Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imgui_internal.h">
+      <Filter>Resource Files\Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imstb_rectpack.h">
+      <Filter>Resource Files\Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imstb_textedit.h">
+      <Filter>Resource Files\Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imstb_truetype.h">
+      <Filter>Resource Files\Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\API\API.hpp">
+      <Filter>Resource Files\Dependencies\Main Module\API</Filter>
+    </ClInclude>
+    <ClInclude Include="src\API\ghlib.hpp">
+      <Filter>Resource Files\Dependencies\Main Module\API</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hooks\Hooks.hpp">
+      <Filter>Resource Files\Dependencies\Main Module\Hooks</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\Include\MinHook.h">
+      <Filter>Resource Files\Dependencies\MinHook</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Menu\Menu.hpp">
+      <Filter>Resource Files\Dependencies\Main Module\Menu</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
