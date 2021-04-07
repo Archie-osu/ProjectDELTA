@@ -5,6 +5,11 @@ Should be compatible with even modded versions of DELTARUNE.
 
 Libraries used: MinHook, ImGui
 
+# TODO List
+- Native Invoker
+- More Globals
+- Developer Console
+
 # FAQ
 **Q:** The game crashes when I launch DELTARUNE, even though the loader says "Done". What am I doing wrong?
 
