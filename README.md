@@ -8,7 +8,7 @@ Libraries used: MinHook, ImGui
 # FAQ
 **Q:** The game crashes when I launch DELTARUNE, even though the loader says "Done". What am I doing wrong?
 
-**A:** You've encountered a bug that will be fixed in the next version, for the time being launch DELTARUNE first, then launch the loader.
+**A:** You've encountered a bug is fixed in v1.0.1 - update.
 
 **Q:** The loader says that it can't find ``ProjectDELTA.dll``, what is wrong?
 
