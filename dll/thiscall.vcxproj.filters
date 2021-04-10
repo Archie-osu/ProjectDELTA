@@ -40,6 +40,12 @@
     <Filter Include="Resource Files\Dependencies\Main Module\Hooks\hkWndProc">
       <UniqueIdentifier>{c0b8c888-976a-47a5-9934-851159506b96}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Dependencies\Main Module\Invoker">
+      <UniqueIdentifier>{9913acd1-5454-4b78-84f5-685844167d30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Dependencies\Main Module\Hooks\hkConvertRValue">
+      <UniqueIdentifier>{6e01a80c-c009-4c50-bc9f-aa19288fa4fa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DllMain.cpp">
@@ -84,6 +90,12 @@
     <ClCompile Include="src\Hooks\WndProc.cpp">
       <Filter>Resource Files\Dependencies\Main Module\Hooks\hkWndProc</Filter>
     </ClCompile>
+    <ClCompile Include="src\Invoker\Invoker.cpp">
+      <Filter>Resource Files\Dependencies\Main Module\Invoker</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hooks\ConvertRValue.cpp">
+      <Filter>Resource Files\Dependencies\Main Module\Hooks\hkConvertRValue</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\ImGui\imconfig.h">
@@ -124,6 +136,9 @@
     </ClInclude>
     <ClInclude Include="src\Menu\Menu.hpp">
       <Filter>Resource Files\Dependencies\Main Module\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Invoker\Invoker.hpp">
+      <Filter>Resource Files\Dependencies\Main Module\Invoker</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
 #include "Hooks.hpp"
-#include "../API/API.hpp"
 #include <MinHook.h>
 #include <stdio.h>
+#include "../Invoker/Invoker.hpp"
 
 void Hooks::Initialize()
 {	
@@ -66,21 +66,30 @@ void Hooks::Initialize()
 	}
 
 	//Hook traditional game functions - I'd like a main loop hook also :)
+
+	//Find the call to hkConvertRValue, extract the relative offset, recalculate, hook.
+	ghl::ptr_t pattern = Invoker::FindPattern("\xE8\x00\x00\x00\x00\x01\x06", "x????xx");
+	unsigned char* pRelativeOffset = pattern.add(1).get<unsigned char*>();
+	LPVOID lpCallDest = (pRelativeOffset + (DWORD)pattern.add(5).getraw());
+
+	MH_CreateHook(lpCallDest, hkConvertRValue, &oConvertRValue);
 	MH_CreateHook(uPresent, hkPresent, &oPresent);
+	//MH_CreateHook(Globals::pDebug, hkDebugHook, &oDebug);
 	MH_EnableHook(MH_ALL_HOOKS);
 
 	printf("IDXGISwapChain::Present hooked!\n");
-
+	printf("ConvertRValue hooked!\n");
 	//Hook WndProc
 	oWndProc = (WNDPROC)(SetWindowLongW(Useful::GetProcessWindow(), GWLP_WNDPROC, (LONG_PTR)(&Hooks::hkWndProc)));
 
 	printf("WndProc hooked!\n");
 
 	//Find pointers
+	Globals::pCrewData = ghl::ptr_t(GetModuleHandleA(NULL)).autofollow({ 0x6B9558, 0x104, 0x150, 0x38, 0x950 });
+	Globals::nRoomNumber = ghl::ptr_t(GetModuleHandleA(NULL)).add(0x6AC9F0);
+	Globals::pGlobalVars = ghl::ptr_t(GetModuleHandleA(NULL)).autofollow({ 0x49C3E0, 0x60, 0x10, 0x9E8, 0x150 });
+	Globals::pRoomGoTo = Invoker::FindPattern("\xFF\x35\x00\x00\x00\x00\x6A\x00\xFF\x74\x24\x1C", "xx????xxxxxx");
 
-	Globals::pCrewData = ghl::ptr_t(GetModuleHandleA("DELTARUNE.exe")).autofollow({ 0x6B9558, 0x104, 0x150, 0x38, 0x950 });
-	Globals::nRoomNumber = ghl::ptr_t(GetModuleHandleA("DELTARUNE.exe")).add(0x6AC9F0);
-	Globals::pGlobalVars = ghl::ptr_t(GetModuleHandleA("DELTARUNE.exe")).autofollow({ 0x49C3E0, 0x60, 0x10, 0x9E8, 0x150 });
 
 	printf("Pointers found!\n");
 }

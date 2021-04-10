@@ -171,9 +171,11 @@
     <ClCompile Include="DllMain.cpp" />
     <ClCompile Include="src\API\API.cpp" />
     <ClCompile Include="src\API\ghlib.cpp" />
+    <ClCompile Include="src\Hooks\ConvertRValue.cpp" />
     <ClCompile Include="src\Hooks\WndProc.cpp" />
     <ClCompile Include="src\Hooks\Hooks.cpp" />
     <ClCompile Include="src\Hooks\Present.cpp" />
+    <ClCompile Include="src\Invoker\Invoker.cpp" />
     <ClCompile Include="src\Menu\Menu.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -189,6 +191,7 @@
     <ClInclude Include="src\API\API.hpp" />
     <ClInclude Include="src\API\ghlib.hpp" />
     <ClInclude Include="src\Hooks\Hooks.hpp" />
+    <ClInclude Include="src\Invoker\Invoker.hpp" />
     <ClInclude Include="src\Menu\Menu.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

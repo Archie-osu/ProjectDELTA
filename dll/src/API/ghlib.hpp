@@ -11,11 +11,16 @@ namespace ghl
 		using uchar = unsigned char;
 
 	private:
-		unsigned char* pData;
+		uchar* pData;
 	public:
 		ptr_t() : pData(0) {}
 
 		ptr_t(void* lpData) : pData((uchar*)lpData) {}
+
+		uchar* getraw()
+		{
+			return pData;
+		}
 
 		template <typename T>
 		T& get()

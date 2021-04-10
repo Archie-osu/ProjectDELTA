@@ -1,6 +1,14 @@
 #include "Menu.hpp"
 #include "../ImGui/imgui.h"
 #include "../API/API.hpp"
+#include "../Invoker/Invoker.hpp"
+
+using fn = bool(__cdecl*)(int);
+using fnwrap = bool(__cdecl*)(Game::RValue);
+
+inline fn room_goto_direct;
+
+inline fnwrap room_goto_wrapper;
 
 void Menu::SetStyle()
 {
@@ -92,7 +100,7 @@ void Menu::Render()
 #ifdef _DEBUG
         ImGui::Text("Project DELTA by Archie - Debug Version");
 #else
-        ImGui::Text("Project DELTA by Archie - Version 1.0");
+        ImGui::Text("Project DELTA by Archie - Version 1.01");
 #endif
         ImGui::EndMainMenuBar();
     }
@@ -108,9 +116,9 @@ void Menu::Render()
 
         if (ImGui::BeginMenuBar())
         {
-            if (ImGui::MenuItem("Crew Data"))
+            if (ImGui::MenuItem("Crew"))
                 Menu::nTab = 0;
-            if (ImGui::MenuItem("Debug"))
+            if (ImGui::MenuItem("World"))
                 Menu::nTab = 1;
 
             ImGui::EndMenuBar();
@@ -118,7 +126,8 @@ void Menu::Render()
 
         if (nTab == 0)
         {
-            if (ImGui::BeginChild("ch_Kris", ImVec2(320, 100), true, 0))
+
+            if (ImGui::BeginChild("ch_Kris", ImVec2(320, 100), true, 0) && Globals::pCrewData.valid())
             {
                 ImGui::Text("Kris");
                 ImGui::SliderDouble("HP", &Globals::pCrewData.get<Game::CCrewData>().Kris_CurHP.Value<double>(), 0, 120, "%.0f", 1.0f);
@@ -126,7 +135,7 @@ void Menu::Render()
             }
             ImGui::EndChild();
 
-            if (ImGui::BeginChild("ch_Ralsei", ImVec2(320, 100), true, 0))
+            if (ImGui::BeginChild("ch_Ralsei", ImVec2(320, 100), true, 0) && Globals::pCrewData.valid())
             {
                 ImGui::Text("Ralsei");
                 ImGui::SliderDouble("HP", &Globals::pCrewData.get<Game::CCrewData>().Ralsei_CurHP.Value<double>(), 0, 120, "%.0f", 1.0f);
@@ -134,7 +143,7 @@ void Menu::Render()
             }
             ImGui::EndChild();
 
-            if (ImGui::BeginChild("ch_Susie", ImVec2(320, 100), true, 0))
+            if (ImGui::BeginChild("ch_Susie", ImVec2(320, 100), true, 0) && Globals::pCrewData.valid())
             {
                 ImGui::Text("Susie");
                 ImGui::SliderDouble("HP", &Globals::pCrewData.get<Game::CCrewData>().Susie_CurHP.Value<double>(), 0, 120, "%.0f", 1.0f);
@@ -146,12 +155,53 @@ void Menu::Render()
         else if (nTab == 1)
         {
             ImGui::CheckboxDouble("Debug Mode", &Globals::pGlobalVars.get<Game::CGlobals>().DebugMode.Value<double>());
-            if (ImGui::Button("Force No Interact", ImVec2(180, 30)))
+            if (ImGui::Button("Force No Interact", ImVec2(150, 30)))
             {
                 Globals::pGlobalVars.get<Game::CGlobals>().Interact.Value<double>() = 0;
             }
-        }
 
+            if (ImGui::BeginChild("ch_Invoker", ImVec2(440, 140), true))
+            {
+                //TODO: Reverse & walk the function map - DELTARUNE stores functions to be called from the game loop's 'call ecx'.
+
+                static const char* szFunctions[] = { "room_goto", "room_goto_next", "room_goto_previous", "room_restart" };
+
+                ImGui::Text("WARNING: Incorrect use of the invoker can crash the game!");
+                ImGui::Combo("Function", &nInvFunc, szFunctions, IM_ARRAYSIZE(szFunctions));
+                if (nInvFunc == 0)
+                    ImGui::InputDouble("Room Number", &Menu::nRoom, 1.0, 1.0, "%.0f", ImGuiInputTextFlags_CharsDecimal);
+
+                if (ImGui::Button("Invoke!"))
+                {
+                    PUCHAR function = Globals::pRoomGoTo.getraw(); 
+                    Game::RValue rRoom;
+                    switch (nInvFunc)
+                    {
+                    case 0: /* room_goto */
+                        rRoom.SetValue(static_cast<double>(nRoom));
+                        Invoker::invoke<bool, Game::RValue*>(function, &rRoom);
+                        break;
+                    case 1: /* room_goto_next */
+                        Invoker::invoke<bool>(function + 0x20);
+                        break;
+                    case 2: /* room_goto_previous */
+                        Invoker::invoke<bool>(function + 0x30);
+                        break;
+                    case 3:
+                        Invoker::invoke<bool>(function + 0x100);
+                        break;
+                    default:
+                        break;
+                    }
+                }
+            }
+            ImGui::EndChild();
+            //room_goto_direct = (int(__cdecl*)(int))Invoker::FindPattern("\x8B\x44\x24\x04\x50\xA3\x00\x00\x00\x00", "xxxxxx????").getraw();
+            //room_goto_previous =  0x524EF0
+            //room_goto_next =      0x524EE0
+            //room_goto =           0x524EC0
+            //room_restart =        0x524FC0
+        }
         ImGui::End();
     }
 }

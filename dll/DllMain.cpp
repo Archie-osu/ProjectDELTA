@@ -7,7 +7,6 @@ DWORD WINAPI Main(LPVOID lpDLL)
 {
 	//Enable this to have a console open up at inject
 	//Will have debug commands soon!
-	
 	//ghl::AllocConsoleStream();
 	
 	Hooks::Initialize();
