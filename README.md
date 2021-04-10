@@ -2,9 +2,9 @@
 Project DELTA - An open-source, modular mod menu for Toby Fox's games and their spin-offs.
 
 Tested releases:
-  UNDERTALE v1.08
-  DELTARUNE
-  TS!UNDERSWAP
+-  UNDERTALE v1.08
+-  DELTARUNE
+-  TS!UNDERSWAP
 
 Libraries used: MinHook, ImGui
 
