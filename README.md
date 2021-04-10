@@ -1,21 +1,17 @@
-# ProjectDELTA
-Project DELTA - An Open-Source DELTARUNE Trainer
+# ProjectDELTA v2
+Project DELTA - An open-source, modular DELTARUNE / TS!UNDERSWAP mod menu
 
-Should be compatible with even modded versions of DELTARUNE.
+Should be compatible with even modded versions of DELTARUNE / TS!UNDERSWAP.
 
 Libraries used: MinHook, ImGui
 
 # TODO List (in order of importance)
-- **DONE** Native Invoker
-- Refactor EVERYTHING, make Project DELTA modular
-- Make github.io page
-- More Globals
-- Developer Console
+- Make this work.
 
 # FAQ
-**Q:** The game crashes when I launch DELTARUNE, even though the loader says "Done". What am I doing wrong?
+**Q:** Where are the releases? Where can I download this tool?
 
-**A:** You've encountered a bug is fixed in v1.0.0 - update.
+**A:** It seems you ended up in the Project DELTA v2 development branch. There are currently no releases of this version, and only source code is being pushed at the moment. Click [here to go to the download page of v1!](https://github.com/Archie-osu/ProjectDELTA/releases/latest)
 
 **Q:** The loader says that it can't find ``ProjectDELTA.dll``, what is wrong?
 
