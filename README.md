@@ -1,7 +1,10 @@
 # ProjectDELTA v2
-Project DELTA - An open-source, modular DELTARUNE / TS!UNDERSWAP mod menu
+Project DELTA - An open-source, modular mod menu for Toby Fox's games and their spin-offs.
 
-Should be compatible with even modded versions of DELTARUNE / TS!UNDERSWAP.
+Tested releases:
+  UNDERTALE v1.08
+  DELTARUNE
+  TS!UNDERSWAP
 
 Libraries used: MinHook, ImGui
 
