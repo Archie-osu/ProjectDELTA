@@ -169,14 +169,11 @@
     <ClCompile Include="Dependencies\ImGui\imgui_tables.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="DllMain.cpp" />
-    <ClCompile Include="src\API\API.cpp" />
-    <ClCompile Include="src\API\ghlib.cpp" />
-    <ClCompile Include="src\Hooks\ConvertRValue.cpp" />
-    <ClCompile Include="src\Hooks\WndProc.cpp" />
-    <ClCompile Include="src\Hooks\Hooks.cpp" />
-    <ClCompile Include="src\Hooks\Present.cpp" />
-    <ClCompile Include="src\Invoker\Invoker.cpp" />
-    <ClCompile Include="src\Menu\Menu.cpp" />
+    <ClCompile Include="src\Core\Core.cpp" />
+    <ClCompile Include="src\Core\Structures\GameObject.cpp" />
+    <ClCompile Include="src\SDK\DirectX11\DirectX11.cpp" />
+    <ClCompile Include="src\SDK\DirectX9\DirectX9.cpp" />
+    <ClCompile Include="src\SDK\Memory\Memory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\ImGui\imconfig.h" />
@@ -188,11 +185,13 @@
     <ClInclude Include="Dependencies\ImGui\imstb_textedit.h" />
     <ClInclude Include="Dependencies\ImGui\imstb_truetype.h" />
     <ClInclude Include="Dependencies\Include\MinHook.h" />
-    <ClInclude Include="src\API\API.hpp" />
-    <ClInclude Include="src\API\ghlib.hpp" />
-    <ClInclude Include="src\Hooks\Hooks.hpp" />
-    <ClInclude Include="src\Invoker\Invoker.hpp" />
-    <ClInclude Include="src\Menu\Menu.hpp" />
+    <ClInclude Include="src\Core\Core.hpp" />
+    <ClInclude Include="src\Core\Structures\GameObject.hpp" />
+    <ClInclude Include="src\Core\Structures\PlayerData.hpp" />
+    <ClInclude Include="src\SDK\DirectX11\DirectX11.hpp" />
+    <ClInclude Include="src\SDK\DirectX9\DirectX9.hpp" />
+    <ClInclude Include="src\SDK\Memory\Memory.hpp" />
+    <ClInclude Include="src\SDK\SDK.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,15 +1,10 @@
-#include "src/API/ghlib.hpp"
-#include "src/Hooks/Hooks.hpp"
-
+#include <Windows.h>
+#include "src/Core/Core.hpp"
 #define DLL_EXPORT extern "C" __declspec(dllexport)
 
 DWORD WINAPI Main(LPVOID lpDLL)
 {
-	//Enable this to have a console open up at inject
-	//Will have debug commands soon!
-	//ghl::AllocConsoleStream();
 	
-	Hooks::Initialize();
 
 	return 0;
 }
