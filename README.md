@@ -5,8 +5,10 @@ Should be compatible with even modded versions of DELTARUNE.
 
 Libraries used: MinHook, ImGui
 
-# TODO List
-- Native Invoker
+# TODO List (in order of importance)
+- **DONE** Native Invoker
+- Refactor EVERYTHING, make Project DELTA modular
+- Make github.io page
 - More Globals
 - Developer Console
 
