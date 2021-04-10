@@ -1,10 +1,12 @@
 #include <Windows.h>
 #include "src/Core/Core.hpp"
+#include <MinHook.h>
 #define DLL_EXPORT extern "C" __declspec(dllexport)
 
 DWORD WINAPI Main(LPVOID lpDLL)
 {
-	
+	MH_Initialize();
+	Core::Init();
 
 	return 0;
 }

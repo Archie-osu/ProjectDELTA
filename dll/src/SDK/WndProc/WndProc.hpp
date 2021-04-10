@@ -3,7 +3,7 @@
 
 namespace SDK
 {
-	namespace DX9
+	namespace WndProc
 	{
 		void Init();
 	}
