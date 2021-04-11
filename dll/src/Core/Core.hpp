@@ -8,12 +8,11 @@ namespace Core
 	{
 		Undertale,
 		Deltarune,
-		Underswap,
-		ComingSoon //Maybe? Eh, don't count on it.
+		Underswap
 	};
 
 	inline GameType CurrentGame;
-	inline CGameObject* pGame;
+	inline CGameObject pGame;
 
 	void Init();
 }

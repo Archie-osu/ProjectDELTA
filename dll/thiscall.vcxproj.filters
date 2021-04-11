@@ -37,12 +37,6 @@
     <Filter Include="Resource Files\Main Module\SDK\Memory">
       <UniqueIdentifier>{a4e09f96-c180-4ca0-abf9-fab90f336854}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Main Module\SDK\DirectX11">
-      <UniqueIdentifier>{b31b3ffb-8720-4696-bc55-4e9b540adff7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\Main Module\SDK\DirectX9">
-      <UniqueIdentifier>{7b22df19-d974-42c6-9102-74ad3f601857}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource Files\Main Module\Hooks">
       <UniqueIdentifier>{9fccd96d-df1d-4824-90f6-3e9e7dd214c0}</UniqueIdentifier>
     </Filter>
@@ -60,6 +54,12 @@
     </Filter>
     <Filter Include="Resource Files\Main Module\SDK\WndProc">
       <UniqueIdentifier>{c45a1f5b-5f2a-494f-b57b-3099483afe4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Main Module\SDK\DirectX">
+      <UniqueIdentifier>{7b22df19-d974-42c6-9102-74ad3f601857}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Main Module\SDK\Structs">
+      <UniqueIdentifier>{638c8a55-2580-4973-a481-bcdc91de26d8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -90,17 +90,8 @@
     <ClCompile Include="src\SDK\Memory\Memory.cpp">
       <Filter>Resource Files\Main Module\SDK\Memory</Filter>
     </ClCompile>
-    <ClCompile Include="src\SDK\DirectX11\DirectX11.cpp">
-      <Filter>Resource Files\Main Module\SDK\DirectX11</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SDK\DirectX9\DirectX9.cpp">
-      <Filter>Resource Files\Main Module\SDK\DirectX9</Filter>
-    </ClCompile>
     <ClCompile Include="src\Core\Core.cpp">
       <Filter>Resource Files\Main Module\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Core\Structures\GameObject.cpp">
-      <Filter>Resource Files\Main Module\Core\Structures</Filter>
     </ClCompile>
     <ClCompile Include="src\Hooks\hkEndScene\hkEndScene.cpp">
       <Filter>Resource Files\Main Module\Hooks\hkEndScene %28DX9%29</Filter>
@@ -119,6 +110,15 @@
     </ClCompile>
     <ClCompile Include="src\SDK\WndProc\WndProc.cpp">
       <Filter>Resource Files\Main Module\SDK\WndProc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SDK\DirectX\DirectX.cpp">
+      <Filter>Resource Files\Main Module\SDK\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SDK\Structs\Structs.cpp">
+      <Filter>Resource Files\Main Module\SDK\Structs</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Structures\RValue.cpp">
+      <Filter>Resource Files\Main Module\Core\Structures</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -155,12 +155,6 @@
     <ClInclude Include="src\SDK\Memory\Memory.hpp">
       <Filter>Resource Files\Main Module\SDK\Memory</Filter>
     </ClInclude>
-    <ClInclude Include="src\SDK\DirectX11\DirectX11.hpp">
-      <Filter>Resource Files\Main Module\SDK\DirectX11</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SDK\DirectX9\DirectX9.hpp">
-      <Filter>Resource Files\Main Module\SDK\DirectX9</Filter>
-    </ClInclude>
     <ClInclude Include="src\SDK\SDK.hpp">
       <Filter>Resource Files\Main Module\SDK</Filter>
     </ClInclude>
@@ -190,6 +184,18 @@
     </ClInclude>
     <ClInclude Include="src\SDK\WndProc\WndProc.hpp">
       <Filter>Resource Files\Main Module\SDK\WndProc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SDK\DirectX\DirectX.hpp">
+      <Filter>Resource Files\Main Module\SDK\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SDK\Structs\Structs.hpp">
+      <Filter>Resource Files\Main Module\SDK\Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Structures\RValue.hpp">
+      <Filter>Resource Files\Main Module\Core\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Structures\GameGlobals.hpp">
+      <Filter>Resource Files\Main Module\Core\Structures</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

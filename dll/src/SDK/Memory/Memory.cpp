@@ -39,7 +39,7 @@ BOOL __stdcall EnumWndCallback(HWND hwnd, LPARAM)
 	//Exclude the console window, this causes bugs when it's enabled.
 	if (GetWindowTextA(hwnd, wndText, 24))
 	{
-		if (_stricmp("Project DELTA - Debug", wndText) == 0)
+		if (_stricmp("Project DELTA v2", wndText) == 0)
 			return true;
 	}
 
@@ -52,4 +52,14 @@ HWND Memory::GetCurrentWindow()
 	g_GameWindow = 0;
 	EnumWindows(EnumWndCallback, NULL);
 	return g_GameWindow;
+}
+
+void ghl::AllocConsoleStream()
+{
+	FILE* pFile;
+	AllocConsole();
+	freopen_s(&pFile, "CONIN$", "r", stdin);
+	freopen_s(&pFile, "CONOUT$", "w", stderr);
+	freopen_s(&pFile, "CONOUT$", "w", stdout);
+	SetConsoleTitleA("Project DELTA v2");
 }

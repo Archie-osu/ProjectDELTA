@@ -171,13 +171,13 @@
     <ClCompile Include="Dependencies\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="DllMain.cpp" />
     <ClCompile Include="src\Core\Core.cpp" />
-    <ClCompile Include="src\Core\Structures\GameObject.cpp" />
+    <ClCompile Include="src\Core\Structures\RValue.cpp" />
     <ClCompile Include="src\Hooks\hkEndScene\hkEndScene.cpp" />
     <ClCompile Include="src\Hooks\hkPresent\hkPresent.cpp" />
     <ClCompile Include="src\Hooks\hkWndProc\hkWndProc.cpp" />
-    <ClCompile Include="src\SDK\DirectX11\DirectX11.cpp" />
-    <ClCompile Include="src\SDK\DirectX9\DirectX9.cpp" />
+    <ClCompile Include="src\SDK\DirectX\DirectX.cpp" />
     <ClCompile Include="src\SDK\Memory\Memory.cpp" />
+    <ClCompile Include="src\SDK\Structs\Structs.cpp" />
     <ClCompile Include="src\SDK\WndProc\WndProc.cpp" />
     <ClCompile Include="src\UI\UI.cpp" />
   </ItemGroup>
@@ -193,16 +193,18 @@
     <ClInclude Include="Dependencies\ImGui\imstb_truetype.h" />
     <ClInclude Include="Dependencies\Include\MinHook.h" />
     <ClInclude Include="src\Core\Core.hpp" />
+    <ClInclude Include="src\Core\Structures\GameGlobals.hpp" />
     <ClInclude Include="src\Core\Structures\GameObject.hpp" />
     <ClInclude Include="src\Core\Structures\PlayerData.hpp" />
+    <ClInclude Include="src\Core\Structures\RValue.hpp" />
     <ClInclude Include="src\Hooks\hkEndScene\hkEndScene.hpp" />
     <ClInclude Include="src\Hooks\hkPresent\hkPresent.hpp" />
     <ClInclude Include="src\Hooks\hkWndProc\hkWndProc.hpp" />
     <ClInclude Include="src\Hooks\Hooks.hpp" />
-    <ClInclude Include="src\SDK\DirectX11\DirectX11.hpp" />
-    <ClInclude Include="src\SDK\DirectX9\DirectX9.hpp" />
+    <ClInclude Include="src\SDK\DirectX\DirectX.hpp" />
     <ClInclude Include="src\SDK\Memory\Memory.hpp" />
     <ClInclude Include="src\SDK\SDK.hpp" />
+    <ClInclude Include="src\SDK\Structs\Structs.hpp" />
     <ClInclude Include="src\SDK\WndProc\WndProc.hpp" />
     <ClInclude Include="src\UI\UI.hpp" />
   </ItemGroup>

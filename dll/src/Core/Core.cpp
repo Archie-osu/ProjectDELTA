@@ -1,13 +1,11 @@
 #include "Core.hpp"
 #include "../SDK/SDK.hpp"
-#include "../Hooks/Hooks.hpp"
 void Core::Init()
 {
-	//FILE* pFile;
-	//AllocConsole();
-	//freopen_s(&pFile, "CONOUT$", "w", stdout);
-
+	//TODO: Figure out a way to check if DX11 or DX9 is present (loaded DLLs?!)
 	//First let's check which game we're injecting into.
+	ghl::AllocConsoleStream();
+
 	std::string CurrentName = Memory::GetCurrentProcessName();
 
 	if (CurrentName.find("DELTARUNE") != std::string::npos)
@@ -16,10 +14,8 @@ void Core::Init()
 		CurrentGame = GameType::Undertale;
 	else
 		CurrentGame = GameType::Underswap;
-
-	if (CurrentGame == GameType::Undertale)
-		SDK::DX9::Init();
-	else
-		SDK::DX11::Init();
+		
+	SDK::Structs::Init(&pGame);
+	SDK::DX::Init();
 	SDK::WndProc::Init();
 }

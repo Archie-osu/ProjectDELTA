@@ -1,7 +1,9 @@
 #pragma once
 #include "PlayerData.hpp"
+#include "GameGlobals.hpp"
 /* Base class, ensures compatibility with games */
 struct CGameObject
 {
-	CPlayerData* GetPlayerData();
+	CBasePlayerData* pPlayerData;
+	CBaseGameGlobals* pGlobals;
 };

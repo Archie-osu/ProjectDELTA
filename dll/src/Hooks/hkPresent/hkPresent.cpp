@@ -39,8 +39,7 @@ void Hooks::Present::Init()
 
 	if (!(FAILED(ret)))
 	{
-		//Get the VMT
-		void** pVMT = *(void***)pSwapchain;
+		void** pVMT = *reinterpret_cast<void***>(pSwapchain);
 
 		//Get the address of IDXGISwapChain::Present()
 		void* pPresent = pVMT[8];
