@@ -9,12 +9,18 @@ void* proof_of_concept(void* pGameObject)
 	return *reinterpret_cast<void**>(pGameObject);
 }
 
-void InitUndertale(CUndertaleData* pUndertaleData, CUndertaleGlobals* pUndertaleGlobals)
+void InitUndertale(CUndertaleData** pUndertaleData, CUndertaleGlobals** pUndertaleGlobals)
 {
-	
+	*pUndertaleData = reinterpret_cast<CUndertaleData*>(
+		ghl::ptr_t(GetModuleHandleA(NULL)).autofollow({ 0x40894C, 0x44, 0x10, 0x298, 0x0 }).getraw()
+		);
+
+	*pUndertaleGlobals = reinterpret_cast<CUndertaleGlobals*>
+		(ghl::ptr_t(GetModuleHandleA(NULL)).autofollow({ 0x40894C, 0x44, 0x10, 0x214, -0x20 }).getraw()
+	);
 }
 
-void InitUnderswap(CUnderswapData* pUndertaleData, CUnderswapGlobals* pUndertaleGlobals)
+void InitUnderswap(CUnderswapData** pUndertaleData, CUnderswapGlobals** pUndertaleGlobals)
 {
 
 }
@@ -33,12 +39,15 @@ void InitDeltarune(CDeltaruneData** pDeltaruneData, CDeltaruneGlobals** pDeltaru
 void SDK::Structs::Init(void* pGame)
 {
 	CGameObject* pGameObject = reinterpret_cast<CGameObject*>(pGame);
-	
 	switch (Core::CurrentGame)
 	{
 	case Core::GameType::Deltarune:
 		printf("[+] Initializing for Deltarune!\n");
 		InitDeltarune(reinterpret_cast<CDeltaruneData**>(&pGameObject->pPlayerData), reinterpret_cast<CDeltaruneGlobals**>(&pGameObject->pGlobals));
+		break;
+	case Core::GameType::Undertale:
+		printf("[+] Initializing for Undertale!\n");
+		InitUndertale(reinterpret_cast<CUndertaleData**>(&pGameObject->pPlayerData), reinterpret_cast<CUndertaleGlobals**>(&pGameObject->pGlobals));
 		break;
 	}
 }

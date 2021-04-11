@@ -11,7 +11,7 @@ namespace Memory
 }
 
 //The main namespace, everything is under here to prevent namespace contamination.
-//Version 1.1 by Archie
+//Version 1.1.1 by Archie
 namespace ghl
 {
 	struct ptr_t
@@ -51,13 +51,13 @@ namespace ghl
 			return ptr_t(*(uchar**)pData);
 		}
 
-		ptr_t autofollow(const std::vector<size_t>& offsets)
+		ptr_t autofollow(const std::vector<int>& offsets)
 		{
 			ptr_t tmp = this->add(offsets[0]);
 			for (size_t idx = 1; idx < offsets.size(); idx++)
 			{
 				tmp = tmp.follow();
-				tmp = tmp.add(offsets[idx]);
+				offsets[idx] >= 0 ? tmp = tmp.add(offsets[idx]) : tmp = tmp.sub(-offsets[idx]);
 			}
 
 			return tmp;

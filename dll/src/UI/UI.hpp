@@ -11,7 +11,8 @@ namespace UI
 	//Maybe put these in separate files?
 
 	void Render(); //Automatically determines which functions to call
-
+	void SetStyle();
+	
 	void RenderUndertale();
 	void RenderDeltarune();
 	void RenderUnderswap();
