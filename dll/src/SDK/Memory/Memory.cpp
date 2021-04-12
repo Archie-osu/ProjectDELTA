@@ -1,7 +1,18 @@
 #include "Memory.hpp"
+#include <Psapi.h>
 #include <TlHelp32.h>
 
 HWND g_GameWindow = NULL;
+
+MODULEINFO GetModuleInfo()
+{
+	MODULEINFO modinfo = { 0 };
+	HMODULE hModule = GetModuleHandleA(NULL);
+	if (hModule == 0)
+		return modinfo;
+	GetModuleInformation(GetCurrentProcess(), hModule, &modinfo, sizeof(MODULEINFO));
+	return modinfo;
+}
 
 std::string Memory::GetCurrentProcessName()
 {
@@ -52,6 +63,37 @@ HWND Memory::GetCurrentWindow()
 	g_GameWindow = 0;
 	EnumWindows(EnumWndCallback, NULL);
 	return g_GameWindow;
+}
+
+DWORD Memory::FindPattern(const char* Pattern, const char* Mask)
+{
+	//Get all module related information
+	MODULEINFO mInfo = GetModuleInfo();
+
+	//Assign our base and module size
+	DWORD base = (DWORD)mInfo.lpBaseOfDll;
+	DWORD size = (DWORD)mInfo.SizeOfImage;
+
+	//Get length for our mask, this will allow us to loop through our array
+	DWORD patternLength = (DWORD)strlen(Mask);
+
+	for (unsigned i = 0; i < size - patternLength; i++)
+	{
+		bool found = true;
+		for (DWORD j = 0; j < patternLength; j++)
+		{
+			//if we have a ? in our mask then we have true by default,
+			//or if the bytes match then we keep searching until finding it or not
+			found &= Mask[j] == '?' || Pattern[j] == *(char*)(base + i + j);
+		}
+
+		//found = true, our entire pattern was found
+		if (found)
+		{
+			return (base + i);
+		}
+	}
+	return 0;
 }
 
 void ghl::AllocConsoleStream()

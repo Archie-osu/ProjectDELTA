@@ -4,15 +4,20 @@
 
 namespace UI
 {
+	constexpr float flWindowX = 480.0f, flWindowY = 360.0f;
+
 	inline bool bInit = false;
 	inline bool bOpen = false;
 	inline int nTab = 0;
+
+	inline double nRoom = 1;
 
 	//Maybe put these in separate files?
 
 	void Render(); //Automatically determines which functions to call
 	void SetStyle();
 	
+	void RenderInvoker(); //Shared, so I just have a function to avoid duplicate code.
 	void RenderUndertale();
 	void RenderDeltarune();
 	void RenderUnderswap();

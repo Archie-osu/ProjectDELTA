@@ -4,6 +4,7 @@
 #include "../ImGui/imgui_impl_dx11.h"
 #include "../ImGui/imgui_impl_dx9.h"
 #include "../SDK/Memory/Memory.hpp"
+#include "../Invoker/Invoker.hpp"
 #include "../Core/Core.hpp"
 
 //Disable annoying ImGui warnings
@@ -117,8 +118,28 @@ void UI::Render()
         RenderUndertale();
         break;
     case Core::GameType::Underswap:
+        RenderUnderswap();
         break;
     }
+}
+
+void UI::RenderInvoker()
+{
+    //Example invoker code, will be refactored before Milestone 6 / Final release.
+    if (ImGui::BeginChild("ch_Invoker", ImVec2(460, 180), true))
+    {
+        const char* szRoomTarget = Invoker::invoke("room_get_name", { RValue(nRoom) }).ToString();
+
+        ImGui::Text("Target room: %s", szRoomTarget);
+
+        ImGui::InputDouble("Room", &nRoom, 0.0, 0.0, "%.0f");
+        if (ImGui::Button("Teleport!", ImVec2(75, 30)))
+        {
+            Invoker::invoke("room_goto", { RValue(nRoom) });
+        }
+    }
+    ImGui::EndChild();
+
 }
 
 void UI::RenderUndertale()
@@ -159,6 +180,7 @@ void UI::RenderUndertale()
             {
                 pGlobals->Interact = 0.0;
             }
+            RenderInvoker();
         }
         ImGui::End();
     }
@@ -221,7 +243,27 @@ void UI::RenderDeltarune()
             {
                 pGlobals->Interact = 0.0;
             }
+
+            RenderInvoker();
         }
+        ImGui::End();
+    }
+}
+
+void UI::RenderUnderswap()
+{
+    CUnderswapData* pGameData = reinterpret_cast<CUnderswapData*>(Core::pGame.pPlayerData);
+    CUnderswapGlobals* pGlobals = reinterpret_cast<CUnderswapGlobals*>(Core::pGame.pGlobals);
+
+    ImGui::SetNextWindowSize(ImVec2(480, 360));
+
+    if (ImGui::Begin("Project DELTA", NULL,
+        ImGuiWindowFlags_MenuBar |
+        ImGuiWindowFlags_NoResize |
+        ImGuiWindowFlags_NoCollapse
+    ))
+    {
+        RenderInvoker();
         ImGui::End();
     }
 }

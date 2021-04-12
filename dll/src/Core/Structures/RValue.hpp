@@ -16,14 +16,14 @@ struct RValue
 		Int32 iValue;
 		Int64 i64Value;
 		Pointer pValue;
-		const char* szValue;
+		const char** szValue;
 		Boolean bValue; //Literally the same thing as the Real, but I choose to keep consistent with GML.
 	}; //0x8
 
 	__int32 nFlags; //0xC
 	__int32 nKind; //0x10
 
-	RValue();
+	RValue(std::nullptr_t);
 
 	RValue(Real v); //Same as RValue(boolean v)
 
@@ -35,7 +35,7 @@ struct RValue
 
 	RValue(const char* szv);
 
-	void SetValue(Real v);
+	const char* ToString();
 
 	void operator=(Real v); //Same as void operator=(boolean v)
 

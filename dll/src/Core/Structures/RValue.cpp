@@ -22,9 +22,10 @@ enum Kinds_t
 	KIND_UNSET = 0xFFFFFF
 };
 
-inline RValue::RValue()
+RValue::RValue(std::nullptr_t)
 {
-	dValue = 0;
+	i64Value = 0;
+	nFlags = 0;
 	nKind = KIND_UNSET;
 }
 
@@ -54,14 +55,13 @@ RValue::RValue(Pointer pv)
 
 RValue::RValue(const char* szv)
 {
-	szValue = szv;
+	szValue = &szv;
 	nKind = KIND_STRING;
 }
 
-void RValue::SetValue(Real v)
+const char* RValue::ToString()
 {
-	dValue = v;
-	nKind = KIND_REAL;
+	return *szValue;
 }
 
 void RValue::operator=(Real v)
@@ -90,7 +90,7 @@ void RValue::operator=(Pointer pv)
 
 void RValue::operator=(const char* szv)
 {
-	szValue = szv;
+	szValue = &szv;
 	nKind = KIND_STRING;
 }
 

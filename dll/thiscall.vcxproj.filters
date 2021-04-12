@@ -61,6 +61,15 @@
     <Filter Include="Resource Files\Main Module\SDK\Structs">
       <UniqueIdentifier>{638c8a55-2580-4973-a481-bcdc91de26d8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Main Module\SDK\Debug">
+      <UniqueIdentifier>{20bd4515-49f2-476e-920c-26a02d91d3d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Main Module\Hooks\hkDebug">
+      <UniqueIdentifier>{3d8cde90-92ea-4d94-88f1-5eae5e80cf4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Main Module\Invoker">
+      <UniqueIdentifier>{dd188cff-bfa1-425c-8810-6e40dc36a9ee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DllMain.cpp">
@@ -119,6 +128,15 @@
     </ClCompile>
     <ClCompile Include="src\Core\Structures\RValue.cpp">
       <Filter>Resource Files\Main Module\Core\Structures</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SDK\Debugging\Debug.cpp">
+      <Filter>Resource Files\Main Module\SDK\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hooks\hkDebug\hkDebug.cpp">
+      <Filter>Resource Files\Main Module\Hooks\hkDebug</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Invoker\Invoker.cpp">
+      <Filter>Resource Files\Main Module\Invoker</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -191,10 +209,22 @@
     <ClInclude Include="src\SDK\Structs\Structs.hpp">
       <Filter>Resource Files\Main Module\SDK\Structs</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Structures\RValue.hpp">
+    <ClInclude Include="src\Core\Structures\GameGlobals.hpp">
       <Filter>Resource Files\Main Module\Core\Structures</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Structures\GameGlobals.hpp">
+    <ClInclude Include="src\SDK\Debugging\Debug.hpp">
+      <Filter>Resource Files\Main Module\SDK\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hooks\hkDebug\hkDebug.hpp">
+      <Filter>Resource Files\Main Module\Hooks\hkDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Structures\CallData.hpp">
+      <Filter>Resource Files\Main Module\Core\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Invoker\Invoker.hpp">
+      <Filter>Resource Files\Main Module\Invoker</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Structures\RValue.hpp">
       <Filter>Resource Files\Main Module\Core\Structures</Filter>
     </ClInclude>
   </ItemGroup>

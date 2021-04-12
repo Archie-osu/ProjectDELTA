@@ -92,7 +92,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -110,7 +110,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
@@ -131,6 +131,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -149,6 +150,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <WholeProgramOptimization>false</WholeProgramOptimization>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -172,9 +174,12 @@
     <ClCompile Include="DllMain.cpp" />
     <ClCompile Include="src\Core\Core.cpp" />
     <ClCompile Include="src\Core\Structures\RValue.cpp" />
+    <ClCompile Include="src\Hooks\hkDebug\hkDebug.cpp" />
     <ClCompile Include="src\Hooks\hkEndScene\hkEndScene.cpp" />
     <ClCompile Include="src\Hooks\hkPresent\hkPresent.cpp" />
     <ClCompile Include="src\Hooks\hkWndProc\hkWndProc.cpp" />
+    <ClCompile Include="src\Invoker\Invoker.cpp" />
+    <ClCompile Include="src\SDK\Debugging\Debug.cpp" />
     <ClCompile Include="src\SDK\DirectX\DirectX.cpp" />
     <ClCompile Include="src\SDK\Memory\Memory.cpp" />
     <ClCompile Include="src\SDK\Structs\Structs.cpp" />
@@ -193,14 +198,18 @@
     <ClInclude Include="Dependencies\ImGui\imstb_truetype.h" />
     <ClInclude Include="Dependencies\Include\MinHook.h" />
     <ClInclude Include="src\Core\Core.hpp" />
+    <ClInclude Include="src\Core\Structures\CallData.hpp" />
     <ClInclude Include="src\Core\Structures\GameGlobals.hpp" />
     <ClInclude Include="src\Core\Structures\GameObject.hpp" />
     <ClInclude Include="src\Core\Structures\PlayerData.hpp" />
     <ClInclude Include="src\Core\Structures\RValue.hpp" />
+    <ClInclude Include="src\Hooks\hkDebug\hkDebug.hpp" />
     <ClInclude Include="src\Hooks\hkEndScene\hkEndScene.hpp" />
     <ClInclude Include="src\Hooks\hkPresent\hkPresent.hpp" />
     <ClInclude Include="src\Hooks\hkWndProc\hkWndProc.hpp" />
     <ClInclude Include="src\Hooks\Hooks.hpp" />
+    <ClInclude Include="src\Invoker\Invoker.hpp" />
+    <ClInclude Include="src\SDK\Debugging\Debug.hpp" />
     <ClInclude Include="src\SDK\DirectX\DirectX.hpp" />
     <ClInclude Include="src\SDK\Memory\Memory.hpp" />
     <ClInclude Include="src\SDK\SDK.hpp" />
