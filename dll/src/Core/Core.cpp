@@ -15,7 +15,6 @@ void Core::Init()
 	else
 		CurrentGame = GameType::Underswap;
 
-	SDK::Structs::Init(&pGame);
 	SDK::DX::Init();
 	SDK::WndProc::Init();
 	SDK::Debug::Init();

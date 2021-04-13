@@ -1,6 +1,7 @@
 #pragma once
-#include "Structures/GameObject.hpp"
 #include <map>
+#include <string>
+#include "Structures/RValue.hpp"
 
 namespace Core
 {
@@ -13,9 +14,9 @@ namespace Core
 	};
 
 	inline GameType CurrentGame;
-	inline CGameObject pGame;
-
-	inline std::map<const char*, unsigned long> szFuncMap;
+	
+	inline std::map<std::string, RValue> GlobalMap;
+	inline std::map<std::string, unsigned long> FuncMap;
 
 	void Init();
 }

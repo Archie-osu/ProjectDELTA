@@ -4,8 +4,6 @@
 #include "../ImGui/imgui_impl_dx11.h"
 #include "../ImGui/imgui_impl_win32.h"
 
-#include "../../SDK/Memory/Memory.hpp" //Remove me after the meme post
-
 void Hooks::Present::Init()
 {
 	ID3D11Device* pDevice = nullptr;

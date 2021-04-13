@@ -8,6 +8,6 @@ namespace Invoker
 
 	unsigned long getFnAddress(const char* szFuncName);
 
-	//Warning: This is terribly slow!
+	//Warning: The first call may be slow, but subsequent calls are as fast as invoke(addr)
 	RValue invoke(const char* szFuncName, std::vector<RValue> pArguments);
 };

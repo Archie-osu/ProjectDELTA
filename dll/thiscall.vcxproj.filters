@@ -176,12 +176,6 @@
     <ClInclude Include="src\SDK\SDK.hpp">
       <Filter>Resource Files\Main Module\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Structures\GameObject.hpp">
-      <Filter>Resource Files\Main Module\Core\Structures</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Core\Structures\PlayerData.hpp">
-      <Filter>Resource Files\Main Module\Core\Structures</Filter>
-    </ClInclude>
     <ClInclude Include="src\Hooks\Hooks.hpp">
       <Filter>Resource Files\Main Module\Hooks</Filter>
     </ClInclude>
@@ -209,9 +203,6 @@
     <ClInclude Include="src\SDK\Structs\Structs.hpp">
       <Filter>Resource Files\Main Module\SDK\Structs</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Structures\GameGlobals.hpp">
-      <Filter>Resource Files\Main Module\Core\Structures</Filter>
-    </ClInclude>
     <ClInclude Include="src\SDK\Debugging\Debug.hpp">
       <Filter>Resource Files\Main Module\SDK\Debug</Filter>
     </ClInclude>
@@ -225,6 +216,9 @@
       <Filter>Resource Files\Main Module\Invoker</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Structures\RValue.hpp">
+      <Filter>Resource Files\Main Module\Core\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Structures\Array.hpp">
       <Filter>Resource Files\Main Module\Core\Structures</Filter>
     </ClInclude>
   </ItemGroup>

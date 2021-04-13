@@ -1,6 +1,5 @@
 #include "hkDebug.hpp"
 #include <MinHook.h>
-#include <stdio.h>
 
 int __cdecl Hooks::DebugHook::hkDebug(CCallData Data)
 {
@@ -9,7 +8,7 @@ int __cdecl Hooks::DebugHook::hkDebug(CCallData Data)
 
 void Hooks::DebugHook::Init()
 {
-	MH_CreateHook((LPVOID)0x53A240, hkDebug, reinterpret_cast<LPVOID*>(&pOriginal));
+	MH_CreateHook((LPVOID)0x52B390, hkDebug, reinterpret_cast<LPVOID*>(&pOriginal));
 	MH_EnableHook(MH_ALL_HOOKS);
 }
 

@@ -65,7 +65,7 @@ HWND Memory::GetCurrentWindow()
 	return g_GameWindow;
 }
 
-DWORD Memory::FindPattern(const char* Pattern, const char* Mask)
+DWORD Memory::FindPattern(const char* Pattern, const char* Mask, bool bStringMode)
 {
 	//Get all module related information
 	MODULEINFO mInfo = GetModuleInfo();
@@ -90,6 +90,9 @@ DWORD Memory::FindPattern(const char* Pattern, const char* Mask)
 		//found = true, our entire pattern was found
 		if (found)
 		{
+			if (bStringMode && *(char*)(base + i - 1) != '\x00')
+				continue;
+
 			return (base + i);
 		}
 	}

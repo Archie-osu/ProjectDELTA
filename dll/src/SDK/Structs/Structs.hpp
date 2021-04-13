@@ -4,6 +4,7 @@ namespace SDK
 {
 	namespace Structs
 	{
-		void Init(void* pGame);
+		void Read();
+		void Write();
 	}
 }

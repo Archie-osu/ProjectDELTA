@@ -9,7 +9,7 @@ namespace Memory
 	std::string GetCurrentProcessName();
 	HWND GetCurrentWindow();
 
-	DWORD FindPattern(const char* Pattern, const char* Mask);
+	DWORD FindPattern(const char* Pattern, const char* Mask, bool bStringMode = false);
 }
 
 //The main namespace, everything is under here to prevent namespace contamination.

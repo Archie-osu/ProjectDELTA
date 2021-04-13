@@ -8,6 +8,10 @@ namespace UI
 
 	inline bool bInit = false;
 	inline bool bOpen = false;
+	inline bool bDraw = false;
+
+	inline double nDrawX = 0, nDrawY = 0;
+
 	inline int nTab = 0;
 
 	inline double nRoom = 1;

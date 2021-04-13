@@ -59,6 +59,18 @@ RValue::RValue(const char* szv)
 	nKind = KIND_STRING;
 }
 
+RValue::RValue(const char** szv)
+{
+	szValue = szv;
+	nKind = KIND_STRING;
+	nFlags = 0;
+}
+
+RValue& RValue::at(int Index)
+{
+	return pArrayReference->pArray->pArray[Index];
+}
+
 const char* RValue::ToString()
 {
 	return *szValue;
@@ -92,6 +104,11 @@ void RValue::operator=(const char* szv)
 {
 	szValue = &szv;
 	nKind = KIND_STRING;
+}
+
+RValue& RValue::operator[](int Index)
+{
+	return pArrayReference->pArray->pArray[Index];
 }
 
 RValue::operator int()

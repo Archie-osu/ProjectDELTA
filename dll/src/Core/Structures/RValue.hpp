@@ -1,5 +1,6 @@
 #pragma once
 #pragma pack(push, 4)
+#include "Array.hpp"
 
 struct RValue
 {
@@ -18,10 +19,13 @@ struct RValue
 		Pointer pValue;
 		const char** szValue;
 		Boolean bValue; //Literally the same thing as the Real, but I choose to keep consistent with GML.
+		RArrayReference* pArrayReference; //Quite wordy, am I right?
 	}; //0x8
 
 	__int32 nFlags; //0xC
 	__int32 nKind; //0x10
+
+	RValue() { i64Value = 0; nFlags = 0; nKind = 0xFFFFFF; }
 
 	RValue(std::nullptr_t);
 
@@ -35,6 +39,10 @@ struct RValue
 
 	RValue(const char* szv);
 
+	RValue(const char** szv);
+
+	RValue& at(int Index);
+
 	const char* ToString();
 
 	void operator=(Real v); //Same as void operator=(boolean v)
@@ -46,6 +54,8 @@ struct RValue
 	void operator=(Pointer pv);
 
 	void operator=(const char* szv);
+
+	RValue& operator[](int Index);
 
 	explicit operator int();
 

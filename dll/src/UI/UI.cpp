@@ -6,6 +6,7 @@
 #include "../SDK/Memory/Memory.hpp"
 #include "../Invoker/Invoker.hpp"
 #include "../Core/Core.hpp"
+#include "../SDK/SDK.hpp"
 
 //Disable annoying ImGui warnings
 #pragma warning(disable : 26451) //Arithmetic overflow: Using operator '+'
@@ -109,6 +110,8 @@ void UI::Render()
         ImGui::EndMainMenuBar();
     }
 
+    SDK::Structs::Read();
+
     switch (Core::CurrentGame)
     {
     case Core::GameType::Deltarune:
@@ -121,6 +124,8 @@ void UI::Render()
         RenderUnderswap();
         break;
     }
+
+    SDK::Structs::Write();
 }
 
 void UI::RenderInvoker()
@@ -144,9 +149,6 @@ void UI::RenderInvoker()
 
 void UI::RenderUndertale()
 {
-    CUndertaleData* pGameData = reinterpret_cast<CUndertaleData*>(Core::pGame.pPlayerData);
-    CUndertaleGlobals* pGlobals = reinterpret_cast<CUndertaleGlobals*>(Core::pGame.pGlobals);
-
     ImGui::SetNextWindowSize(ImVec2(480, 360));
 
     if (ImGui::Begin("Project DELTA", NULL,
@@ -165,20 +167,21 @@ void UI::RenderUndertale()
             ImGui::EndMenuBar();
         }
 
-        if (nTab == 0 && pGameData != nullptr)
+        if (nTab == 0)
         {
-            ImGui::SliderDouble("HP", reinterpret_cast<double*>(&pGameData->CurHP), 1, 99, "%.0f", 1.0f);
-            ImGui::SliderDouble("Max HP", reinterpret_cast<double*>(&pGameData->MaxHP), 1, 99, "%.0f", 1.0f);
-            ImGui::SliderDouble("LOVE", reinterpret_cast<double*>(&pGameData->Violence), 1, 20, "%.0f", 1.0f);
-            ImGui::InputDouble("EXP", reinterpret_cast<double*>(&pGameData->XP), 0, 0, "%.0f", ImGuiInputTextFlags_CharsDecimal);
-            ImGui::InputDouble("GOLD", reinterpret_cast<double*>(&pGameData->Gold), 0, 0, "%.0f", ImGuiInputTextFlags_CharsDecimal);
+            ImGui::SliderDouble("HP", &Core::GlobalMap.at("hp").dValue, 0, 120, "%.0f", 1.0f);
+            ImGui::SliderDouble("Max HP", &Core::GlobalMap.at("maxhp").dValue, 1, 99, "%.0f", 1.0f);
+            ImGui::SliderDouble("LV", &Core::GlobalMap.at("lv").dValue, 1, 20, "%.0f", 1.0f);
+            ImGui::InputDouble("EXP", &Core::GlobalMap.at("xp").dValue, 0, 0, "%.0f");
+            ImGui::InputDouble("GOLD", &Core::GlobalMap.at("gold").dValue, 0, 0, "%.0f");
+            ImGui::InputDouble("Plot", &Core::GlobalMap.at("plot").dValue, 0, 0, "%.0f");
         }
-        else if (nTab == 1 && pGlobals != nullptr && pGameData != nullptr)
+        else if (nTab == 1)
         {
-            ImGui::CheckboxDouble("Debug Mode", reinterpret_cast<double*>(&pGameData->DebugMode));
+            ImGui::CheckboxDouble("Debug Mode", &Core::GlobalMap.at("debug").dValue);
             if (ImGui::Button("Force No Interact", ImVec2(150, 30)))
             {
-                pGlobals->Interact = 0.0;
+                Core::GlobalMap.at("interact") = 0.0;
             }
             RenderInvoker();
         }
@@ -188,9 +191,6 @@ void UI::RenderUndertale()
 
 void UI::RenderDeltarune()
 {
-    CDeltaruneData* pGameData = reinterpret_cast<CDeltaruneData*>(Core::pGame.pPlayerData);
-    CDeltaruneGlobals* pGlobals = reinterpret_cast<CDeltaruneGlobals*>(Core::pGame.pGlobals);
-
 	ImGui::SetNextWindowSize(ImVec2(480, 360));
 
     if (ImGui::Begin("Project DELTA", NULL,
@@ -199,7 +199,6 @@ void UI::RenderDeltarune()
         ImGuiWindowFlags_NoCollapse
     ))
     {
-
         if (ImGui::BeginMenuBar())
         {
             if (ImGui::MenuItem("Crew"))
@@ -210,38 +209,40 @@ void UI::RenderDeltarune()
             ImGui::EndMenuBar();
         }
 
-        if (nTab == 0 && pGameData != nullptr)
+        if (nTab == 0)
         {
-            if (ImGui::BeginChild("ch_Kris", ImVec2(320, 90), true, 0))
+            if (ImGui::BeginChild("ch_Kris", ImVec2(320, 100), true, 0))
             {
                 ImGui::Text("Kris");
-                ImGui::SliderDouble("HP", reinterpret_cast<double*>(&pGameData->Kris_CurHP), 0, 120, "%.0f", 1.0f);
-                ImGui::SliderDouble("Max HP", reinterpret_cast<double*>(&pGameData->Kris_MaxHP), 0, 120, "%.0f", 1.0f);
+                ImGui::SliderDouble("HP", &Core::GlobalMap.at("hp").at(1).dValue, 0, 120, "%.0f", 1.0f);
+                ImGui::SliderDouble("Max HP", &Core::GlobalMap.at("maxhp").at(1).dValue, 0, 120, "%.0f", 1.0f);
             }
             ImGui::EndChild();
 
-            if (ImGui::BeginChild("ch_Ralsei", ImVec2(320, 90), true, 0))
+            if (ImGui::BeginChild("ch_Ralsei", ImVec2(320, 100), true, 0))
             {
                 ImGui::Text("Ralsei");
-                ImGui::SliderDouble("HP", reinterpret_cast<double*>(&pGameData->Ralsei_CurHP), 0, 120, "%.0f", 1.0f);
-                ImGui::SliderDouble("Max HP", reinterpret_cast<double*>(&pGameData->Ralsei_MaxHP), 0, 120, "%.0f", 1.0f);
+                ImGui::SliderDouble("HP", &Core::GlobalMap.at("hp").at(3).dValue, 0, 120, "%.0f", 1.0f);
+                ImGui::SliderDouble("Max HP", &Core::GlobalMap.at("maxhp").at(3).dValue, 0, 120, "%.0f", 1.0f);
             }
             ImGui::EndChild();
 
-            if (ImGui::BeginChild("ch_Susie", ImVec2(320, 90), true, 0))
+            if (ImGui::BeginChild("ch_Susie", ImVec2(320, 100), true, 0))
             {
                 ImGui::Text("Susie");
-                ImGui::SliderDouble("HP", reinterpret_cast<double*>(&pGameData->Susie_CurHP), 0, 120, "%.0f", 1.0f);
-                ImGui::SliderDouble("Max HP", reinterpret_cast<double*>(&pGameData->Susie_MaxHP), 0, 120, "%.0f", 1.0f);
+                ImGui::SliderDouble("HP", &Core::GlobalMap.at("hp").at(2).dValue, 0, 120, "%.0f", 1.0f);
+                ImGui::SliderDouble("Max HP", &Core::GlobalMap.at("maxhp").at(2).dValue, 0, 120, "%.0f", 1.0f);
             }
             ImGui::EndChild();
+
+            ImGui::SliderDouble("Money", &Core::GlobalMap.at("gold").dValue, 0, 1000, "%.0f", 1.0f);
         }
-        else if (nTab == 1 && pGlobals != nullptr)
+        else if (nTab == 1)
         {
-            ImGui::CheckboxDouble("Debug Mode", reinterpret_cast<double*>(&pGlobals->DebugMode));
+            ImGui::CheckboxDouble("Debug Mode", &Core::GlobalMap.at("debug").dValue);
             if (ImGui::Button("Force No Interact", ImVec2(150, 30)))
             {
-                pGlobals->Interact = 0.0;
+                Core::GlobalMap.at("interact") = 0.0;
             }
 
             RenderInvoker();
@@ -252,9 +253,6 @@ void UI::RenderDeltarune()
 
 void UI::RenderUnderswap()
 {
-    CUnderswapData* pGameData = reinterpret_cast<CUnderswapData*>(Core::pGame.pPlayerData);
-    CUnderswapGlobals* pGlobals = reinterpret_cast<CUnderswapGlobals*>(Core::pGame.pGlobals);
-
     ImGui::SetNextWindowSize(ImVec2(480, 360));
 
     if (ImGui::Begin("Project DELTA", NULL,
@@ -263,7 +261,29 @@ void UI::RenderUnderswap()
         ImGuiWindowFlags_NoCollapse
     ))
     {
-        RenderInvoker();
+        if (ImGui::BeginMenuBar())
+        {
+            if (ImGui::MenuItem("Crew"))
+                nTab = 0;
+            if (ImGui::MenuItem("World"))
+                nTab = 1;
+
+            ImGui::EndMenuBar();
+        }
+
+        if (nTab == 0)
+        {
+
+        }
+        else if (nTab == 1)
+        {
+            ImGui::CheckboxDouble("Debug Mode", &Core::GlobalMap.at("debug").dValue);
+            if (ImGui::Button("Force No Interact", ImVec2(150, 30)))
+            {
+                Core::GlobalMap.at("interact") = 0.0;
+            }
+            RenderInvoker();
+        }
         ImGui::End();
     }
 }
