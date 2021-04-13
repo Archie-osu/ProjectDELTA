@@ -4,13 +4,11 @@ namespace Hooks
 {
 	namespace DebugHook
 	{
-		using HookFn = int(__cdecl*)(
-			CCallData Data
-		);
+		using HookFn = fnGML;
 
 		inline HookFn pOriginal;
 
-		int __cdecl hkDebug(CCallData Data);
+		void __cdecl hkDebug(RValue* Result, CInstance* pSelfInst, CInstance* pOtherInst, int argc, RValue* pArgs);
 
 		void Init();
 	}

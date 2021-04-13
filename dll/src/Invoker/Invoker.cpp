@@ -1,5 +1,5 @@
 #include "Invoker.hpp"
-#include "../Core/Structures/CallData.hpp" //Includes RValue.hpp
+#include "../Core/Structures/CallData.hpp"
 #include "../SDK/Memory/Memory.hpp"
 #include "../Core/Core.hpp"
 
@@ -7,21 +7,10 @@ RValue Invoker::invoke(unsigned long Address, std::vector<RValue> pArguments)
 {
 	unsigned char* function = reinterpret_cast<unsigned char*>(Address);
 
-	using Fn = int(__cdecl*)(CCallData Data);
 	RValue ReturnVal = RValue(nullptr);
-	CCallData pData;
 
-	pData.ArgumentCount = pArguments.size();
-	pData.pArguments = pArguments.data();
-
-	pData.pCallback = nullptr;
-	pData.pCallback2 = nullptr;
-	pData.pNull = nullptr;
-
-	pData.pResult = &ReturnVal;
-
-	Fn func = reinterpret_cast<Fn>(function);
-	func(pData);
+	fnGML func = reinterpret_cast<fnGML>(function);
+	func(&ReturnVal, 0, 0, pArguments.size(), pArguments.data());
 
 	return ReturnVal;
 }
@@ -52,6 +41,7 @@ unsigned long Invoker::getFnAddress(const char* szFuncName)
 RValue Invoker::invoke(const char* szFuncName, std::vector<RValue> pArguments)
 {
 	DWORD dwAddress;
+	RValue Result;
 
 	if (!Core::FuncMap.contains(szFuncName)) //First check the function map, O(1) is better than O(n^2)!
 	{

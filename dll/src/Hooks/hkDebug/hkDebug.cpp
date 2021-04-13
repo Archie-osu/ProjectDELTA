@@ -1,9 +1,10 @@
 #include "hkDebug.hpp"
 #include <MinHook.h>
+#include "../../Core/Structures/RValue.hpp"
 
-int __cdecl Hooks::DebugHook::hkDebug(CCallData Data)
+void __cdecl Hooks::DebugHook::hkDebug(RValue* Result, CInstance* pSelfInst, CInstance* pOtherInst, int argc, RValue* pArgs)
 {
-	return pOriginal(Data);
+	return pOriginal(Result, pSelfInst, pOtherInst, argc, pArgs);
 }
 
 void Hooks::DebugHook::Init()

@@ -1,3 +1,4 @@
+#pragma once
 struct RValue;
 
 struct RArray

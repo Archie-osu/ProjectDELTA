@@ -5,7 +5,6 @@
 struct RValue
 {
 	//Confusing GML datatypes go!
-	using Boolean = double; 
 	using Real = double;
 	using Int32 = __int32;
 	using Int64 = __int64;
@@ -18,8 +17,7 @@ struct RValue
 		Int64 i64Value;
 		Pointer pValue;
 		const char** szValue;
-		Boolean bValue; //Literally the same thing as the Real, but I choose to keep consistent with GML.
-		RArrayReference* pArrayReference; //Quite wordy, am I right?
+		RArrayReference* pArrayReference;
 	}; //0x8
 
 	__int32 nFlags; //0xC
