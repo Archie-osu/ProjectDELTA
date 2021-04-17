@@ -9,7 +9,8 @@ Tested releases:
 Libraries used: MinHook, ImGui
 
 # TODO List (in order of importance)
-- Make this work.
+- Make get_var work properly (annoying GML errors about indexing happen sometimes, unknown why)
+- Get all room names at runtime (for future me: this is very easy, room names are terminated by ``<undefined>`` variables.
 
 # FAQ
 **Q:** Where are the releases? Where can I download this tool?
