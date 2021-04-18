@@ -9,13 +9,14 @@ Tested releases:
 Libraries used: MinHook, ImGui
 
 # TODO List (in order of importance)
-- Make get_var work properly (annoying GML errors about indexing happen sometimes, unknown why)
-- Get all room names at runtime (for future me: this is very easy, room names are terminated by ``<undefined>`` variables.
+- Clean up the code
+- Add script support using Lua
+- Make a better loader, UI maybe?
 
 # FAQ
 **Q:** Where are the releases? Where can I download this tool?
 
-**A:** It seems you ended up in the Project DELTA v2 development branch. There are currently no releases of this version, and only source code is being pushed at the moment. Click [here to go to the download page of v1!](https://github.com/Archie-osu/ProjectDELTA/releases/latest)
+**A:** Click [here](https://github.com/Archie-osu/ProjectDELTA/releases/latest)
 
 **Q:** The loader says that it can't find ``ProjectDELTA.dll``, what is wrong?
 
