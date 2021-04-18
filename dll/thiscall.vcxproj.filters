@@ -19,32 +19,50 @@
     <Filter Include="Resource Files\Dependencies\ImGui">
       <UniqueIdentifier>{acb4157a-07c1-4d83-88d5-22d56fadc45f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Dependencies\Main Module">
-      <UniqueIdentifier>{23959584-acec-4156-b1ce-69e7a3ac040c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource Files\Dependencies\MinHook">
       <UniqueIdentifier>{23bd316c-f1e4-49d7-8689-02aadff0699d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Dependencies\Main Module\API">
-      <UniqueIdentifier>{69227d69-5a13-4ac5-a662-34b21bdcd43e}</UniqueIdentifier>
+    <Filter Include="Resource Files\Main Module">
+      <UniqueIdentifier>{23959584-acec-4156-b1ce-69e7a3ac040c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Dependencies\Main Module\Hooks">
-      <UniqueIdentifier>{3ae36ed9-f117-4ff0-b11d-09fc0557b2ba}</UniqueIdentifier>
+    <Filter Include="Resource Files\Main Module\Core">
+      <UniqueIdentifier>{8623f2be-605a-4a72-b609-d1e8ae94711e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Dependencies\Main Module\Hooks\hkPresent">
-      <UniqueIdentifier>{952139b2-ec03-4c38-82ee-596a8cc00a12}</UniqueIdentifier>
+    <Filter Include="Resource Files\Main Module\Core\Structures">
+      <UniqueIdentifier>{7cc1a994-123e-4526-985d-6be5a799e53f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Dependencies\Main Module\Menu">
-      <UniqueIdentifier>{29e3501b-4e4d-4ed3-8438-156cc83813b3}</UniqueIdentifier>
+    <Filter Include="Resource Files\Main Module\SDK">
+      <UniqueIdentifier>{14fa1927-01ad-41f0-ad3e-56ce716b1b41}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Dependencies\Main Module\Hooks\hkWndProc">
-      <UniqueIdentifier>{c0b8c888-976a-47a5-9934-851159506b96}</UniqueIdentifier>
+    <Filter Include="Resource Files\Main Module\SDK\Memory">
+      <UniqueIdentifier>{a4e09f96-c180-4ca0-abf9-fab90f336854}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Dependencies\Main Module\Invoker">
-      <UniqueIdentifier>{9913acd1-5454-4b78-84f5-685844167d30}</UniqueIdentifier>
+    <Filter Include="Resource Files\Main Module\Hooks">
+      <UniqueIdentifier>{9fccd96d-df1d-4824-90f6-3e9e7dd214c0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Dependencies\Main Module\Hooks\hkConvertRValue">
-      <UniqueIdentifier>{6e01a80c-c009-4c50-bc9f-aa19288fa4fa}</UniqueIdentifier>
+    <Filter Include="Resource Files\Main Module\Hooks\hkPresent %28DX11%29">
+      <UniqueIdentifier>{05b40f3a-91d5-4120-97d2-9a7e3b0b58cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Main Module\Hooks\hkEndScene %28DX9%29">
+      <UniqueIdentifier>{644c0466-ec6d-460d-9381-5110fd272cc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Main Module\UI">
+      <UniqueIdentifier>{4e901ec8-9a62-49c4-9fe1-26964221ee8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Main Module\Hooks\hkWndProc %28Win32%29">
+      <UniqueIdentifier>{c3a0e73c-731c-4c8e-875e-7d63554219d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Main Module\SDK\WndProc">
+      <UniqueIdentifier>{c45a1f5b-5f2a-494f-b57b-3099483afe4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Main Module\SDK\DirectX">
+      <UniqueIdentifier>{7b22df19-d974-42c6-9102-74ad3f601857}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Main Module\SDK\Structs">
+      <UniqueIdentifier>{638c8a55-2580-4973-a481-bcdc91de26d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Main Module\Invoker">
+      <UniqueIdentifier>{dd188cff-bfa1-425c-8810-6e40dc36a9ee}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -72,29 +90,41 @@
     <ClCompile Include="Dependencies\ImGui\imgui_widgets.cpp">
       <Filter>Resource Files\Dependencies\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="src\API\API.cpp">
-      <Filter>Resource Files\Dependencies\Main Module\API</Filter>
+    <ClCompile Include="src\SDK\Memory\Memory.cpp">
+      <Filter>Resource Files\Main Module\SDK\Memory</Filter>
     </ClCompile>
-    <ClCompile Include="src\API\ghlib.cpp">
-      <Filter>Resource Files\Dependencies\Main Module\API</Filter>
+    <ClCompile Include="src\Core\Core.cpp">
+      <Filter>Resource Files\Main Module\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\Hooks\Hooks.cpp">
-      <Filter>Resource Files\Dependencies\Main Module\Hooks</Filter>
+    <ClCompile Include="src\Hooks\hkEndScene\hkEndScene.cpp">
+      <Filter>Resource Files\Main Module\Hooks\hkEndScene %28DX9%29</Filter>
     </ClCompile>
-    <ClCompile Include="src\Hooks\Present.cpp">
-      <Filter>Resource Files\Dependencies\Main Module\Hooks\hkPresent</Filter>
+    <ClCompile Include="src\Hooks\hkPresent\hkPresent.cpp">
+      <Filter>Resource Files\Main Module\Hooks\hkPresent %28DX11%29</Filter>
     </ClCompile>
-    <ClCompile Include="src\Menu\Menu.cpp">
-      <Filter>Resource Files\Dependencies\Main Module\Menu</Filter>
+    <ClCompile Include="src\UI\UI.cpp">
+      <Filter>Resource Files\Main Module\UI</Filter>
     </ClCompile>
-    <ClCompile Include="src\Hooks\WndProc.cpp">
-      <Filter>Resource Files\Dependencies\Main Module\Hooks\hkWndProc</Filter>
+    <ClCompile Include="Dependencies\ImGui\imgui_impl_dx9.cpp">
+      <Filter>Resource Files\Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hooks\hkWndProc\hkWndProc.cpp">
+      <Filter>Resource Files\Main Module\Hooks\hkWndProc %28Win32%29</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SDK\WndProc\WndProc.cpp">
+      <Filter>Resource Files\Main Module\SDK\WndProc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SDK\DirectX\DirectX.cpp">
+      <Filter>Resource Files\Main Module\SDK\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SDK\Structs\Structs.cpp">
+      <Filter>Resource Files\Main Module\SDK\Structs</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Structures\RValue.cpp">
+      <Filter>Resource Files\Main Module\Core\Structures</Filter>
     </ClCompile>
     <ClCompile Include="src\Invoker\Invoker.cpp">
-      <Filter>Resource Files\Dependencies\Main Module\Invoker</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Hooks\ConvertRValue.cpp">
-      <Filter>Resource Files\Dependencies\Main Module\Hooks\hkConvertRValue</Filter>
+      <Filter>Resource Files\Main Module\Invoker</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -122,23 +152,59 @@
     <ClInclude Include="Dependencies\ImGui\imstb_truetype.h">
       <Filter>Resource Files\Dependencies\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="src\API\API.hpp">
-      <Filter>Resource Files\Dependencies\Main Module\API</Filter>
-    </ClInclude>
-    <ClInclude Include="src\API\ghlib.hpp">
-      <Filter>Resource Files\Dependencies\Main Module\API</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Hooks\Hooks.hpp">
-      <Filter>Resource Files\Dependencies\Main Module\Hooks</Filter>
-    </ClInclude>
     <ClInclude Include="Dependencies\Include\MinHook.h">
       <Filter>Resource Files\Dependencies\MinHook</Filter>
     </ClInclude>
-    <ClInclude Include="src\Menu\Menu.hpp">
-      <Filter>Resource Files\Dependencies\Main Module\Menu</Filter>
+    <ClInclude Include="src\Core\Core.hpp">
+      <Filter>Resource Files\Main Module\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SDK\Memory\Memory.hpp">
+      <Filter>Resource Files\Main Module\SDK\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SDK\SDK.hpp">
+      <Filter>Resource Files\Main Module\SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hooks\Hooks.hpp">
+      <Filter>Resource Files\Main Module\Hooks</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hooks\hkEndScene\hkEndScene.hpp">
+      <Filter>Resource Files\Main Module\Hooks\hkEndScene %28DX9%29</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hooks\hkPresent\hkPresent.hpp">
+      <Filter>Resource Files\Main Module\Hooks\hkPresent %28DX11%29</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\UI.hpp">
+      <Filter>Resource Files\Main Module\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imgui_impl_dx9.h">
+      <Filter>Resource Files\Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hooks\hkWndProc\hkWndProc.hpp">
+      <Filter>Resource Files\Main Module\Hooks\hkWndProc %28Win32%29</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SDK\WndProc\WndProc.hpp">
+      <Filter>Resource Files\Main Module\SDK\WndProc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SDK\DirectX\DirectX.hpp">
+      <Filter>Resource Files\Main Module\SDK\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SDK\Structs\Structs.hpp">
+      <Filter>Resource Files\Main Module\SDK\Structs</Filter>
     </ClInclude>
     <ClInclude Include="src\Invoker\Invoker.hpp">
-      <Filter>Resource Files\Dependencies\Main Module\Invoker</Filter>
+      <Filter>Resource Files\Main Module\Invoker</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Structures\RValue.hpp">
+      <Filter>Resource Files\Main Module\Core\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Structures\Array.hpp">
+      <Filter>Resource Files\Main Module\Core\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Structures\CInstance.hpp">
+      <Filter>Resource Files\Main Module\Core\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\ImGuiFix.hpp">
+      <Filter>Resource Files\Main Module\UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

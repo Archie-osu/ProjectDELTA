@@ -1,45 +1,95 @@
 #include "Invoker.hpp"
-#include <Windows.h>
-#include <Psapi.h>
-using QWORD = unsigned __int64;
+#include "../SDK/Memory/Memory.hpp"
 
-MODULEINFO GetModuleInfo(const char* szModule)
+struct CInstance;
+using fnGML = void(__cdecl*)(RValue* Result, CInstance* pSelfInst, CInstance* pOtherInst, int argc, RValue* pArgs);
+
+RValue __invoke(unsigned long Address, std::vector<RValue> pArguments, RValue& lpReturnVal)
 {
-	MODULEINFO modinfo = { 0 };
-	HMODULE hModule = GetModuleHandleA(szModule);
-	if (hModule == 0)
-		return modinfo;
-	GetModuleInformation(GetCurrentProcess(), hModule, &modinfo, sizeof(MODULEINFO));
-	return modinfo;
+	fnGML func = reinterpret_cast<fnGML>(Address);
+
+	func(&lpReturnVal, 0, 0, pArguments.size(), pArguments.data());
+
+	return lpReturnVal;
 }
 
-ghl::ptr_t Invoker::FindPattern(const char* pattern, const char* mask)
+unsigned long Invoker::getFnAddress(const char* szFuncName)
 {
-	//Get all module related information
-	MODULEINFO mInfo = GetModuleInfo("DELTARUNE.exe");
+	//This prevents stuff like draw_text() from being matched with action_draw_text
+	std::string sFunc = szFuncName;
+	std::string sMask;
 
-	//Assign our base and module size
-	DWORD base = (DWORD)mInfo.lpBaseOfDll;
-	DWORD size = (DWORD)mInfo.SizeOfImage;
+	for (size_t i = 0; i <= sFunc.size(); i++)
+		sMask.push_back('x');
 
-	//Get length for our mask, this will allow us to loop through our array
-	DWORD patternLength = (DWORD)strlen(mask);
+	auto Pattern = Memory::FindPattern(sFunc.data(), sMask.c_str(), true);
 
-	for (unsigned i = 0; i < size - patternLength; i++)
+	unsigned char mem[5];
+	mem[0] = '\x68'; //Push instruction
+	memcpy(mem + 1, &Pattern, 4); //Create new pattern - push <offset>
+
+	unsigned char* dwReference = (unsigned char*)Memory::FindPattern(
+		(const char*)mem,
+		"xxxxx"
+	) - 4; //Get the reference to the function
+
+	return *(DWORD*)(dwReference); //Read address
+}
+
+RValue Invoker::invoke(const char* szFuncName, std::vector<RValue> pArguments)
+{
+	DWORD dwAddress;
+	RValue Result;
+
+	if (!FuncMap.contains(szFuncName)) //First check the function map, O(1) is better than O(n^2)!
 	{
-		bool found = true;
-		for (DWORD j = 0; j < patternLength; j++)
-		{
-			//if we have a ? in our mask then we have true by default,
-			//or if the bytes match then we keep searching until finding it or not
-			found &= mask[j] == '?' || pattern[j] == *(char*)(base + i + j);
-		}
-
-		//found = true, our entire pattern was found
-		if (found)
-		{
-			return ghl::ptr_t((LPVOID)(base + i));
-		}
+		//If it's not there, get the function address and put it into the map, so we won't have to search for it again.
+		dwAddress = getFnAddress(szFuncName);
+		FuncMap.emplace(szFuncName, dwAddress);
 	}
-	return ghl::ptr_t(0);
+	else
+	{
+		//If it is in the function map already, just retrieve it from there, and call.
+		dwAddress = FuncMap.at(szFuncName);
+	}
+	__invoke(dwAddress, pArguments, Result);
+
+	return Result;  //Finish.
 }
+
+void Invoker::set_var(const char* szVarName, RValue Value)
+{
+	unsigned long dwAddress;
+	RValue Result; //unused
+
+	if (!FuncMap.contains("variable_global_set"))
+	{
+		dwAddress = getFnAddress("variable_global_set");
+		FuncMap.emplace("variable_global_set", dwAddress);
+	}
+	else
+	{
+		dwAddress = FuncMap.at("variable_global_set");
+	}
+
+	__invoke(dwAddress, { RValue(&szVarName), Value }, Result);
+}
+
+void Invoker::get_var(const char* szVarName, RValue& Value)
+{
+	unsigned long dwAddress;
+
+	if (!FuncMap.contains("variable_global_get"))
+	{
+		dwAddress = getFnAddress("variable_global_get");
+		FuncMap.emplace("variable_global_get", dwAddress);
+	}
+	else
+	{
+		dwAddress = FuncMap.at("variable_global_get");
+	}
+
+	__invoke(dwAddress, { RValue(&szVarName) }, Value);
+}
+
+
