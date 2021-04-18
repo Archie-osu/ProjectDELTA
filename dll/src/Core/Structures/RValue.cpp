@@ -68,7 +68,10 @@ RValue::RValue(const char** szv)
 
 RValue& RValue::at(int Index)
 {
-	return pArrayReference->pArray->pArray[Index];
+	if (pArrayReference)
+		return pArrayReference->pArray->pArray[Index];
+	
+	return *this;
 }
 
 const char* RValue::ToString()

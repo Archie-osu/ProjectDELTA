@@ -174,12 +174,10 @@
     <ClCompile Include="DllMain.cpp" />
     <ClCompile Include="src\Core\Core.cpp" />
     <ClCompile Include="src\Core\Structures\RValue.cpp" />
-    <ClCompile Include="src\Hooks\hkDebug\hkDebug.cpp" />
     <ClCompile Include="src\Hooks\hkEndScene\hkEndScene.cpp" />
     <ClCompile Include="src\Hooks\hkPresent\hkPresent.cpp" />
     <ClCompile Include="src\Hooks\hkWndProc\hkWndProc.cpp" />
     <ClCompile Include="src\Invoker\Invoker.cpp" />
-    <ClCompile Include="src\SDK\Debugging\Debug.cpp" />
     <ClCompile Include="src\SDK\DirectX\DirectX.cpp" />
     <ClCompile Include="src\SDK\Memory\Memory.cpp" />
     <ClCompile Include="src\SDK\Structs\Structs.cpp" />
@@ -199,20 +197,19 @@
     <ClInclude Include="Dependencies\Include\MinHook.h" />
     <ClInclude Include="src\Core\Core.hpp" />
     <ClInclude Include="src\Core\Structures\Array.hpp" />
-    <ClInclude Include="src\Core\Structures\CallData.hpp" />
+    <ClInclude Include="src\Core\Structures\CInstance.hpp" />
     <ClInclude Include="src\Core\Structures\RValue.hpp" />
-    <ClInclude Include="src\Hooks\hkDebug\hkDebug.hpp" />
     <ClInclude Include="src\Hooks\hkEndScene\hkEndScene.hpp" />
     <ClInclude Include="src\Hooks\hkPresent\hkPresent.hpp" />
     <ClInclude Include="src\Hooks\hkWndProc\hkWndProc.hpp" />
     <ClInclude Include="src\Hooks\Hooks.hpp" />
     <ClInclude Include="src\Invoker\Invoker.hpp" />
-    <ClInclude Include="src\SDK\Debugging\Debug.hpp" />
     <ClInclude Include="src\SDK\DirectX\DirectX.hpp" />
     <ClInclude Include="src\SDK\Memory\Memory.hpp" />
     <ClInclude Include="src\SDK\SDK.hpp" />
     <ClInclude Include="src\SDK\Structs\Structs.hpp" />
     <ClInclude Include="src\SDK\WndProc\WndProc.hpp" />
+    <ClInclude Include="src\UI\ImGuiFix.hpp" />
     <ClInclude Include="src\UI\UI.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

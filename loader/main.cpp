@@ -4,7 +4,7 @@
 #include <iostream>
 
 
-HANDLE GetDeltaruneProcess()
+HANDLE GetProcess()
 {
 	PROCESSENTRY32 peEntry{ sizeof(PROCESSENTRY32) };
 	HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0xBADC0DE);
@@ -13,7 +13,7 @@ HANDLE GetDeltaruneProcess()
 
 	do
 	{
-		if (_stricmp(peEntry.szExeFile, "DELTARUNE.exe") == 0)
+		if (!_stricmp(peEntry.szExeFile, "DELTARUNE.exe") || !_stricmp(peEntry.szExeFile, "UNDERTALE.exe") || !_stricmp(peEntry.szExeFile, "TS!Underswap.exe"))
 		{
 			CloseHandle(hSnapshot);
 			return OpenProcess(PROCESS_ALL_ACCESS, FALSE, peEntry.th32ProcessID);
@@ -26,12 +26,7 @@ HANDLE GetDeltaruneProcess()
 
 int main()
 {
-	MessageBoxA(0,
-		"An auto-updating system has NOT been implemented yet.\n\n"
-		"You NEED to have the LATEST loader to load the latest version of Project DELTA.\n\n"
-		"Also, do NOT download loaders from any other place than my GitHub (github.com/archie-osu/ProjectDelta)\n\n"
-		"If you downloaded this from an unofficial source, I am NOT responsible for any damage that might happen.\n\n",
-		"Warning", MB_ICONWARNING | MB_OK);
+	SetConsoleTitleA("Project DELTA v2 Loader");
 
 	std::cout << "WARNING: An auto-updating system has NOT yet been implemented." << std::endl;
 	std::cout << "You NEED to have the LATEST loader to load the latest version of Project DELTA!" << std::endl << std::endl;
@@ -40,7 +35,7 @@ int main()
 
 	HANDLE hProcess = 0;
 
-	while (!(hProcess = GetDeltaruneProcess()))
+	while (!(hProcess = GetProcess()))
 	{
 		Sleep(50);
 	}
@@ -55,20 +50,17 @@ int main()
 		return 0;
 	}
 
-	std::cout << "DELTARUNE and DLL found, injecting.\n";
+	std::cout << "Game and DLL found, injecting.\n";
 
 	char DllName[MAX_PATH];
 	GetFullPathNameA("ProjectDELTA.dll", MAX_PATH, DllName, NULL);
 
 	LPVOID pLoadLibrary = (LPVOID)GetProcAddress(GetModuleHandleA("kernel32.dll"), "LoadLibraryA");
 
-	// Allocate space in the process for our DLL name
 	LPVOID RemoteString = VirtualAllocEx(hProcess, NULL, strlen(DllName), MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
 
-	// Write the string name of our DLL in the memory allocated
 	WriteProcessMemory(hProcess, RemoteString, DllName, strlen(DllName), NULL);
 
-	// Load our DLL by calling loadlibrary in the other process and passing our dll name
 	CreateRemoteThread(hProcess, NULL, NULL, (LPTHREAD_START_ROUTINE)pLoadLibrary, (LPVOID)RemoteString, NULL, NULL);
 
 	CloseHandle(hProcess);

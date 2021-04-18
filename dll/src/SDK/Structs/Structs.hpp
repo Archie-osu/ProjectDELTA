@@ -6,5 +6,6 @@ namespace SDK
 	{
 		void Read();
 		void Write();
+		void CreateCache();
 	}
 }

@@ -1,5 +1,5 @@
 #include "UI.hpp"
-#include "../ImGui/imgui.h"
+#include "ImGuiFix.hpp" //Adds std::vector support to the legacy Combo API
 #include "../ImGui/imgui_impl_win32.h"
 #include "../ImGui/imgui_impl_dx11.h"
 #include "../ImGui/imgui_impl_dx9.h"
@@ -130,17 +130,16 @@ void UI::Render()
 
 void UI::RenderInvoker()
 {
-    //Example invoker code, will be refactored before Milestone 6 / Final release.
+    //Example invoker code, has not been touched since milestone 5.
     if (ImGui::BeginChild("ch_Invoker", ImVec2(460, 180), true))
     {
-        const char* szRoomTarget = Invoker::invoke("room_get_name", { RValue(nRoom) }).ToString();
+        static int nRoom = 0;
 
-        ImGui::Text("Target room: %s", szRoomTarget);
+        ImGui::Combo("Target room", &nRoom, Core::RoomList);
 
-        ImGui::InputDouble("Room", &nRoom, 0.0, 0.0, "%.0f");
         if (ImGui::Button("Teleport!", ImVec2(75, 30)))
         {
-            Invoker::invoke("room_goto", { RValue(nRoom) });
+            Invoker::invoke("room_goto", { RValue((double)(nRoom)) });
         }
     }
     ImGui::EndChild();
@@ -273,15 +272,14 @@ void UI::RenderUnderswap()
 
         if (nTab == 0)
         {
-
+            ImGui::SliderDouble("HP", &Core::GlobalMap.at("playerhp").dValue, 0, 120, "%.0f", 1.0f);
+            ImGui::SliderDouble("Max HP", &Core::GlobalMap.at("playermaxhp").dValue, 1, 99, "%.0f", 1.0f);
+            ImGui::SliderDouble("LV", &Core::GlobalMap.at("playerlv").dValue, 1, 20, "%.0f", 1.0f);
+            ImGui::InputDouble("EXP", &Core::GlobalMap.at("playerxp").dValue, 0, 0, "%.0f");
+            ImGui::InputDouble("GOLD", &Core::GlobalMap.at("playergold").dValue, 0, 0, "%.0f");
         }
         else if (nTab == 1)
         {
-            ImGui::CheckboxDouble("Debug Mode", &Core::GlobalMap.at("debug").dValue);
-            if (ImGui::Button("Force No Interact", ImVec2(150, 30)))
-            {
-                Core::GlobalMap.at("interact") = 0.0;
-            }
             RenderInvoker();
         }
         ImGui::End();

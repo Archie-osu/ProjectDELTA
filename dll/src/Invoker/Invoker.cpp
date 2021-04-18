@@ -1,18 +1,16 @@
 #include "Invoker.hpp"
-#include "../Core/Structures/CallData.hpp"
 #include "../SDK/Memory/Memory.hpp"
-#include "../Core/Core.hpp"
 
-RValue Invoker::invoke(unsigned long Address, std::vector<RValue> pArguments)
+struct CInstance;
+using fnGML = void(__cdecl*)(RValue* Result, CInstance* pSelfInst, CInstance* pOtherInst, int argc, RValue* pArgs);
+
+RValue __invoke(unsigned long Address, std::vector<RValue> pArguments, RValue& lpReturnVal)
 {
-	unsigned char* function = reinterpret_cast<unsigned char*>(Address);
+	fnGML func = reinterpret_cast<fnGML>(Address);
 
-	RValue ReturnVal = RValue(nullptr);
+	func(&lpReturnVal, 0, 0, pArguments.size(), pArguments.data());
 
-	fnGML func = reinterpret_cast<fnGML>(function);
-	func(&ReturnVal, 0, 0, pArguments.size(), pArguments.data());
-
-	return ReturnVal;
+	return lpReturnVal;
 }
 
 unsigned long Invoker::getFnAddress(const char* szFuncName)
@@ -43,16 +41,55 @@ RValue Invoker::invoke(const char* szFuncName, std::vector<RValue> pArguments)
 	DWORD dwAddress;
 	RValue Result;
 
-	if (!Core::FuncMap.contains(szFuncName)) //First check the function map, O(1) is better than O(n^2)!
+	if (!FuncMap.contains(szFuncName)) //First check the function map, O(1) is better than O(n^2)!
 	{
 		//If it's not there, get the function address and put it into the map, so we won't have to search for it again.
 		dwAddress = getFnAddress(szFuncName);
-		Core::FuncMap.emplace(szFuncName, dwAddress);
+		FuncMap.emplace(szFuncName, dwAddress);
 	}
 	else
 	{
 		//If it is in the function map already, just retrieve it from there, and call.
-		dwAddress = Core::FuncMap.at(szFuncName);
+		dwAddress = FuncMap.at(szFuncName);
 	}
-	return invoke(dwAddress, pArguments); //Finish.
+	__invoke(dwAddress, pArguments, Result);
+
+	return Result;  //Finish.
 }
+
+void Invoker::set_var(const char* szVarName, RValue Value)
+{
+	unsigned long dwAddress;
+	RValue Result; //unused
+
+	if (!FuncMap.contains("variable_global_set"))
+	{
+		dwAddress = getFnAddress("variable_global_set");
+		FuncMap.emplace("variable_global_set", dwAddress);
+	}
+	else
+	{
+		dwAddress = FuncMap.at("variable_global_set");
+	}
+
+	__invoke(dwAddress, { RValue(&szVarName), Value }, Result);
+}
+
+void Invoker::get_var(const char* szVarName, RValue& Value)
+{
+	unsigned long dwAddress;
+
+	if (!FuncMap.contains("variable_global_get"))
+	{
+		dwAddress = getFnAddress("variable_global_get");
+		FuncMap.emplace("variable_global_get", dwAddress);
+	}
+	else
+	{
+		dwAddress = FuncMap.at("variable_global_get");
+	}
+
+	__invoke(dwAddress, { RValue(&szVarName) }, Value);
+}
+
+
