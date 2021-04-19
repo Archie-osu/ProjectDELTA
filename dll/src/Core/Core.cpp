@@ -4,7 +4,6 @@ void Core::Init()
 {
 	//TODO: Figure out a way to check if DX11 or DX9 is present (loaded DLLs?!)
 	//First let's check which game we're injecting into.
-	
 	//ghl::AllocConsoleStream();
 
 	std::string CurrentName = Memory::GetCurrentProcessName();

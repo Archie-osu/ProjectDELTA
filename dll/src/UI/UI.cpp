@@ -148,7 +148,7 @@ void UI::RenderInvoker()
 
 void UI::RenderUndertale()
 {
-    ImGui::SetNextWindowSize(ImVec2(480, 360));
+    ImGui::SetNextWindowSize(ImVec2(flWindowX, flWindowY));
 
     if (ImGui::Begin("Project DELTA", NULL,
         ImGuiWindowFlags_MenuBar |
@@ -190,8 +190,7 @@ void UI::RenderUndertale()
 
 void UI::RenderDeltarune()
 {
-	ImGui::SetNextWindowSize(ImVec2(480, 360));
-
+	ImGui::SetNextWindowSize(ImVec2(flWindowX, flWindowY));
     if (ImGui::Begin("Project DELTA", NULL,
         ImGuiWindowFlags_MenuBar |
         ImGuiWindowFlags_NoResize |
@@ -252,7 +251,7 @@ void UI::RenderDeltarune()
 
 void UI::RenderUnderswap()
 {
-    ImGui::SetNextWindowSize(ImVec2(480, 360));
+    ImGui::SetNextWindowSize(ImVec2(flWindowX, flWindowY));
 
     if (ImGui::Begin("Project DELTA", NULL,
         ImGuiWindowFlags_MenuBar |

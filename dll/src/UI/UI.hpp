@@ -7,8 +7,7 @@ namespace UI
 	constexpr float flWindowX = 480.0f, flWindowY = 360.0f;
 
 	inline bool bInit = false;
-	inline bool bOpen = false;
-	inline bool bDraw = false;
+	inline bool bOpen = true;
 
 	inline int nTab = 0;
 
