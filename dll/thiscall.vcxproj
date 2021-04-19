@@ -182,7 +182,10 @@
     <ClCompile Include="src\SDK\Memory\Memory.cpp" />
     <ClCompile Include="src\SDK\Structs\Structs.cpp" />
     <ClCompile Include="src\SDK\WndProc\WndProc.cpp" />
+    <ClCompile Include="src\UI\Deltarune.cpp" />
     <ClCompile Include="src\UI\UI.cpp" />
+    <ClCompile Include="src\UI\Underswap.cpp" />
+    <ClCompile Include="src\UI\Undertale.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\ImGui\imconfig.h" />

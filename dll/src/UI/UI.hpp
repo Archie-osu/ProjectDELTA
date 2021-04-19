@@ -11,12 +11,11 @@ namespace UI
 
 	inline int nTab = 0;
 
-	//Maybe put these in separate files?
-
 	void Render(); //Automatically determines which functions to call
 	void SetStyle();
 	
 	void RenderInvoker(); //Shared, so I just have a function to avoid duplicate code.
+
 	void RenderUndertale();
 	void RenderDeltarune();
 	void RenderUnderswap();

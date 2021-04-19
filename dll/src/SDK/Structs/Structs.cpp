@@ -34,7 +34,7 @@ void SDK::Structs::Read()
 		ReadValues({ "hp", "maxhp", "gold", "lv", "xp", "plot", "debug", "interact" });
 		break;
 	case Core::GameType::Underswap:
-		ReadValues({ "playerhp", "playermaxhp", "playergold", "playerlv", "playerxp" });
+		ReadValues({ "playerhp", "playermaxhp", "playergold", "playerlv", "playerxp", "canmove" });
 		break;
 	}
 }
@@ -50,7 +50,7 @@ void SDK::Structs::Write()
 		WriteValues({ "hp", "maxhp", "gold", "lv", "xp", "plot", "debug", "interact" });
 		break;
 	case Core::GameType::Underswap:
-		WriteValues({ "playerhp", "playermaxhp", "playergold", "playerlv", "playerxp" });
+		WriteValues({ "playerhp", "playermaxhp", "playergold", "playerlv", "playerxp", "canmove" });
 		break;
 	}
 }

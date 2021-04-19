@@ -64,6 +64,15 @@
     <Filter Include="Resource Files\Main Module\Invoker">
       <UniqueIdentifier>{dd188cff-bfa1-425c-8810-6e40dc36a9ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Main Module\UI\Undertale">
+      <UniqueIdentifier>{d55ca96a-1d31-4355-8064-84c485b787ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Main Module\UI\Deltarune">
+      <UniqueIdentifier>{0dbd3ba3-8197-478e-b0f7-ff1e19070618}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Main Module\UI\Underswap">
+      <UniqueIdentifier>{4dc485ea-b007-49b2-a407-864a4bf3b5bb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DllMain.cpp">
@@ -125,6 +134,15 @@
     </ClCompile>
     <ClCompile Include="src\Invoker\Invoker.cpp">
       <Filter>Resource Files\Main Module\Invoker</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\Undertale.cpp">
+      <Filter>Resource Files\Main Module\UI\Undertale</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\Deltarune.cpp">
+      <Filter>Resource Files\Main Module\UI\Deltarune</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\Underswap.cpp">
+      <Filter>Resource Files\Main Module\UI\Underswap</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
