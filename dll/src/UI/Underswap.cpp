@@ -9,7 +9,8 @@ void UI::RenderUnderswap()
     if (ImGui::Begin("Project DELTA", NULL,
         ImGuiWindowFlags_MenuBar |
         ImGuiWindowFlags_NoResize |
-        ImGuiWindowFlags_NoCollapse
+        ImGuiWindowFlags_NoCollapse |
+        ImGuiWindowFlags_NoSavedSettings
     ))
     {
         if (ImGui::BeginMenuBar())

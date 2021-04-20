@@ -19,6 +19,7 @@ namespace UI
 	void RenderUndertale();
 	void RenderDeltarune();
 	void RenderUnderswap();
+	void RenderDefault();
 
 	void Init(PDIRECT3DDEVICE9 pDX9Device);
 	void Init(ID3D11Device* pDX11Device, ID3D11DeviceContext* pContext);

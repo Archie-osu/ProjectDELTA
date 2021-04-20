@@ -102,9 +102,9 @@ void UI::Render()
     if (ImGui::BeginMainMenuBar())
     {
 #ifdef _DEBUG
-        ImGui::Text("Project DELTA v2 | Debug Version");
+        ImGui::Text("Project DELTA v2.xx | Debug Version");
 #else
-        ImGui::Text("Project DELTA v2 by Archie");
+        ImGui::Text("Project DELTA v2.01 by Archie");
 #endif
         ImGui::EndMainMenuBar();
     }
@@ -122,9 +122,55 @@ void UI::Render()
     case Core::GameType::Underswap:
         RenderUnderswap();
         break;
+    default:
+        RenderDefault();
+        break;
     }
 
     SDK::Structs::Write();
+}
+
+void UI::RenderDefault()
+{
+    ImGui::SetNextWindowSize(ImVec2(flWindowX, flWindowY));
+    if (ImGui::Begin("Project DELTA", NULL,
+        ImGuiWindowFlags_NoResize |
+        ImGuiWindowFlags_NoCollapse |
+        ImGuiWindowFlags_NoSavedSettings
+    ))
+    {
+        ImGui::Text("Could not detect the current game.");
+        ImGui::Text("If the automatic detection failed, you may select the game here.");
+        ImGui::Text("If you are not running a supported game, do not select anything.");
+
+        if (ImGui::Button("Force Undertale", ImVec2(140, 30)))
+        {
+            Core::CurrentGame = Core::GameType::Undertale;
+            SDK::Structs::Read();
+        }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("Force Deltarune", ImVec2(140, 30)))
+        {
+            Core::CurrentGame = Core::GameType::Deltarune;
+            SDK::Structs::Read();
+        }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("Force Underswap", ImVec2(140, 30)))
+        {
+            Core::CurrentGame = Core::GameType::Underswap;
+            SDK::Structs::Read();
+        }
+
+        ImGui::NewLine();
+
+        RenderInvoker();
+
+        ImGui::End();
+    }
 }
 
 void UI::RenderInvoker()

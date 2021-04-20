@@ -60,7 +60,7 @@ RValue Invoker::invoke(const char* szFuncName, std::vector<RValue> pArguments)
 void Invoker::set_var(const char* szVarName, RValue Value)
 {
 	unsigned long dwAddress;
-	RValue Result; //unused
+	RValue Result;
 
 	if (!FuncMap.contains("variable_global_set"))
 	{

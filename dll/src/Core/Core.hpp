@@ -11,7 +11,9 @@ namespace Core
 	{
 		Undertale,
 		Deltarune,
-		Underswap
+		Underswap,
+		Unknown_DX9,
+		Unknown_DX11,
 	};
 
 	inline GameType CurrentGame;
