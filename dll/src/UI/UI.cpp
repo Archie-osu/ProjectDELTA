@@ -173,6 +173,9 @@ void UI::RenderDefault()
 
         ImGui::NewLine();
 
+        if (!bInvokerWnd)
+            RenderInvoker();
+
         ImGui::End();
     }
 }
