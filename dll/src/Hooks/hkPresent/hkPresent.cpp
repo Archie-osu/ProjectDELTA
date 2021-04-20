@@ -24,7 +24,7 @@ void Hooks::Present::Init()
 
 	HRESULT ret = D3D11CreateDeviceAndSwapChain(
 		nullptr,
-		D3D_DRIVER_TYPE_REFERENCE,
+		D3D_DRIVER_TYPE_HARDWARE,
 		nullptr,
 		0,
 		nullptr,
@@ -68,7 +68,7 @@ HRESULT __stdcall Hooks::Present::hkPresent(IDXGISwapChain* pSwapchain, UINT Syn
 		ID3D11Texture2D* pBackBuffer;
 
 		if (SUCCEEDED(pSwapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer)))
-			pDevice->CreateRenderTargetView(pBackBuffer, NULL, &pTargetView);
+			 pDevice->CreateRenderTargetView(pBackBuffer, NULL, &pTargetView);
 	}
 
 	if (GetAsyncKeyState(VK_INSERT) & 1)
@@ -85,6 +85,7 @@ HRESULT __stdcall Hooks::Present::hkPresent(IDXGISwapChain* pSwapchain, UINT Syn
 		ImGui::Render();
 
 		pContext->OMSetRenderTargets(1, &pTargetView, NULL);
+
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 	}
 

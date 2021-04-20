@@ -58,7 +58,8 @@ void UI::RenderDeltarune()
                 Core::GlobalMap.at("interact") = 0.0;
             }
 
-            RenderInvoker();
+            if (!bInvokerWnd)
+                RenderInvoker();
         }
         ImGui::End();
     }

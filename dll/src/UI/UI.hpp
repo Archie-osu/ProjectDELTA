@@ -4,10 +4,11 @@
 
 namespace UI
 {
-	constexpr float flWindowX = 480.0f, flWindowY = 360.0f;
+	constexpr float flWindowX = 480.0f, flWindowY = 420.0f;
 
 	inline bool bInit = false;
 	inline bool bOpen = true;
+	inline bool bInvokerWnd = false;
 
 	inline int nTab = 0;
 

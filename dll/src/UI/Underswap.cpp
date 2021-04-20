@@ -38,7 +38,8 @@ void UI::RenderUnderswap()
                 Core::GlobalMap.at("canmove") = 1.0;
             }
 
-            RenderInvoker();
+            if (!bInvokerWnd)
+                RenderInvoker();
         }
         ImGui::End();
     }

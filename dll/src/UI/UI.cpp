@@ -6,6 +6,7 @@
 #include "../Invoker/Invoker.hpp"
 #include "../Core/Core.hpp"
 #include "../SDK/SDK.hpp"
+#include <filesystem>
 
 //Disable annoying ImGui warnings
 #pragma warning(disable : 26451) //Arithmetic overflow: Using operator '+'
@@ -104,8 +105,10 @@ void UI::Render()
 #ifdef _DEBUG
         ImGui::Text("Project DELTA v2.xx | Debug Version");
 #else
-        ImGui::Text("Project DELTA v2.01 by Archie");
+        ImGui::Text("Project DELTA v2.02 by Archie");
 #endif
+        ImGui::Checkbox("Invoker Window", &UI::bInvokerWnd);
+
         ImGui::EndMainMenuBar();
     }
 
@@ -126,6 +129,9 @@ void UI::Render()
         RenderDefault();
         break;
     }
+
+    if (bInvokerWnd)
+        RenderInvoker();
 
     SDK::Structs::Write();
 }
@@ -167,16 +173,22 @@ void UI::RenderDefault()
 
         ImGui::NewLine();
 
-        RenderInvoker();
-
         ImGui::End();
     }
 }
 
 void UI::RenderInvoker()
 {
-    //Example invoker code, has not been touched since milestone 5.
-    if (ImGui::BeginChild("ch_Invoker", ImVec2(460, 180), true))
+    static char funcName[64] = { 0 }; //Don't overflow me please :(
+    static std::vector<RValue> vArgs;
+
+    ImGui::SetNextWindowSize(ImVec2(480, 540));
+
+    if (UI::bInvokerWnd)
+        ImGui::Begin("Invoker", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoSavedSettings);
+    else
+        ImGui::BeginChild("ch_Invoker", ImVec2(460, 280), true);
+
     {
         static int nRoom = 0;
 
@@ -186,13 +198,65 @@ void UI::RenderInvoker()
         {
             Invoker::invoke("room_goto", { RValue((double)(nRoom)) });
         }
-    }
-    ImGui::EndChild();
 
+        if (ImGui::BeginChild("ch_Invoker2", ImVec2(450, bInvokerWnd ? 420 : 250), true))
+        {
+            ImGui::Text("Custom Invoker");
+
+            ImGui::InputText("Function Name", funcName, 64);
+
+            if (ImGui::Button("Add argument", ImVec2(140, 30)))
+                vArgs.push_back(RValue(nullptr));
+
+            ImGui::SameLine();
+
+            if (ImGui::Button("Remove argument", ImVec2(140, 30)) && !vArgs.empty())
+                vArgs.pop_back();
+
+            for (int i = 0; i < vArgs.size(); i++)
+            {
+                if (ImGui::BeginChild(std::string("Arg " + std::to_string(i)).c_str() , ImVec2(440, 140), true, ImGuiWindowFlags_NoScrollWithMouse))
+                {
+                    static const char* szKinds[] = { 
+                        "Real", 
+                        "String",
+                        "Array", 
+                        "Pointer", 
+                        "Vector (3D)", 
+                        "Undefined",
+                        "Object",
+                        "32-bit Integer",
+                        "Vector (4D)",
+                        "Matrix (4x4)",
+                        "64-bit Integer"
+                    };
+                    ImGui::Text("Argument %i", i);
+
+                    ImGui::InputDouble("Real Value", &vArgs.at(i).dValue, 0, 0, "%.2f");
+                    ImGui::InputInt("Integer Value", &vArgs.at(i).iValue);
+                    ImGui::Combo("Kind", &vArgs.at(i).nKind, szKinds, IM_ARRAYSIZE(szKinds));
+                }
+                ImGui::EndChild();
+            }
+
+            if (ImGui::Button("Invoke!", ImVec2(75, 30)))
+            {
+                Invoker::invoke(funcName, vArgs);
+            }
+        }
+        ImGui::EndChild();
+    }
+
+    if (UI::bInvokerWnd)
+        ImGui::End();
+    else
+        ImGui::EndChild();
 }
 
 void UI::Init(PDIRECT3DDEVICE9 pDX9Device)
 {
+    namespace fs = std::filesystem;
+
 	if (!bInit)
 	{
 		ImGui::CreateContext();
@@ -200,7 +264,12 @@ void UI::Init(PDIRECT3DDEVICE9 pDX9Device)
 		ImGui_ImplDX9_Init(pDX9Device);
 
 		ImGuiIO& curIO = ImGui::GetIO();
-		ImFont* font = curIO.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Bahnschrift.ttf", 18.0f);
+
+        auto SystemRoot = std::string(getenv("SystemRoot"));
+        if (fs::exists(SystemRoot + "\\Fonts\\bahnschrift.ttf"))
+            curIO.Fonts->AddFontFromFileTTF(std::string(SystemRoot + "\\Fonts\\bahnschrift.ttf").c_str(), 18.0F);
+        else
+            curIO.Fonts->AddFontFromFileTTF(std::string(SystemRoot + "\\Fonts\\tahoma.ttf").c_str(), 16.0F);
 
 		bInit = true;
 	}
@@ -208,6 +277,8 @@ void UI::Init(PDIRECT3DDEVICE9 pDX9Device)
 
 void UI::Init(ID3D11Device* pDX11Device, ID3D11DeviceContext* pContext)
 {
+    namespace fs = std::filesystem;
+
 	if (!bInit)
 	{
 		ImGui::CreateContext();
@@ -215,7 +286,12 @@ void UI::Init(ID3D11Device* pDX11Device, ID3D11DeviceContext* pContext)
 		ImGui_ImplDX11_Init(pDX11Device, pContext);
 
 		ImGuiIO& curIO = ImGui::GetIO();
-		ImFont* font = curIO.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Bahnschrift.ttf", 18.0f);
+        
+        auto SystemRoot = std::string(getenv("SystemRoot"));
+        if (fs::exists(SystemRoot + "\\Fonts\\bahnschrift.ttf"))
+            curIO.Fonts->AddFontFromFileTTF(std::string(SystemRoot + "\\Fonts\\bahnschrift.ttf").c_str(), 18.0F);
+        else
+            curIO.Fonts->AddFontFromFileTTF(std::string(SystemRoot + "\\Fonts\\tahoma.ttf").c_str(), 16.0F);
 
 		bInit = true;
 	}
