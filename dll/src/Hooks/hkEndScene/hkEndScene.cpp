@@ -1,79 +1,55 @@
-#include <MinHook.h>
 #include "hkEndScene.hpp"
-#include "../../UI/UI.hpp"
-#include "../ImGui/imgui_impl_dx9.h"
-#include "../ImGui/imgui_impl_win32.h"
-#include "../../SDK/Memory/Memory.hpp"
+#include "../../API/PD.hpp"
+#include "../../SDK/Hooks/HookManager.hpp"
+#include "../../SDK/Invoker/Invoker.hpp"
+#include <mutex>
 
-//Shamelessly copypasted (albeit a little changed) from Underhacks
-void Hooks::EndScene::Init()
+#include "../../../Dependencies/ImGui/imgui.h"
+#include "../../../Dependencies/ImGui/imgui_impl_dx9.h"
+#include "../../../Dependencies/ImGui/imgui_impl_win32.h"
+
+inline std::once_flag g_Init;
+
+inline HRESULT __stdcall Hooks::EndScene::Hook(LPDIRECT3DDEVICE9 lpDevice)
 {
-	IDirect3D9* pD3D = Direct3DCreate9(D3D_SDK_VERSION);
+	std::call_once(g_Init, [&]() {
+		gDelta.Invoker->Call("window_set_size", { RValue(1280.0), RValue(720.0) });
+		RValue CurrentWindow = gDelta.Invoker->Call("window_handle", {});
 
-	if (!pD3D)
-		return;
+		HWND Window = ReCa<HWND>(CurrentWindow.PointerValue);
 
-	PDIRECT3DDEVICE9 pDummyDevice = nullptr;
+		ImGui::CreateContext();
+		ImGui_ImplWin32_Init(Window);
+		ImGui_ImplDX9_Init(lpDevice);
+	});
 
-	// options to create dummy device
-	D3DPRESENT_PARAMETERS d3dpp = {};
-	d3dpp.Windowed = true;
-	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
-	d3dpp.hDeviceWindow = Memory::GetCurrentWindow();
+	auto Return = gDelta.HookManager->GetOriginal<HookFn>("hkEndScene")(lpDevice);
 
-	HRESULT dummyDeviceCreated = pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, d3dpp.hDeviceWindow, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &d3dpp, &pDummyDevice);
+	ImGui_ImplDX9_NewFrame();
+	ImGui_ImplWin32_NewFrame();
 
-	if (FAILED(dummyDeviceCreated))
-	{
-		// may fail in windowed fullscreen mode, trying again with windowed mode
-		d3dpp.Windowed = !d3dpp.Windowed;
+	ImGui::NewFrame();
+	ImGui::SetNextWindowPos(ImGui::GetCursorPos());
+	ImGui::ShowDemoWindow();
+	ImGui::EndFrame();
 
-		dummyDeviceCreated = pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, d3dpp.hDeviceWindow, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &d3dpp, &pDummyDevice);
+	ImGui::Render();
+	ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
 
-		if (FAILED(dummyDeviceCreated))
-		{
-			pD3D->Release();
-			return;
-		}
-	}
-
-	memcpy(pDummyTable, *reinterpret_cast<void***>(pDummyDevice), sizeof(pDummyTable));
-
-	pDummyDevice->Release();
-	pD3D->Release();
-
-	MH_CreateHook(reinterpret_cast<char*>(pDummyTable[42]), Hooks::EndScene::hkEndScene, reinterpret_cast<LPVOID*>(&Hooks::EndScene::pOriginal));
-	MH_EnableHook(MH_ALL_HOOKS);
+	return Return;
 }
 
-HRESULT __stdcall Hooks::EndScene::hkEndScene(PDIRECT3DDEVICE9 lpDevice)
+void Hooks::EndScene::Init()
 {
-	if (!pDevice)
-	{
-		pDevice = lpDevice;
-		UI::Init(lpDevice);
-	}
+	RValue rvD3D = gDelta.Invoker->Call("window_device", {});
 
-	lpDevice->SetRenderState(D3DRS_COLORWRITEENABLE, 0xFFFFFFFF);
+	//Visual Studio is retarded and thinks this doesn't close the app, so enjoy warnings.
+	if (!rvD3D.PointerValue) 
+		gDelta.RaiseError("Failed hooking DX9 - Device was nullptr!");
 
-	if (GetAsyncKeyState(VK_INSERT) & 1)
-		UI::bOpen = !UI::bOpen;
+	pDevice = ReCa<IDirect3DDevice9*>(rvD3D.PointerValue);
 
-	long oReturn = pOriginal(lpDevice);
+	memcpy(ppTable, *ReCa<void***>(pDevice), sizeof(ppTable));
 
-	if (UI::bOpen)
-	{
-		ImGui_ImplDX9_NewFrame();
-		ImGui_ImplWin32_NewFrame();
-		ImGui::NewFrame();
-
-		UI::Render();
-
-		ImGui::EndFrame();
-		ImGui::Render();
-
-		ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
-	}
-
-	return oReturn;
+	gDelta.HookManager->Hook("hkEndScene", ReCa<char*>(ppTable[42]), Hook);
 }

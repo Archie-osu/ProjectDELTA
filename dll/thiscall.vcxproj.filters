@@ -26,58 +26,55 @@
       <UniqueIdentifier>{23959584-acec-4156-b1ce-69e7a3ac040c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resource Files\Main Module\Core">
-      <UniqueIdentifier>{8623f2be-605a-4a72-b609-d1e8ae94711e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\Main Module\Core\Structures">
-      <UniqueIdentifier>{7cc1a994-123e-4526-985d-6be5a799e53f}</UniqueIdentifier>
+      <UniqueIdentifier>{d32e4096-185a-46d8-a5c7-bbf27e35fee8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resource Files\Main Module\SDK">
-      <UniqueIdentifier>{14fa1927-01ad-41f0-ad3e-56ce716b1b41}</UniqueIdentifier>
+      <UniqueIdentifier>{b9af9f52-1bfc-41cf-b92a-08b6ce8df265}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Main Module\SDK\Memory">
-      <UniqueIdentifier>{a4e09f96-c180-4ca0-abf9-fab90f336854}</UniqueIdentifier>
+    <Filter Include="Resource Files\Main Module\SDK\DLua">
+      <UniqueIdentifier>{6a27bdec-7fc3-40fb-831b-341c375edbe9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Main Module\SDK\DHookManager">
+      <UniqueIdentifier>{51df9ec0-d466-4021-b7c1-4e45ff8ba3a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Main Module\SDK\DCallbackManager">
+      <UniqueIdentifier>{21f5ea27-274c-4a8f-9860-67981ee1bf06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Main Module\SDK\DInvoker">
+      <UniqueIdentifier>{41b3dc84-2ba6-4163-aa1a-e1c3a7fa224f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Main Module\Structs">
+      <UniqueIdentifier>{27a4d7fc-efd0-45a7-ac13-b77fc387ba64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Main Module\Structs\GameMaker">
+      <UniqueIdentifier>{34e4cf2e-11da-495c-8ce7-d650ed600d7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Main Module\Structs\Generic">
+      <UniqueIdentifier>{59c66cb2-ca95-490a-96f7-bb27ad9fdd6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Main Module\Project Delta">
+      <UniqueIdentifier>{32ed06f9-98ea-4021-99a0-9b6106811d76}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resource Files\Main Module\Hooks">
-      <UniqueIdentifier>{9fccd96d-df1d-4824-90f6-3e9e7dd214c0}</UniqueIdentifier>
+      <UniqueIdentifier>{e26e0a17-8be1-445c-83cf-36d693da501c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Main Module\Hooks\hkPresent %28DX11%29">
-      <UniqueIdentifier>{05b40f3a-91d5-4120-97d2-9a7e3b0b58cd}</UniqueIdentifier>
+    <Filter Include="Resource Files\Main Module\Hooks\Present">
+      <UniqueIdentifier>{237d9707-4ef5-4b2f-914c-27a5bf5afe5b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Main Module\Hooks\hkEndScene %28DX9%29">
-      <UniqueIdentifier>{644c0466-ec6d-460d-9381-5110fd272cc9}</UniqueIdentifier>
+    <Filter Include="Resource Files\Main Module\Hooks\WndProc">
+      <UniqueIdentifier>{b9634059-82b4-4ba2-beda-4699cb332841}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Main Module\UI">
-      <UniqueIdentifier>{4e901ec8-9a62-49c4-9fe1-26964221ee8e}</UniqueIdentifier>
+    <Filter Include="Resource Files\Main Module\Hooks\EndScene">
+      <UniqueIdentifier>{4c69934c-7cea-4b54-8e4a-2e4334cae5e2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Main Module\Hooks\hkWndProc %28Win32%29">
-      <UniqueIdentifier>{c3a0e73c-731c-4c8e-875e-7d63554219d0}</UniqueIdentifier>
+    <Filter Include="Resource Files\Main Module\Hooks\ExecuteIt">
+      <UniqueIdentifier>{166e0856-371e-4462-a803-798879538d26}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Main Module\SDK\WndProc">
-      <UniqueIdentifier>{c45a1f5b-5f2a-494f-b57b-3099483afe4f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\Main Module\SDK\DirectX">
-      <UniqueIdentifier>{7b22df19-d974-42c6-9102-74ad3f601857}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\Main Module\SDK\Structs">
-      <UniqueIdentifier>{638c8a55-2580-4973-a481-bcdc91de26d8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\Main Module\Invoker">
-      <UniqueIdentifier>{dd188cff-bfa1-425c-8810-6e40dc36a9ee}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\Main Module\UI\Undertale">
-      <UniqueIdentifier>{d55ca96a-1d31-4355-8064-84c485b787ce}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\Main Module\UI\Deltarune">
-      <UniqueIdentifier>{0dbd3ba3-8197-478e-b0f7-ff1e19070618}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\Main Module\UI\Underswap">
-      <UniqueIdentifier>{4dc485ea-b007-49b2-a407-864a4bf3b5bb}</UniqueIdentifier>
+    <Filter Include="Resource Files\Main Module\Hooks\DrawEvent">
+      <UniqueIdentifier>{b62289b6-91f2-4127-b50f-fd96f6527c45}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DllMain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Dependencies\ImGui\imgui.cpp">
       <Filter>Resource Files\Dependencies\ImGui</Filter>
     </ClCompile>
@@ -99,50 +96,44 @@
     <ClCompile Include="Dependencies\ImGui\imgui_widgets.cpp">
       <Filter>Resource Files\Dependencies\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="src\SDK\Memory\Memory.cpp">
-      <Filter>Resource Files\Main Module\SDK\Memory</Filter>
+    <ClCompile Include="Dependencies\ImGui\imgui_impl_dx9.cpp">
+      <Filter>Resource Files\Dependencies\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Core.cpp">
       <Filter>Resource Files\Main Module\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\Hooks\hkEndScene\hkEndScene.cpp">
-      <Filter>Resource Files\Main Module\Hooks\hkEndScene %28DX9%29</Filter>
+    <ClCompile Include="src\API\PD.cpp">
+      <Filter>Resource Files\Main Module\Project Delta</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SDK\Callbacks\CallbackManager.cpp">
+      <Filter>Resource Files\Main Module\SDK\DCallbackManager</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SDK\Hooks\HookManager.cpp">
+      <Filter>Resource Files\Main Module\SDK\DHookManager</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SDK\Invoker\Invoker.cpp">
+      <Filter>Resource Files\Main Module\SDK\DInvoker</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SDK\Scripts\ScriptManager.cpp">
+      <Filter>Resource Files\Main Module\SDK\DLua</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Structs\GameMaker\RValue.cpp">
+      <Filter>Resource Files\Main Module\Structs\GameMaker</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DllMain.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Hooks\hkPresent\hkPresent.cpp">
-      <Filter>Resource Files\Main Module\Hooks\hkPresent %28DX11%29</Filter>
+      <Filter>Resource Files\Main Module\Hooks\Present</Filter>
     </ClCompile>
-    <ClCompile Include="src\UI\UI.cpp">
-      <Filter>Resource Files\Main Module\UI</Filter>
+    <ClCompile Include="src\Hooks\hkEndScene\hkEndScene.cpp">
+      <Filter>Resource Files\Main Module\Hooks\EndScene</Filter>
     </ClCompile>
-    <ClCompile Include="Dependencies\ImGui\imgui_impl_dx9.cpp">
-      <Filter>Resource Files\Dependencies\ImGui</Filter>
+    <ClCompile Include="src\Hooks\hkExecuteIt\hkExecuteIt.cpp">
+      <Filter>Resource Files\Main Module\Hooks\ExecuteIt</Filter>
     </ClCompile>
     <ClCompile Include="src\Hooks\hkWndProc\hkWndProc.cpp">
-      <Filter>Resource Files\Main Module\Hooks\hkWndProc %28Win32%29</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SDK\WndProc\WndProc.cpp">
-      <Filter>Resource Files\Main Module\SDK\WndProc</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SDK\DirectX\DirectX.cpp">
-      <Filter>Resource Files\Main Module\SDK\DirectX</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SDK\Structs\Structs.cpp">
-      <Filter>Resource Files\Main Module\SDK\Structs</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Core\Structures\RValue.cpp">
-      <Filter>Resource Files\Main Module\Core\Structures</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Invoker\Invoker.cpp">
-      <Filter>Resource Files\Main Module\Invoker</Filter>
-    </ClCompile>
-    <ClCompile Include="src\UI\Undertale.cpp">
-      <Filter>Resource Files\Main Module\UI\Undertale</Filter>
-    </ClCompile>
-    <ClCompile Include="src\UI\Deltarune.cpp">
-      <Filter>Resource Files\Main Module\UI\Deltarune</Filter>
-    </ClCompile>
-    <ClCompile Include="src\UI\Underswap.cpp">
-      <Filter>Resource Files\Main Module\UI\Underswap</Filter>
+      <Filter>Resource Files\Main Module\Hooks\WndProc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -173,56 +164,47 @@
     <ClInclude Include="Dependencies\Include\MinHook.h">
       <Filter>Resource Files\Dependencies\MinHook</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Core.hpp">
-      <Filter>Resource Files\Main Module\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SDK\Memory\Memory.hpp">
-      <Filter>Resource Files\Main Module\SDK\Memory</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SDK\SDK.hpp">
-      <Filter>Resource Files\Main Module\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Hooks\Hooks.hpp">
-      <Filter>Resource Files\Main Module\Hooks</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Hooks\hkEndScene\hkEndScene.hpp">
-      <Filter>Resource Files\Main Module\Hooks\hkEndScene %28DX9%29</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Hooks\hkPresent\hkPresent.hpp">
-      <Filter>Resource Files\Main Module\Hooks\hkPresent %28DX11%29</Filter>
-    </ClInclude>
-    <ClInclude Include="src\UI\UI.hpp">
-      <Filter>Resource Files\Main Module\UI</Filter>
-    </ClInclude>
     <ClInclude Include="Dependencies\ImGui\imgui_impl_dx9.h">
       <Filter>Resource Files\Dependencies\ImGui</Filter>
     </ClInclude>
+    <ClInclude Include="src\Structs\Generic\Math.hpp">
+      <Filter>Resource Files\Main Module\Structs\Generic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\API\PD.hpp">
+      <Filter>Resource Files\Main Module\Project Delta</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SDK\Callbacks\CallbackManager.hpp">
+      <Filter>Resource Files\Main Module\SDK\DCallbackManager</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SDK\Hooks\HookManager.hpp">
+      <Filter>Resource Files\Main Module\SDK\DHookManager</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SDK\Invoker\Invoker.hpp">
+      <Filter>Resource Files\Main Module\SDK\DInvoker</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SDK\Scripts\ScriptManager.hpp">
+      <Filter>Resource Files\Main Module\SDK\DLua</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Structs\GameMaker\RValue.hpp">
+      <Filter>Resource Files\Main Module\Structs\GameMaker</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Core.hpp">
+      <Filter>Resource Files\Main Module\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hooks\hkPresent\hkPresent.hpp">
+      <Filter>Resource Files\Main Module\Hooks\Present</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hooks\hkEndScene\hkEndScene.hpp">
+      <Filter>Resource Files\Main Module\Hooks\EndScene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hooks\hkExecuteIt\hkExecuteIt.hpp">
+      <Filter>Resource Files\Main Module\Hooks\ExecuteIt</Filter>
+    </ClInclude>
     <ClInclude Include="src\Hooks\hkWndProc\hkWndProc.hpp">
-      <Filter>Resource Files\Main Module\Hooks\hkWndProc %28Win32%29</Filter>
+      <Filter>Resource Files\Main Module\Hooks\WndProc</Filter>
     </ClInclude>
-    <ClInclude Include="src\SDK\WndProc\WndProc.hpp">
-      <Filter>Resource Files\Main Module\SDK\WndProc</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SDK\DirectX\DirectX.hpp">
-      <Filter>Resource Files\Main Module\SDK\DirectX</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SDK\Structs\Structs.hpp">
-      <Filter>Resource Files\Main Module\SDK\Structs</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Invoker\Invoker.hpp">
-      <Filter>Resource Files\Main Module\Invoker</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Core\Structures\RValue.hpp">
-      <Filter>Resource Files\Main Module\Core\Structures</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Core\Structures\Array.hpp">
-      <Filter>Resource Files\Main Module\Core\Structures</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Core\Structures\CInstance.hpp">
-      <Filter>Resource Files\Main Module\Core\Structures</Filter>
-    </ClInclude>
-    <ClInclude Include="src\UI\ImGuiFix.hpp">
-      <Filter>Resource Files\Main Module\UI</Filter>
-    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

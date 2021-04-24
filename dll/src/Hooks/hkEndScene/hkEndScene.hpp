@@ -4,14 +4,12 @@ namespace Hooks
 {
 	namespace EndScene
 	{
-		using HookFn = HRESULT(__stdcall*)(PDIRECT3DDEVICE9 pDevice);
-		inline HookFn pOriginal(nullptr);
-		inline PDIRECT3DDEVICE9 pDevice(nullptr);
+		using HookFn = HRESULT(__stdcall*)(LPDIRECT3DDEVICE9);
 
-		inline LPVOID pDummyTable[119];
+		inline LPDIRECT3DDEVICE9 pDevice;
+		inline LPVOID ppTable[119];
 
+		inline HRESULT __stdcall Hook(LPDIRECT3DDEVICE9);
 		void Init();
-
-		HRESULT __stdcall hkEndScene(PDIRECT3DDEVICE9 pDevice);
 	}
 }

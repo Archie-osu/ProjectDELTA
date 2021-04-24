@@ -4,15 +4,12 @@ namespace Hooks
 {
 	namespace Present
 	{
-		using HookFn = HRESULT(__stdcall*)(IDXGISwapChain* pSwapchain, UINT Sync, UINT Flags);
-		inline HookFn pOriginal(nullptr);
+		using HookFn = HRESULT(__stdcall*)(IDXGISwapChain*, UINT, UINT);
 
-		inline ID3D11Device* pDevice(nullptr);
-		inline ID3D11DeviceContext* pContext(nullptr);
-		inline ID3D11RenderTargetView* pTargetView(nullptr);
-
+		inline HRESULT __stdcall Hook(IDXGISwapChain* pSwapChain, UINT Sync, UINT Flags);
 		void Init();
 
-		HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapchain, UINT Sync, UINT Flags);
+		inline ID3D11RenderTargetView* pRenderView		= nullptr;
+		inline ID3D11DeviceContext* pContext			= nullptr;
 	}
 }

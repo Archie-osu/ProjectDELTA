@@ -100,7 +100,11 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Link;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>d3d9.lib;d3d11.lib;minhook.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>minhook.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
+      <AdditionalOptions>/NODEFAULTLIB:LIBCMT %(AdditionalOptions)</AdditionalOptions>
+      <LinkTimeCodeGeneration>UseFastLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -121,8 +125,11 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Link;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>d3d9.lib;d3d11.lib;minhook.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>minhook.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
+      <AdditionalOptions>/NODEFAULTLIB:LIBCMT %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -139,6 +146,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Link;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>d3d9.lib;d3d11.lib;minhook.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>PD.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -161,6 +169,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Link;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>d3d9.lib;d3d11.lib;minhook.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+      <ModuleDefinitionFile>PD.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -172,21 +181,18 @@
     <ClCompile Include="Dependencies\ImGui\imgui_impl_win32.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_tables.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_widgets.cpp" />
-    <ClCompile Include="DllMain.cpp" />
+    <ClCompile Include="src\API\PD.cpp" />
     <ClCompile Include="src\Core\Core.cpp" />
-    <ClCompile Include="src\Core\Structures\RValue.cpp" />
+    <ClCompile Include="src\DllMain.cpp" />
     <ClCompile Include="src\Hooks\hkEndScene\hkEndScene.cpp" />
+    <ClCompile Include="src\Hooks\hkExecuteIt\hkExecuteIt.cpp" />
     <ClCompile Include="src\Hooks\hkPresent\hkPresent.cpp" />
     <ClCompile Include="src\Hooks\hkWndProc\hkWndProc.cpp" />
-    <ClCompile Include="src\Invoker\Invoker.cpp" />
-    <ClCompile Include="src\SDK\DirectX\DirectX.cpp" />
-    <ClCompile Include="src\SDK\Memory\Memory.cpp" />
-    <ClCompile Include="src\SDK\Structs\Structs.cpp" />
-    <ClCompile Include="src\SDK\WndProc\WndProc.cpp" />
-    <ClCompile Include="src\UI\Deltarune.cpp" />
-    <ClCompile Include="src\UI\UI.cpp" />
-    <ClCompile Include="src\UI\Underswap.cpp" />
-    <ClCompile Include="src\UI\Undertale.cpp" />
+    <ClCompile Include="src\SDK\Callbacks\CallbackManager.cpp" />
+    <ClCompile Include="src\SDK\Hooks\HookManager.cpp" />
+    <ClCompile Include="src\SDK\Invoker\Invoker.cpp" />
+    <ClCompile Include="src\SDK\Scripts\ScriptManager.cpp" />
+    <ClCompile Include="src\Structs\GameMaker\RValue.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\ImGui\imconfig.h" />
@@ -199,22 +205,21 @@
     <ClInclude Include="Dependencies\ImGui\imstb_textedit.h" />
     <ClInclude Include="Dependencies\ImGui\imstb_truetype.h" />
     <ClInclude Include="Dependencies\Include\MinHook.h" />
+    <ClInclude Include="src\API\PD.hpp" />
     <ClInclude Include="src\Core\Core.hpp" />
-    <ClInclude Include="src\Core\Structures\Array.hpp" />
-    <ClInclude Include="src\Core\Structures\CInstance.hpp" />
-    <ClInclude Include="src\Core\Structures\RValue.hpp" />
     <ClInclude Include="src\Hooks\hkEndScene\hkEndScene.hpp" />
+    <ClInclude Include="src\Hooks\hkExecuteIt\hkExecuteIt.hpp" />
     <ClInclude Include="src\Hooks\hkPresent\hkPresent.hpp" />
     <ClInclude Include="src\Hooks\hkWndProc\hkWndProc.hpp" />
-    <ClInclude Include="src\Hooks\Hooks.hpp" />
-    <ClInclude Include="src\Invoker\Invoker.hpp" />
-    <ClInclude Include="src\SDK\DirectX\DirectX.hpp" />
-    <ClInclude Include="src\SDK\Memory\Memory.hpp" />
-    <ClInclude Include="src\SDK\SDK.hpp" />
-    <ClInclude Include="src\SDK\Structs\Structs.hpp" />
-    <ClInclude Include="src\SDK\WndProc\WndProc.hpp" />
-    <ClInclude Include="src\UI\ImGuiFix.hpp" />
-    <ClInclude Include="src\UI\UI.hpp" />
+    <ClInclude Include="src\SDK\Callbacks\CallbackManager.hpp" />
+    <ClInclude Include="src\SDK\Hooks\HookManager.hpp" />
+    <ClInclude Include="src\SDK\Invoker\Invoker.hpp" />
+    <ClInclude Include="src\SDK\Scripts\ScriptManager.hpp" />
+    <ClInclude Include="src\Structs\GameMaker\RValue.hpp" />
+    <ClInclude Include="src\Structs\Generic\Math.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
