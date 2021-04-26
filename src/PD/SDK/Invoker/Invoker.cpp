@@ -1,0 +1,68 @@
+#include "Invoker.hpp"
+#include "../Void.hpp"
+#include "../Memory Manager/Memory Manager.hpp"
+
+void CInvoker::Invoke(RValue& result, std::vector<RValue> vArgs, unsigned long Function)
+{
+	struct CInstance;
+	using fnGML = void(__cdecl*)(RValue*, CInstance*, CInstance*, int, RValue*);
+
+	fnGML func = reinterpret_cast<fnGML>(Function);
+
+	func(&result, 0, 0, vArgs.size(), vArgs.data());
+}
+
+unsigned long CInvoker::FindFunction(const char* Name)
+{
+	//This prevents stuff like draw_text() from being matched with action_draw_text
+	std::string sFunc(Name);
+	std::string sMask;
+
+	for (size_t i = 0; i <= sFunc.size(); i++)
+		sMask.push_back('x');
+
+	auto Pattern = Void.MemoryManager->PatternScan(sFunc.data(), sMask.c_str(), true);
+
+	unsigned char mem[5];
+	mem[0] = '\x68'; //Push instruction
+	memcpy(mem + 1, &Pattern, 4); //Create new pattern - push <offset>
+
+	unsigned char* dwReference = (unsigned char*)Void.MemoryManager->PatternScan(
+		(const char*)mem,
+		"xxxxx",
+		false
+	) - 4; //Get the reference to the function
+
+	return *(unsigned long*)(dwReference); //Read address
+}
+
+RValue CInvoker::Call(const char* Function, std::vector<RValue> vArgs)
+{
+	unsigned long dwAddress;
+	RValue Result;
+
+	if (!prFunctionMap.contains(Function)) //First check the function map, O(n) is better than O(n^2)!
+	{
+		//If it's not there, get the function address and put it into the map, so we won't have to search for it again.
+		dwAddress = FindFunction(Function);
+		prFunctionMap.emplace(Function, dwAddress);
+	}
+	else
+	{
+		//If it is in the function map already, just retrieve it from there, and call.
+		dwAddress = prFunctionMap.at(Function);
+	}
+	Invoke(Result, vArgs, dwAddress);
+
+	return Result;  //Finish.
+}
+
+RValue CInvoker::GetGlobal(const char* Name)
+{
+	return Call("variable_global_get", { &Name });
+}
+
+RValue CInvoker::SetGlobal(const char* Name, const RValue& Value)
+{
+	return Call("variable_global_set", { &Name, Value });
+}
