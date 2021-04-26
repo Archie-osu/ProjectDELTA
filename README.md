@@ -1,5 +1,7 @@
-# ProjectDELTA v2
+# Project DELTA v3
 Project DELTA - An open-source, modular mod menu for Toby Fox's games and their spin-offs.
+
+**Important note to Grossley: No, it's not out yet**
 
 Tested releases:
 -  UNDERTALE v1.08
@@ -9,9 +11,10 @@ Tested releases:
 Libraries used: MinHook, ImGui
 
 # TODO List (in order of importance)
-- Clean up the code
-- Add script support using Lua
-- Make a better loader, UI maybe?
+- Reimplement existing features
+- Figure out how to get a path to ExecuteIt() and ~~DrawModelExecute()~~ ExecuteDrawEvent()
+- Get Lua working
+- Release the damn thing already
 
 # FAQ
 **Q:** Where are the releases? Where can I download this tool?
