@@ -48,11 +48,11 @@ HRESULT __stdcall Hooks::Present::Hook(IDXGISwapChain* pThis, UINT Sync, UINT Fl
 	ImGui::EndFrame();
 
 	//Run original
-	auto ret = Void.HookSystem->GetOriginal<FN>("Present")(pThis, Sync, Flags);
+	auto Return = Void.HookSystem->GetOriginal<FN>("Present")(pThis, Sync, Flags);
 
 	Void.CallbackManager->Call(CCallbackManager::Types::FRAME_END, {});
 
-	return ret;
+	return Return;
 }
 
 void* Hooks::Present::GetTargetAddress()

@@ -2,6 +2,7 @@
 
 #include "../Hooks/Present/hkPresent.hpp"
 #include "../Hooks/EndScene/hkEndScene.hpp"
+#include "../Hooks/Window Proc/hkWndProc.hpp"
 
 #include <MinHook.h>
 #include <stdio.h>
@@ -32,13 +33,18 @@ void CVoid::Load()
 		if (GetModuleHandleA("d3d11.dll"))
 			Void.HookSystem->Hook("Present", Hooks::Present::GetTargetAddress(), Hooks::Present::Hook);
 
-		CallbackManager->RegisterCallback(CCallbackManager::Types::FRAME_RENDER, ReCa<CCallbackManager::PD_Routine>(UI::Render));
+		Hooks::WndProc::Init();
+	}
+
+	{
+		//Callbacks
+		Void.CallbackManager->RegisterCallback(CCallbackManager::Types::FRAME_RENDER, ReCa<CCallbackManager::PD_Routine>(UI::Render));
 	}
 }
 
 void CVoid::Unload()
 {
-	MessageBoxA(0, "Unloading", "Void Engine", MB_TOPMOST | MB_ICONINFORMATION | MB_OK);
+	SetWindowLongW(ReCa<HWND>(GetGameWindow()), GWLP_WNDPROC, ReCa<ULONG>(Hooks::WndProc::Original));
 	MH_Uninitialize();
 
 	delete this->HookSystem;
@@ -46,6 +52,7 @@ void CVoid::Unload()
 	delete this->LuaEngine;
 	delete this->CallbackManager;
 	delete this->MemoryManager;
+	Beep(500, 100);
 }
 
 bool CVoid::ShouldUnload()

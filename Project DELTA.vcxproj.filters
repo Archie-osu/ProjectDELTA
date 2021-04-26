@@ -78,6 +78,9 @@
     <ClInclude Include="src\PD\UI\UI.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\PD\Hooks\Window Proc\hkWndProc.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\PD\SDK\Void.cpp">
@@ -135,6 +138,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\PD\UI\UI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PD\Hooks\Window Proc\hkWndProc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

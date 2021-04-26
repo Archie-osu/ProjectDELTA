@@ -160,6 +160,7 @@
     <ClInclude Include="src\Dependencies\Include\MinHook.h" />
     <ClInclude Include="src\PD\Hooks\EndScene\hkEndScene.hpp" />
     <ClInclude Include="src\PD\Hooks\Present\hkPresent.hpp" />
+    <ClInclude Include="src\PD\Hooks\Window Proc\hkWndProc.hpp" />
     <ClInclude Include="src\PD\SDK\Callback Manager\Callback Manager.hpp" />
     <ClInclude Include="src\PD\SDK\Hook System\Hook System.hpp" />
     <ClInclude Include="src\PD\SDK\Invoker\Invoker.hpp" />
@@ -181,6 +182,7 @@
     <ClCompile Include="src\PD\DllMain.cpp" />
     <ClCompile Include="src\PD\Hooks\EndScene\hkEndScene.cpp" />
     <ClCompile Include="src\PD\Hooks\Present\hkPresent.cpp" />
+    <ClCompile Include="src\PD\Hooks\Window Proc\hkWndProc.cpp" />
     <ClCompile Include="src\PD\SDK\Callback Manager\Callback Manager.cpp" />
     <ClCompile Include="src\PD\SDK\Hook System\Hook System.cpp" />
     <ClCompile Include="src\PD\SDK\Invoker\Invoker.cpp" />
