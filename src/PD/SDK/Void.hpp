@@ -15,6 +15,7 @@ public:
 
 	void* GetGameWindow(); //Cast it to a HWND
 	void* GetGameDevice(); //Cast it to a D3DDevice*
+	void* GetGameContext(); //Cast it to a D3DDeviceContext*
 	bool  IsGameFullscreen();
 	void  Error(const char* Format, ...);
 	void  Warning(const char* Format, ...);

@@ -8,5 +8,7 @@ namespace Hooks
 		HRESULT WINAPI Hook(IDXGISwapChain* pThis, UINT, UINT);
 
 		void* GetTargetAddress();
+
+		inline ID3D11RenderTargetView* pView;
 	}
 }

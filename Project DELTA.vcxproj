@@ -147,6 +147,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Dependencies\Include\ImGui\imconfig.h" />
+    <ClInclude Include="src\Dependencies\Include\ImGui\imgui.h" />
+    <ClInclude Include="src\Dependencies\Include\ImGui\imgui_cpp.hpp" />
+    <ClInclude Include="src\Dependencies\Include\ImGui\imgui_impl_dx11.h" />
+    <ClInclude Include="src\Dependencies\Include\ImGui\imgui_impl_dx9.h" />
+    <ClInclude Include="src\Dependencies\Include\ImGui\imgui_impl_win32.h" />
+    <ClInclude Include="src\Dependencies\Include\ImGui\imgui_internal.h" />
+    <ClInclude Include="src\Dependencies\Include\ImGui\imstb_rectpack.h" />
+    <ClInclude Include="src\Dependencies\Include\ImGui\imstb_textedit.h" />
+    <ClInclude Include="src\Dependencies\Include\ImGui\imstb_truetype.h" />
+    <ClInclude Include="src\Dependencies\Include\MinHook.h" />
     <ClInclude Include="src\PD\Hooks\EndScene\hkEndScene.hpp" />
     <ClInclude Include="src\PD\Hooks\Present\hkPresent.hpp" />
     <ClInclude Include="src\PD\SDK\Callback Manager\Callback Manager.hpp" />
@@ -156,8 +167,17 @@
     <ClInclude Include="src\PD\SDK\Structs\Structs.hpp" />
     <ClInclude Include="src\PD\SDK\Memory Manager\Memory Manager.hpp" />
     <ClInclude Include="src\PD\SDK\Void.hpp" />
+    <ClInclude Include="src\PD\UI\UI.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Dependencies\Include\ImGui\imgui.cpp" />
+    <ClCompile Include="src\Dependencies\Include\ImGui\imgui_demo.cpp" />
+    <ClCompile Include="src\Dependencies\Include\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="src\Dependencies\Include\ImGui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="src\Dependencies\Include\ImGui\imgui_impl_dx9.cpp" />
+    <ClCompile Include="src\Dependencies\Include\ImGui\imgui_impl_win32.cpp" />
+    <ClCompile Include="src\Dependencies\Include\ImGui\imgui_tables.cpp" />
+    <ClCompile Include="src\Dependencies\Include\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="src\PD\DllMain.cpp" />
     <ClCompile Include="src\PD\Hooks\EndScene\hkEndScene.cpp" />
     <ClCompile Include="src\PD\Hooks\Present\hkPresent.cpp" />
@@ -168,6 +188,7 @@
     <ClCompile Include="src\PD\SDK\Memory Manager\Memory Manager.cpp" />
     <ClCompile Include="src\PD\SDK\Structs\Structs.cpp" />
     <ClCompile Include="src\PD\SDK\Void.cpp" />
+    <ClCompile Include="src\PD\UI\UI.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

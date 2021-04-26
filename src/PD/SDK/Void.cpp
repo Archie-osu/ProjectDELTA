@@ -13,6 +13,8 @@
 #include "Lua Engine/Lua Engine.hpp"
 #include "Memory Manager/Memory Manager.hpp"
 
+#include "../UI/UI.hpp"
+
 void CVoid::Load()
 {
 	this->HookSystem = new CHookSystem;
@@ -29,6 +31,8 @@ void CVoid::Load()
 
 		if (GetModuleHandleA("d3d11.dll"))
 			Void.HookSystem->Hook("Present", Hooks::Present::GetTargetAddress(), Hooks::Present::Hook);
+
+		CallbackManager->RegisterCallback(CCallbackManager::Types::FRAME_RENDER, ReCa<CCallbackManager::PD_Routine>(UI::Render));
 	}
 }
 
@@ -57,6 +61,16 @@ void* CVoid::GetGameWindow()
 void* CVoid::GetGameDevice()
 {
 	return Invoker->Call("window_device", {}).PointerValue;
+}
+
+void* CVoid::GetGameContext()
+{
+	ID3D11Device* pDevice = ReCa<ID3D11Device*>(GetGameDevice());
+	ID3D11DeviceContext* pContext;
+
+	pDevice->GetImmediateContext(&pContext);
+
+	return pContext;
 }
 
 bool CVoid::IsGameFullscreen()

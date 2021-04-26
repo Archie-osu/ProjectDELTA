@@ -1,11 +1,58 @@
 #include "hkPresent.hpp"
-#include "../../SDK/Invoker/Invoker.hpp"
+#include "../../SDK/Callback Manager/Callback Manager.hpp"
 #include "../../SDK/Hook System/Hook System.hpp"
 #include "../../SDK/Void.hpp"
 
+#include <ImGui/imgui_impl_win32.h>
+#include <ImGui/imgui_impl_dx11.h>
+
+#include <mutex>
+inline std::once_flag Init;
+
 HRESULT __stdcall Hooks::Present::Hook(IDXGISwapChain* pThis, UINT Sync, UINT Flags)
 {
-	return Void.HookSystem->GetOriginal<FN>("Present")(pThis, Sync, Flags);
+	Void.CallbackManager->Call(CCallbackManager::Types::FRAME_BEGIN, {});
+
+	std::call_once(Init, [&]() {
+
+		ImGui::CreateContext();
+		ImGui_ImplWin32_Init(Void.GetGameWindow());
+
+		ID3D11Device* GameDevice = ReCa<ID3D11Device*>(Void.GetGameDevice());
+		ImGui_ImplDX11_Init(GameDevice, ReCa<ID3D11DeviceContext*>(Void.GetGameContext()));
+
+		ID3D11Texture2D* pBackBuffer;
+
+		HRESULT ret = pThis->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
+
+		if (FAILED(ret))
+			Void.Error("pSwapChain->GetBuffer failed!\nReturn: %X", ret);
+
+		ret = GameDevice->CreateRenderTargetView(pBackBuffer, NULL, &pView);
+
+		if (FAILED(ret))
+			Void.Error("pDevice->CreateRenderTargetView failed!\nReturn: %X", ret);
+	});
+
+	ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
+
+	Void.CallbackManager->Call(CCallbackManager::Types::FRAME_RENDER, {});
+
+	ImGui::Render();
+
+	ReCa<ID3D11DeviceContext*>(Void.GetGameContext())->OMSetRenderTargets(1, &pView, NULL);
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+	ImGui::EndFrame();
+
+	//Run original
+	auto ret = Void.HookSystem->GetOriginal<FN>("Present")(pThis, Sync, Flags);
+
+	Void.CallbackManager->Call(CCallbackManager::Types::FRAME_END, {});
+
+	return ret;
 }
 
 void* Hooks::Present::GetTargetAddress()
