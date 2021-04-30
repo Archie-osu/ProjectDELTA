@@ -90,6 +90,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)src\Dependencies\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -190,6 +191,9 @@
     <ClCompile Include="src\PD\SDK\Memory Manager\Memory Manager.cpp" />
     <ClCompile Include="src\PD\SDK\Structs\Structs.cpp" />
     <ClCompile Include="src\PD\SDK\Void.cpp" />
+    <ClCompile Include="src\PD\UI\Game-exclusive\Deltarune.cpp" />
+    <ClCompile Include="src\PD\UI\Game-exclusive\TS_Underswap.cpp" />
+    <ClCompile Include="src\PD\UI\Game-exclusive\Undertale.cpp" />
     <ClCompile Include="src\PD\UI\UI.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

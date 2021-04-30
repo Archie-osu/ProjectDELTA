@@ -10,7 +10,13 @@ DWORD WINAPI Main(LPVOID)
 	Void.Load();
 
 	while (!Void.ShouldUnload())
+	{
+		if (GetAsyncKeyState(VK_F12))
+			Void.DumpDataToFile();
+
 		Sleep(33); //we sleepin'
+	}
+		
 
 	Void.Unload();
 	

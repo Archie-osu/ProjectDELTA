@@ -44,7 +44,15 @@ void* Hooks::EndScene::GetTargetAddress()
 	auto Device = ReCa<LPDIRECT3DDEVICE9>(Void.GetGameDevice());
 
 	if (!Device)
-		Void.Error("D3DDevice was nullptr!");
+	{
+		Void.Warning("D3DDevice was nullptr, will wait until it isn't.\nIf PD gets stuck, try restarting the game and injecting after loading in.");
+
+		while (!Device)
+		{
+			Sleep(100);
+			Device = ReCa<LPDIRECT3DDEVICE9>(Void.GetGameDevice());
+		}
+	}	
 
 	memcpy(ppTable, *ReCa<void***>(Device), sizeof(ppTable));
 

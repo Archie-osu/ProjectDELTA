@@ -49,5 +49,4 @@ void CCallbackManager::Call(Types type, std::vector<RValue*> vpArgs)
 		if (!Void.ShouldUnload())
 			ref(vpArgs);
 	}
-		
 }

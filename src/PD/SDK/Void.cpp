@@ -7,6 +7,8 @@
 #include <MinHook.h>
 #include <stdio.h>
 #include <Windows.h>
+#include <fstream>
+#include <mutex>
 
 #include "Callback Manager/Callback Manager.hpp"
 #include "Hook System/Hook System.hpp"
@@ -23,11 +25,20 @@ void CVoid::Load()
 	this->LuaEngine = new CLuaEngine;
 	this->CallbackManager = new CCallbackManager;
 	this->MemoryManager = new CMemoryManager;
+	this->lpData = 0;
+
+	{
+		//Init internals
+		this->lpData = FindGameData();
+
+		if (!lpData)
+			Void.Warning("Failed to find the data.win file\nInitializing in compatibility mode.");
+	}
 
 	MH_Initialize();
 	{
 		//Hooks
-		if (GetModuleHandleA("d3d9.dll"));
+		if (GetModuleHandleA("d3d9.dll") || GetModuleHandleA("d3d10level9.dll"))
 			Void.HookSystem->Hook("EndScene", Hooks::EndScene::GetTargetAddress(), Hooks::EndScene::Hook);
 
 		if (GetModuleHandleA("d3d11.dll"))
@@ -78,6 +89,51 @@ void* CVoid::GetGameContext()
 	pDevice->GetImmediateContext(&pContext);
 
 	return pContext;
+}
+
+void* CVoid::FindGameData()
+{
+	void* p = ReCa<void*>(MemoryManager->RegionScan(128, "\x46\x4F\x52\x4D\x00\x00\x00\x00\x47\x45\x4E\x38", "xxxx????xxxx"));
+
+	if (!p)
+	{
+		//This should never happen.
+		//cCA9IFJlQ2E8dm9pZCo+KE1lbW9yeU1hbmFnZXItPlJlZ2lvblNjYW4oNDA5NiwgIlx4MDBceDAwXHgwMFx4MDBceDAwXHgwMFx4MDBceDAwXHg0N1x4NDVceDRFXHgzOCIsICI/Pz8/Pz8/P3h4eHgiKSk7
+	}
+
+	return p;
+}
+
+void* CVoid::GetGameData()
+{
+	if (!lpData)
+		lpData = FindGameData();
+
+	return lpData;
+}
+
+
+void CVoid::DumpDataToFile()
+{
+	byte* MemoryRegion = ReCa<byte*>(GetGameData());
+	Int32 Size = *(Int32*)(MemoryRegion + 0x4) + 8;
+	char buffer[MAX_PATH];
+	GetEnvironmentVariableA("USERPROFILE", buffer, MAX_PATH);
+
+	std::ofstream file(std::string(buffer + std::string("\\dump.bin")).c_str(), std::ios::binary | std::ios::out);
+
+	if (!file.is_open())
+		Void.Error("Failed to open the dump file!");
+	
+	for (byte* addr = MemoryRegion; addr < MemoryRegion + Size; addr += 1)
+		file.write(reinterpret_cast<const char*>(addr), sizeof(byte));
+
+	Void.Warning("Dumped to file: %s\\dump.bin", buffer);
+}
+
+const char* CVoid::GetGameName()
+{
+	return ReCa<GameForm_t*>(GetGameData())->ReadString(ReCa<GameForm_t*>(GetGameData())->Gen8.DisplayNameOffset);
 }
 
 bool CVoid::IsGameFullscreen()

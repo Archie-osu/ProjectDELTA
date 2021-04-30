@@ -7,6 +7,7 @@
 #include <ImGui/imgui_impl_dx11.h>
 
 #include <mutex>
+
 inline std::once_flag Init;
 
 HRESULT __stdcall Hooks::Present::Hook(IDXGISwapChain* pThis, UINT Sync, UINT Flags)

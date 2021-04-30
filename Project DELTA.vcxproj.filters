@@ -143,5 +143,14 @@
     <ClCompile Include="src\PD\Hooks\Window Proc\hkWndProc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\PD\UI\Game-exclusive\Deltarune.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PD\UI\Game-exclusive\Undertale.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PD\UI\Game-exclusive\TS_Underswap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,4 +1,5 @@
 #pragma once
+#include <guiddef.h>
 
 enum RVKinds
 {
@@ -76,4 +77,41 @@ struct RValue
 	RValue* operator& ();
 
 	RValue& at(int index);
+};
+
+//Data.win files, everyone!
+//Shoutout to colinator27 for linking me to his awesome github repo:
+//https://github.com/colinator27/dog-scepter/blob/master/DogScepterLib/Core/Chunks/GMChunkGEN8.cs
+
+//Note: The offsets are offset from the GameForm_t base.
+struct GEN8Chunk_t
+{
+	Int32 Length;
+	bool DisableDebug;
+	char FormatID; //The bytecode version probably
+	short Unknown;
+	Int32 FileNameOffset;
+	Int32 ConfigOffset;
+	Int32 LastObjectID;
+	Int32 LastTileID;
+	Int32 GameID;
+	GUID LegacyGUID;
+	Int32 GameNameOffset;
+	Int32 Major, Minor, Release, Build;
+	Int32 DefWindowWidth, DefWindowHeight;
+	Int32 Info;
+	char MD5Hash[16];
+	Int32 CRCHash;
+	char Timestamp[8];
+	Int32 DisplayNameOffset;
+};
+
+struct GameForm_t
+{
+	char FORM[4]; //Literally has the string FORM, not null terminated.
+	Int32 FileLength; //Self-explanatory.
+	char GEN8[4];
+	GEN8Chunk_t Gen8;
+
+	const char* ReadString(unsigned long Offset);
 };

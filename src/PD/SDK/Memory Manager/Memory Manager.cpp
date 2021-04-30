@@ -3,7 +3,7 @@
 #include <Windows.h>
 #include <Psapi.h>
 
-MODULEINFO GetModuleInfo()
+MODULEINFO GetCurrentModuleInfo()
 {
 	MODULEINFO modinfo = { 0 };
 	HMODULE hModule = GetModuleHandleA(NULL);
@@ -26,7 +26,7 @@ unsigned long CMemoryManager::GetFuncAddress(const char* ModuleName, const char*
 unsigned long CMemoryManager::PatternScan(const char* Pattern, const char* Mask, bool StringMode)
 {
 	//Get all module related information
-	MODULEINFO mInfo = GetModuleInfo();
+	MODULEINFO mInfo = GetCurrentModuleInfo();
 
 	DWORD base, size;
 
@@ -56,5 +56,41 @@ unsigned long CMemoryManager::PatternScan(const char* Pattern, const char* Mask,
 			return (base + i);
 		}
 	}
+	return 0;
+}
+
+//Thanks to GuidedHacking, adapted the source code slightly.
+unsigned long CMemoryManager::RegionScan(uintptr_t MaxOffset, const char* Pattern, const char* Mask)
+{
+	MEMORY_BASIC_INFORMATION memInformation;
+	unsigned long Address = ReCa<unsigned long>(GetModuleHandleA(NULL));
+
+	while (VirtualQuery(ReCa<LPCVOID>(Address), &memInformation, sizeof(memInformation)))
+	{
+		Address += memInformation.RegionSize;
+
+		//No exceptions, please..
+		if (memInformation.Protect & PAGE_GUARD || memInformation.Protect & PAGE_NOACCESS)
+			continue;
+
+		if (!(memInformation.State & MEM_COMMIT))
+			continue;
+
+		//Check the first 256 bytes for the string FORM
+		for (unsigned i = 0; i < MaxOffset - strlen(Mask); i++)
+		{
+			bool found = true;
+			for (unsigned j = 0; j < strlen(Mask); j++)
+			{
+				//if we have a ? in our mask then we have true by default,
+				//or if the bytes match then we keep searching until finding it or not
+				found &= Mask[j] == '?' || Pattern[j] == *((char*)memInformation.BaseAddress + i + j);
+			}
+
+			if (found)
+				return ReCa<unsigned long>(ReCa<char*>(memInformation.BaseAddress) + i);
+		}
+	}
+
 	return 0;
 }

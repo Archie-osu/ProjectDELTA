@@ -5,7 +5,7 @@
 struct CVoid
 {
 private:
-	bool bAllowUnsafeFunctions = false;
+	void* lpData;
 public:
 	class CInvoker* Invoker;
 	class CHookSystem* HookSystem;
@@ -13,9 +13,13 @@ public:
 	class CCallbackManager* CallbackManager;
 	class CMemoryManager* MemoryManager;
 
-	void* GetGameWindow(); //Cast it to a HWND
-	void* GetGameDevice(); //Cast it to a D3DDevice*
-	void* GetGameContext(); //Cast it to a D3DDeviceContext*
+	void* GetGameWindow(); //HWND
+	void* GetGameDevice(); //D3DDevice*
+	void* GetGameContext(); //D3DDeviceContext* (DX11 only)
+	void* FindGameData(); //GameForm_t*
+	void* GetGameData(); //GameForm_t*, utilizes the cached variable, USE THIS INSTEAD OF FINDGAMEDATA!
+	const char* GetGameName();
+	void  DumpDataToFile();
 	bool  IsGameFullscreen();
 	void  Error(const char* Format, ...);
 	void  Warning(const char* Format, ...);
