@@ -4,6 +4,9 @@
 
 #include "../SDK/Void.hpp"
 #include "../SDK/Structs/Structs.hpp"
+#include <mutex>
+
+std::once_flag DisplayedWarning;
 
 bool stricontains(const std::string& String, const std::string& ToFind)
 {
@@ -23,7 +26,9 @@ void UI::Render(std::vector<RValue*>)
 {
     UI::ApplyStyle();
 
-	std::string BaseTitle = "Project DELTA Alpha Build - ";
+    ShowGameWarning();
+
+	std::string BaseTitle = "Project DELTA Beta Build - ";
 	auto GameForm = (GameForm_t*)Void.GetGameData();
 
     if (GameForm)
@@ -40,7 +45,7 @@ void UI::Render(std::vector<RValue*>)
     {
         if (ImGui::BeginMainMenuBar())
         {
-            ImGui::Text("Project DELTA Alpha Build - Compatibility Mode");
+            ImGui::Text("Project DELTA Beta Build - Compatibility Mode");
             ImGui::EndMainMenuBar();
         }
     }
@@ -150,4 +155,26 @@ void UI::ApplyStyle()
     colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.00f, 1.00f, 1.00f, 0.70f);
     colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
     colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
+}
+
+void UI::ShowGameWarning()
+{
+    static bool Warned = false;
+
+    if (!Warned)
+        ImGui::OpenPopup("PD - Warning");
+
+    ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+    if (ImGui::BeginPopupModal("PD - Warning", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+    {
+        ImGui::Text("Using Project DELTA online may get you banned.\nUse at your own risk!\n\n");
+        ImGui::Separator();
+
+        if (ImGui::Button("I accept the risk", ImVec2(120, 0))) { Warned = true; ImGui::CloseCurrentPopup(); }
+        ImGui::SetItemDefaultFocus();
+        ImGui::SameLine();
+        if (ImGui::Button("Close game", ImVec2(120, 0))) { exit(0); }
+        ImGui::EndPopup();
+    }
 }

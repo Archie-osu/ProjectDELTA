@@ -10,6 +10,23 @@
 
 inline std::once_flag Init;
 
+void CreateRenderTargetView(IDXGISwapChain* pThis, ID3D11Device* GameDevice, ID3D11RenderTargetView** pView)
+{
+	ID3D11Texture2D* pBackBuffer;
+
+	HRESULT ret = pThis->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
+
+	if (FAILED(ret))
+		Void.Error("pSwapChain->GetBuffer failed!\nReturn: %X", ret);
+
+	ret = GameDevice->CreateRenderTargetView(pBackBuffer, NULL, pView);
+
+	if (FAILED(ret))
+		Void.Error("pDevice->CreateRenderTargetView failed!\nReturn: %X", ret);
+
+	pBackBuffer->Release();
+}
+
 HRESULT __stdcall Hooks::Present::Hook(IDXGISwapChain* pThis, UINT Sync, UINT Flags)
 {
 	Void.CallbackManager->Call(CCallbackManager::Types::FRAME_BEGIN, {});
@@ -22,33 +39,62 @@ HRESULT __stdcall Hooks::Present::Hook(IDXGISwapChain* pThis, UINT Sync, UINT Fl
 		ID3D11Device* GameDevice = ReCa<ID3D11Device*>(Void.GetGameDevice());
 		ImGui_ImplDX11_Init(GameDevice, ReCa<ID3D11DeviceContext*>(Void.GetGameContext()));
 
-		ID3D11Texture2D* pBackBuffer;
+		//char Systemroot[MAX_PATH] = { 0 };
+		//GetEnvironmentVariableA("SystemRoot", Systemroot, MAX_PATH);
 
-		HRESULT ret = pThis->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
+		//std::string Path = Systemroot; Path.append("\\Fonts\\verdana.ttf");
 
-		if (FAILED(ret))
-			Void.Error("pSwapChain->GetBuffer failed!\nReturn: %X", ret);
+		//Void.Warning("Expected Font Path: %s\nCheck if it's correct please.", Path.c_str());
 
-		ret = GameDevice->CreateRenderTargetView(pBackBuffer, NULL, &pView);
+		ImGuiIO& Io = ImGui::GetIO();
 
-		if (FAILED(ret))
-			Void.Error("pDevice->CreateRenderTargetView failed!\nReturn: %X", ret);
+		//Io.Fonts->AddFontFromFileTTF(Path.c_str(), 16.0f);
+
+		ImFont* p = Io.Fonts->AddFontDefault();
+
+		if (!p)
+			Void.Error("pFont == nullptr");
+
+		Void.Warning("Io.Fonts->IsBuilt() before Io.Build(): %i", Io.Fonts->IsBuilt());
+
+		Io.Fonts->Build();
+
+		Void.Warning("Io.Fonts->IsBuilt() after Io.Build(): %i", Io.Fonts->IsBuilt());
+
+		CreateRenderTargetView(pThis, GameDevice, &pView);
 	});
 
 	ImGui_ImplDX11_NewFrame();
+	Void.Warning("Io.Fonts->IsBuilt() after ImplDX11_NewFrame(): %i", ImGui::GetIO().Fonts->IsBuilt());
 	ImGui_ImplWin32_NewFrame();
+	Void.Warning("Io.Fonts->IsBuilt() after ImplWin32_NewFrame(): %i", ImGui::GetIO().Fonts->IsBuilt());
 	ImGui::NewFrame();
+	Void.Warning("Io.Fonts->IsBuilt() after NewFrame(): %i", ImGui::GetIO().Fonts->IsBuilt());
 
 	Void.CallbackManager->Call(CCallbackManager::Types::FRAME_RENDER, {});
 
 	ImGui::Render();
 
+	Void.Warning("Render()");
+
 	ReCa<ID3D11DeviceContext*>(Void.GetGameContext())->OMSetRenderTargets(1, &pView, NULL);
-	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+	Void.Warning("OMSetRenderTargets(1, %p, 0)", &pView);
+
+	auto DrawData = ImGui::GetDrawData();
+
+	Void.Warning("DrawData: %p", DrawData);
+
+	ImGui_ImplDX11_RenderDrawData(DrawData);
+
+	Void.Warning("ImplDX11_RenderDrawData()");
 
 	ImGui::EndFrame();
 
+	Void.Warning("EndFrame()");
+
 	//Run original
+	Void.Warning("Present() finished.");
 	auto Return = Void.HookSystem->GetOriginal<FN>("Present")(pThis, Sync, Flags);
 
 	Void.CallbackManager->Call(CCallbackManager::Types::FRAME_END, {});
@@ -72,30 +118,41 @@ void* Hooks::Present::GetTargetAddress()
 
 	desc.BufferCount = 1;
 	desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	desc.BufferDesc = { 800, 600, {60, 1}, DXGI_FORMAT_R8G8B8A8_UNORM };
+	desc.BufferDesc = { 0, 0, {60, 1}, DXGI_FORMAT_R8G8B8A8_UNORM };
 
 	HWND Window = ReCa<HWND>(Void.GetGameWindow());
 
 	desc.OutputWindow = Window;
 	desc.Windowed = !Void.IsGameFullscreen();
+	desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 	desc.SampleDesc = { 1, 0 };
 	desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+
+	UINT createDeviceFlags = 0;
+	//createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
+
+	D3D_FEATURE_LEVEL featureLevel;
+	const D3D_FEATURE_LEVEL featureLevelArray[6] = { D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_1, D3D_FEATURE_LEVEL_10_0, D3D_FEATURE_LEVEL_9_3, D3D_FEATURE_LEVEL_9_2, D3D_FEATURE_LEVEL_9_1};
+
 
 	IDXGISwapChain* pSwapChain = nullptr;
 
 	auto ret = pD3D11CreateDeviceAndSwapChain(
 		nullptr,
-		D3D_DRIVER_TYPE_HARDWARE,
-		nullptr, 0, nullptr, 0,
+		D3D_DRIVER_TYPE_NULL,
+		nullptr,
+		createDeviceFlags, 
+		featureLevelArray,
+		6,
 		D3D11_SDK_VERSION,
 		&desc,
 		&pSwapChain,
 		&pDevice,
-		nullptr,
+		&featureLevel,
 		&pContext
 	);
 
-	if (FAILED(ret))
+	if (ret != S_OK)
 		Void.Error("D3D11CreateDeviceAndSwapChain failed!\nReturn: 0x%X", ret);
 
 	//These two should never be hit, but as colinator27 said: Given gamemaker has like 1000 silent crashes/segfaults right now I'll take any nullptr checks

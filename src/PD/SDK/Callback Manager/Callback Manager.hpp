@@ -19,7 +19,7 @@ public:
 		DRAW_END, //After calling original
 
 		VMEXEC_BEGIN, //Before the VM executes any script
-		VMEXEC_END //After the VM executes the script
+		VMEXEC_END, //After the VM executes the script
 	};
 
 	CCallbackManager();

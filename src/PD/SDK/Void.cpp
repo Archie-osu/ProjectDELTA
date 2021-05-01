@@ -38,7 +38,7 @@ void CVoid::Load()
 	MH_Initialize();
 	{
 		//Hooks
-		if (GetModuleHandleA("d3d9.dll") || GetModuleHandleA("d3d10level9.dll"))
+		if (GetModuleHandleA("d3d9.dll"))
 			Void.HookSystem->Hook("EndScene", Hooks::EndScene::GetTargetAddress(), Hooks::EndScene::Hook);
 
 		if (GetModuleHandleA("d3d11.dll"))
