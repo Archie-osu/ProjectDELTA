@@ -15,8 +15,7 @@ DWORD WINAPI Main(LPVOID)
 			Void.DumpDataToFile();
 
 		Sleep(33); //we sleepin'
-	}
-		
+	}	
 
 	Void.Unload();
 	

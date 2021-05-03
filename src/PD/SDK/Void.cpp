@@ -3,6 +3,7 @@
 #include "../Hooks/Present/hkPresent.hpp"
 #include "../Hooks/EndScene/hkEndScene.hpp"
 #include "../Hooks/Window Proc/hkWndProc.hpp"
+#include "../Hooks/ExecuteIt/hkExecuteIt.hpp"
 
 #include <MinHook.h>
 #include <stdio.h>
@@ -43,6 +44,11 @@ void CVoid::Load()
 
 		if (GetModuleHandleA("d3d11.dll"))
 			Void.HookSystem->Hook("Present", Hooks::Present::GetTargetAddress(), Hooks::Present::Hook);
+
+		void* p = Hooks::ExecuteIt::GetTargetAddress();
+
+		if (p)
+			Void.HookSystem->Hook("ExecuteIt", p, Hooks::ExecuteIt::Hook);
 
 		Hooks::WndProc::Init();
 	}

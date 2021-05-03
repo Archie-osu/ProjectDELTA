@@ -160,6 +160,7 @@
     <ClInclude Include="src\Dependencies\Include\ImGui\imstb_truetype.h" />
     <ClInclude Include="src\Dependencies\Include\MinHook.h" />
     <ClInclude Include="src\PD\Hooks\EndScene\hkEndScene.hpp" />
+    <ClInclude Include="src\PD\Hooks\ExecuteIt\hkExecuteIt.hpp" />
     <ClInclude Include="src\PD\Hooks\Present\hkPresent.hpp" />
     <ClInclude Include="src\PD\Hooks\Window Proc\hkWndProc.hpp" />
     <ClInclude Include="src\PD\SDK\Callback Manager\Callback Manager.hpp" />
@@ -182,6 +183,7 @@
     <ClCompile Include="src\Dependencies\Include\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="src\PD\DllMain.cpp" />
     <ClCompile Include="src\PD\Hooks\EndScene\hkEndScene.cpp" />
+    <ClCompile Include="src\PD\Hooks\ExecuteIt\hkExecuteIt.cpp" />
     <ClCompile Include="src\PD\Hooks\Present\hkPresent.cpp" />
     <ClCompile Include="src\PD\Hooks\Window Proc\hkWndProc.cpp" />
     <ClCompile Include="src\PD\SDK\Callback Manager\Callback Manager.cpp" />

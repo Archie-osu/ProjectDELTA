@@ -1,5 +1,6 @@
 #pragma once
 #include <guiddef.h>
+#include <stdint.h>
 
 enum RVKinds
 {
@@ -115,3 +116,114 @@ struct GameForm_t
 
 	const char* ReadString(unsigned long Offset);
 };
+
+enum eGML_TYPE : __int32
+{
+	eGMLT_NONE = 0x0,
+	eGMLT_ERROR = (-65536),
+	eGMLT_DOUBLE = 0x1,
+	eGMLT_STRING = 0x2,
+	eGMLT_INT32 = 0x4,
+};
+
+struct RToken
+{
+	int kind;
+	eGML_TYPE type;
+	int ind;
+	int ind2;
+	RValue value;
+	int itemnumb;
+	RToken* items;
+	int position;
+};
+
+struct VMBuffer
+{
+	int m_size;
+	int m_numLocalVarsUsed;
+	int m_numArguments;
+	const uint8_t* m_pBuffer;
+	void** m_pConvertedBuffer;
+	int* m_pJumpBuffer;
+};
+
+struct CInstance;
+
+struct CCode
+{
+	CCode* m_pNext;
+	int i_kind;
+	bool i_compiled;
+	const char* i_str;
+	RToken i_token;
+	RValue i_value;
+	VMBuffer* i_pVM;
+	VMBuffer* i_pVMDebugInfo;
+	char* i_pCode;
+	const char* i_pName;
+	int i_CodeIndex;
+	void* i_pFunc;
+	bool i_watch;
+	int i_offset;
+	int i_locals;
+	int i_args;
+	int i_flags;
+	void* i_pPrototype;
+};
+
+/*
+struct CInstance : public YYObjectBase
+{
+	int64 m_CreateCounter;
+	CObjectGM *m_pObject;
+	CPhysicsObject *m_pPhysicsObject;
+	CSkeletonInstance *m_pSkeletonAnimation;
+	CSequenceInstance *m_pControllingSeqInst;
+	unsigned int m_Instflags;
+	int i_id;
+	int i_objectindex;
+	int i_spriteindex;
+	float i_sequencePos;
+	float i_lastSequencePos;
+	float i_sequenceDir;
+	float i_imageindex;
+	float i_imagespeed;
+	float i_imagescalex;
+	float i_imagescaley;
+	float i_imageangle;
+	float i_imagealpha;
+	unsigned int i_imageblend;
+	float i_x;
+	float i_y;
+	float i_xstart;
+	float i_ystart;
+	float i_xprevious;
+	float i_yprevious;
+	float i_direction;
+	float i_speed;
+	float i_friction;
+	float i_gravitydir;
+	float i_gravity;
+	float i_hspeed;
+	float i_vspeed;
+	YYRECT i_bbox;
+	int i_timer[12];
+	cInstancePathAndTimeline *m_pPathAndTimeline;
+	CCode *i_initcode;
+	CCode *i_precreatecode;
+	CObjectGM *m_pOldObject;
+	int m_nLayerID;
+	int i_maskindex;
+	__int16 m_nMouseOver;
+	CInstance *m_pNext;
+	CInstance *m_pPrev;
+	SLink m_collisionLink;
+	SLink m_dirtyLink;
+	SLink m_withLink;
+	float i_depth;
+	float i_currentdepth;
+	float i_lastImageNumber;
+	unsigned int m_collisionTestNumber;
+};
+*/

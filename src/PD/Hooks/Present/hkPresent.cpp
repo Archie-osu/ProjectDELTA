@@ -39,62 +39,41 @@ HRESULT __stdcall Hooks::Present::Hook(IDXGISwapChain* pThis, UINT Sync, UINT Fl
 		ID3D11Device* GameDevice = ReCa<ID3D11Device*>(Void.GetGameDevice());
 		ImGui_ImplDX11_Init(GameDevice, ReCa<ID3D11DeviceContext*>(Void.GetGameContext()));
 
-		//char Systemroot[MAX_PATH] = { 0 };
-		//GetEnvironmentVariableA("SystemRoot", Systemroot, MAX_PATH);
+		char Systemroot[MAX_PATH] = { 0 };
+		GetEnvironmentVariableA("SystemRoot", Systemroot, MAX_PATH);
 
-		//std::string Path = Systemroot; Path.append("\\Fonts\\verdana.ttf");
+		std::string Path = Systemroot; Path.append("\\Fonts\\verdana.ttf");
 
-		//Void.Warning("Expected Font Path: %s\nCheck if it's correct please.", Path.c_str());
+		Void.Warning("Expected Font Path: %s\nCheck if it's correct please.", Path.c_str());
 
 		ImGuiIO& Io = ImGui::GetIO();
 
-		//Io.Fonts->AddFontFromFileTTF(Path.c_str(), 16.0f);
-
-		ImFont* p = Io.Fonts->AddFontDefault();
+		auto p = Io.Fonts->AddFontFromFileTTF(Path.c_str(), 16.0f);
 
 		if (!p)
 			Void.Error("pFont == nullptr");
-
-		Void.Warning("Io.Fonts->IsBuilt() before Io.Build(): %i", Io.Fonts->IsBuilt());
-
-		Io.Fonts->Build();
-
-		Void.Warning("Io.Fonts->IsBuilt() after Io.Build(): %i", Io.Fonts->IsBuilt());
 
 		CreateRenderTargetView(pThis, GameDevice, &pView);
 	});
 
 	ImGui_ImplDX11_NewFrame();
-	Void.Warning("Io.Fonts->IsBuilt() after ImplDX11_NewFrame(): %i", ImGui::GetIO().Fonts->IsBuilt());
 	ImGui_ImplWin32_NewFrame();
-	Void.Warning("Io.Fonts->IsBuilt() after ImplWin32_NewFrame(): %i", ImGui::GetIO().Fonts->IsBuilt());
 	ImGui::NewFrame();
-	Void.Warning("Io.Fonts->IsBuilt() after NewFrame(): %i", ImGui::GetIO().Fonts->IsBuilt());
-
 	Void.CallbackManager->Call(CCallbackManager::Types::FRAME_RENDER, {});
 
 	ImGui::Render();
 
-	Void.Warning("Render()");
-
 	ReCa<ID3D11DeviceContext*>(Void.GetGameContext())->OMSetRenderTargets(1, &pView, NULL);
-
-	Void.Warning("OMSetRenderTargets(1, %p, 0)", &pView);
 
 	auto DrawData = ImGui::GetDrawData();
 
-	Void.Warning("DrawData: %p", DrawData);
+	if (!DrawData)
+		Void.Error("DrawData was nullptr!");
 
 	ImGui_ImplDX11_RenderDrawData(DrawData);
-
-	Void.Warning("ImplDX11_RenderDrawData()");
-
 	ImGui::EndFrame();
 
-	Void.Warning("EndFrame()");
-
 	//Run original
-	Void.Warning("Present() finished.");
 	auto Return = Void.HookSystem->GetOriginal<FN>("Present")(pThis, Sync, Flags);
 
 	Void.CallbackManager->Call(CCallbackManager::Types::FRAME_END, {});

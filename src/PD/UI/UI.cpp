@@ -4,9 +4,7 @@
 
 #include "../SDK/Void.hpp"
 #include "../SDK/Structs/Structs.hpp"
-#include <mutex>
-
-std::once_flag DisplayedWarning;
+#include "../SDK/Invoker/Invoker.hpp"
 
 bool stricontains(const std::string& String, const std::string& ToFind)
 {
@@ -72,6 +70,8 @@ void UI::Render(std::vector<RValue*>)
 void UI::Default()
 {
     ImGui::Text("Example text for an unrecognized game.");
+    if (ImGui::Button("Click me", ImVec2(50, 30)))
+        Void.Invoker->Call("room_goto_next", {});
 }
 
 void UI::ApplyStyle()
