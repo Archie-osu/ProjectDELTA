@@ -2,6 +2,14 @@
 #include <guiddef.h>
 #include <stdint.h>
 
+enum OSFlavors //mmm, tasty
+{
+	OSF_Windows = 1,
+	OSF_UnixBased = 2,
+	OSF_PlayStation = 4,
+	OSF_Switch = 5
+};
+
 enum RVKinds
 {
 	RV_Real,
@@ -74,6 +82,8 @@ struct RValue
 	RValue(RStringRef* Value);
 
 	RValue(const char** Value);
+
+	RValue(void* Value);
 
 	RValue* operator& ();
 

@@ -4,8 +4,8 @@ namespace Hooks
 {
 	namespace ExecuteIt
 	{
-		using FN = void(__cdecl*)(CInstance*, CInstance*, CCode*, RValue*);
-		void __cdecl Hook(CInstance* Self, CInstance* Other, CCode* pCode, RValue* pArgs);
+		using FN = bool(__cdecl*)(CInstance*, CInstance*, CCode*, RValue*);
+		bool __cdecl Hook(CInstance* Self, CInstance* Other, CCode* pCode, RValue* pArgs);
 
 		void* GetTargetAddress();
 	}

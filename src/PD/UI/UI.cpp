@@ -5,6 +5,7 @@
 #include "../SDK/Void.hpp"
 #include "../SDK/Structs/Structs.hpp"
 #include "../SDK/Invoker/Invoker.hpp"
+#include "../SDK/Lua Engine/Lua Engine.hpp"
 
 bool stricontains(const std::string& String, const std::string& ToFind)
 {
@@ -20,8 +21,11 @@ bool stricontains(const std::string& String, const std::string& ToFind)
     return (LowerString.find(LowerToFind) != std::string::npos);
 }
 
-void UI::Render(std::vector<RValue*>)
+void UI::Render(std::vector<prRValue*>)
 {
+    if (!bOpen)
+        return;
+
     UI::ApplyStyle();
 
     ShowGameWarning();
@@ -48,9 +52,9 @@ void UI::Render(std::vector<RValue*>)
         }
     }
 
-    ImGui::SetNextWindowSizeConstraints(ImVec2(256, 144), ImVec2(512, 288)); //16:9
+    ImGui::SetNextWindowSizeConstraints(ImVec2(256, 144), ImVec2(512, 380)); //16:9 kinda
 
-	if (ImGui::Begin("Project DELTA v3"))
+	if (ImGui::Begin("Project DELTA v3", nullptr, ImGuiWindowFlags_NoSavedSettings))
 	{
         if (stricontains(BaseTitle, "SURVEY_PROGRAM"))
             Deltarune();
@@ -63,6 +67,8 @@ void UI::Render(std::vector<RValue*>)
 
         else
             Default();
+
+        LuaConsole.Render();
 	}
     ImGui::End();
 }
@@ -70,8 +76,6 @@ void UI::Render(std::vector<RValue*>)
 void UI::Default()
 {
     ImGui::Text("Example text for an unrecognized game.");
-    if (ImGui::Button("Click me", ImVec2(50, 30)))
-        Void.Invoker->Call("room_goto_next", {});
 }
 
 void UI::ApplyStyle()
@@ -177,4 +181,49 @@ void UI::ShowGameWarning()
         if (ImGui::Button("Close game", ImVec2(120, 0))) { exit(0); }
         ImGui::EndPopup();
     }
+}
+
+void CLuaConsole::ExecuteCommand(std::string Command)
+{
+    if (Command.starts_with("dbg-echo ") && Command.length() > 10)
+    {
+        Echo(std::string(Command.begin() + 9, Command.end()));
+    }
+    else
+    {
+        std::string ErrorMsg = Void.LuaEngine->RunScript(Command);
+        if (!ErrorMsg.empty())
+            Echo(ErrorMsg);
+    }   
+}
+
+void CLuaConsole::Echo(std::string text)
+{
+    this->Text.append(text); this->Text.push_back('\n');
+}
+
+void CLuaConsole::Render()
+{
+    ImGui::SetNextWindowSize(ImVec2(310, 320));
+
+    if (ImGui::Begin("PD Console", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse))
+    {
+        ImGui::Text("Console output");
+        if (ImGui::BeginChildFrame(0xFFFC, ImVec2(290, 120)))
+        {
+            ImGui::TextWrapped(this->Text.c_str());
+        }
+        ImGui::EndChildFrame();
+
+        ImGui::Text("Command input");
+        ImGui::InputTextMultiline("##TEST", Buffer, 512, ImVec2(290, 80));
+        if (ImGui::Button("Run Script", ImVec2(140, 30)))
+            ExecuteCommand(std::string(Buffer));
+
+        ImGui::SameLine();
+        
+        if (ImGui::Button("Clear console", ImVec2(140, 30)))
+            this->Text.clear();
+    }
+    ImGui::End();
 }

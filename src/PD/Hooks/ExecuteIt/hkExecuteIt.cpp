@@ -2,15 +2,19 @@
 #include "../../SDK/Void.hpp"
 #include "../../SDK/Hook System/Hook System.hpp"
 #include "../../SDK/Memory Manager/Memory Manager.hpp"
+#include "../../SDK/Callback Manager/Callback Manager.hpp"
 
-void __cdecl Hooks::ExecuteIt::Hook(CInstance* Self, CInstance* Other, CCode* pCode, RValue* pArgs)
+bool __cdecl Hooks::ExecuteIt::Hook(CInstance* Self, CInstance* Other, CCode* pCode, RValue* pArgs)
 {
-	return Void.HookSystem->GetOriginal<FN>("ExecuteIt")(Self, Other, pCode, pArgs);
+	Void.CallbackManager->Call(CCallbackManager::Types::VMEXEC_BEGIN, { Self, Other, pCode, pArgs });
+	auto ret = Void.HookSystem->GetOriginal<FN>("ExecuteIt")(Self, Other, pCode, pArgs);
+	Void.CallbackManager->Call(CCallbackManager::Types::VMEXEC_END, { Self, Other, pCode, pArgs });
+
+	return ret;
 }
 
-uint8_t CalculateStackMovement(uint32_t base)
+uint8_t NormalizeHook(uint32_t base)
 {
-	//THAT'S A LOT OF CHAR ARRAYS
 	constexpr char sub_esp_8[] = { "\x83\xEC\x08" };
 
 	if (memcmp(ReCa<void*>(base - 3), sub_esp_8, 3) == 0)
@@ -35,7 +39,7 @@ void* Hooks::ExecuteIt::GetTargetAddress()
 		return nullptr;
 	}
 		
-	p -= CalculateStackMovement(p);
+	p -= NormalizeHook(p);
 
 	return ReCa<void*>(p);
 }

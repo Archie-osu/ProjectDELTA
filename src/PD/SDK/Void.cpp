@@ -45,10 +45,10 @@ void CVoid::Load()
 		if (GetModuleHandleA("d3d11.dll"))
 			Void.HookSystem->Hook("Present", Hooks::Present::GetTargetAddress(), Hooks::Present::Hook);
 
-		void* p = Hooks::ExecuteIt::GetTargetAddress();
+		void* lpExecuteIt = Hooks::ExecuteIt::GetTargetAddress();
 
-		if (p)
-			Void.HookSystem->Hook("ExecuteIt", p, Hooks::ExecuteIt::Hook);
+		if (lpExecuteIt)
+			Void.HookSystem->Hook("ExecuteIt", lpExecuteIt, Hooks::ExecuteIt::Hook);
 
 		Hooks::WndProc::Init();
 	}
@@ -57,12 +57,48 @@ void CVoid::Load()
 		//Callbacks
 		Void.CallbackManager->RegisterCallback(CCallbackManager::Types::FRAME_RENDER, ReCa<CCallbackManager::PD_Routine>(UI::Render));
 	}
+	
+	{
+		//Expose Lua Functions
+		auto& state = this->LuaEngine->GetState();
+		state.open_libraries();
+		state.new_usertype<RValue>("RValue", "RealValue", &RValue::DoubleValue, "Kind", &RValue::Kind);
+
+		state.set_function("call_fn", [](std::string String, sol::variadic_args va) 
+		{
+			std::vector<RValue> vecRv;
+
+			for (auto arg : va)
+			{
+				RValue rv = arg.as<RValue>();
+				vecRv.push_back(rv);
+			}
+
+			Void.Invoker->Call(String.c_str(), vecRv);
+		});
+
+		state.set_function("create_obj", [](std::string ObjName, double X, double Y) 
+		{
+			Void.Invoker->CreateObject(ObjName.c_str(), X, Y);
+		});
+
+		state.set_function("set_global", [](std::string Name, RValue Val)
+		{
+			Void.Invoker->SetGlobal(Name.c_str(), Val);
+		});
+	}
 }
 
+//This is fucking retarded and crashes for whatever reason sometimes idfk why
 void CVoid::Unload()
 {
 	SetWindowLongW(ReCa<HWND>(GetGameWindow()), GWLP_WNDPROC, ReCa<ULONG>(Hooks::WndProc::Original));
+	MH_QueueDisableHook(MH_ALL_HOOKS);
+	Sleep(100); //Wait for stuff to unhook
+	this->HookSystem->UnhookAll();
+
 	MH_Uninitialize();
+	FreeConsole();
 
 	delete this->HookSystem;
 	delete this->Invoker;
@@ -74,7 +110,7 @@ void CVoid::Unload()
 
 bool CVoid::ShouldUnload()
 {
-	return GetAsyncKeyState(VK_F10);
+	return GetAsyncKeyState(VK_END);
 }
 
 void* CVoid::GetGameWindow()

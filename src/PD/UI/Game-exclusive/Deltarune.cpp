@@ -5,15 +5,35 @@
 
 void UI::Deltarune()
 {
-	static double RVX, RVY;
+	RValue glHP = Void.Invoker->GetGlobal("hp");
+	RValue glGold = Void.Invoker->GetGlobal("gold");
 
-	ImGui::InputDouble("X", &RVX);
-	ImGui::InputDouble("Y", &RVY);
+    if (ImGui::BeginChild("ch_Kris", ImVec2(320, 100), true, 0))
+    {
+        ImGui::Text("Kris");
+        ImGui::SliderDouble("HP", &glHP.at(1).DoubleValue, 0, 120, "%.0f", 1.0f);
+        ImGui::SliderDouble("Max HP", &glHP.at(1).DoubleValue, 0, 120, "%.0f", 1.0f);
+    }
+    ImGui::EndChild();
 
-	if (ImGui::Button("Apply", ImVec2(60, 30)))
-	{
-		Void.Invoker->Call("window_set_size", { RVX, RVY });
-	}
+    if (ImGui::BeginChild("ch_Ralsei", ImVec2(320, 100), true, 0))
+    {
+        ImGui::Text("Ralsei");
+        ImGui::SliderDouble("HP", &glHP.at(3).DoubleValue, 0, 120, "%.0f", 1.0f);
+        ImGui::SliderDouble("Max HP", &glHP.at(3).DoubleValue, 0, 120, "%.0f", 1.0f);
+    }
+    ImGui::EndChild();
 
-	ImGui::ShowDemoWindow();
+    if (ImGui::BeginChild("ch_Susie", ImVec2(320, 100), true, 0))
+    {
+        ImGui::Text("Susie");
+        ImGui::SliderDouble("HP", &glHP.at(2).DoubleValue, 0, 120, "%.0f", 1.0f);
+        ImGui::SliderDouble("Max HP", &glHP.at(2).DoubleValue, 0, 120, "%.0f", 1.0f);
+    }
+    ImGui::EndChild();
+
+    ImGui::SliderDouble("Money", &glGold.DoubleValue, 0, 1000, "%.0f", 1.0f);
+
+    Void.Invoker->SetGlobal("hp", glHP);
+    Void.Invoker->SetGlobal("gold", glGold);
 }

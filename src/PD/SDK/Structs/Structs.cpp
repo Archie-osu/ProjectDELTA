@@ -5,7 +5,7 @@ RValue& RValue::at(int index)
 	if (this->Kind == RV_Array)
 		if (this->ArrayValue)
 			if (this->ArrayValue->pArray)
-				return reinterpret_cast<RValue&>(this->ArrayValue->pArray[index]);
+				return reinterpret_cast<RValue&>(this->ArrayValue->pArray->pArray[index]);
 
 	return *this;
 }
@@ -32,6 +32,12 @@ RValue::RValue(const char** Value)
 {
 	this->Kind = RV_String;
 	this->ppCharValue = Value;
+}
+
+RValue::RValue(void* Value)
+{
+	this->Kind = RV_Pointer;
+	this->PointerValue = Value;
 }
 
 RValue::RValue(RStringRef* Value)

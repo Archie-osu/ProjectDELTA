@@ -6,6 +6,8 @@
 #include <ImGui/imgui_impl_win32.h>
 #include <ImGui/imgui_impl_dx11.h>
 
+#include "../../UI/UI.hpp"
+
 #include <mutex>
 
 inline std::once_flag Init;
@@ -44,8 +46,6 @@ HRESULT __stdcall Hooks::Present::Hook(IDXGISwapChain* pThis, UINT Sync, UINT Fl
 
 		std::string Path = Systemroot; Path.append("\\Fonts\\verdana.ttf");
 
-		Void.Warning("Expected Font Path: %s\nCheck if it's correct please.", Path.c_str());
-
 		ImGuiIO& Io = ImGui::GetIO();
 
 		auto p = Io.Fonts->AddFontFromFileTTF(Path.c_str(), 16.0f);
@@ -55,6 +55,9 @@ HRESULT __stdcall Hooks::Present::Hook(IDXGISwapChain* pThis, UINT Sync, UINT Fl
 
 		CreateRenderTargetView(pThis, GameDevice, &pView);
 	});
+
+	if (GetAsyncKeyState(VK_INSERT) & 1)
+		UI::bOpen = !UI::bOpen;
 
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();

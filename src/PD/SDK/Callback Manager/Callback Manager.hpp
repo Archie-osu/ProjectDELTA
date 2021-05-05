@@ -7,7 +7,8 @@ class CCallbackManager
 {
 public:
 	struct RValue;
-	using PD_Routine = void(__cdecl*)(std::vector<RValue*>);
+
+	using PD_Routine = void(__cdecl*)(std::vector<void*>);
 
 	enum class Types : int
 	{
@@ -27,7 +28,7 @@ public:
 	void RegisterCallback(Types type, PD_Routine Routine);
 	void UnregisterCallback(Types type, PD_Routine Routine);
 	void UnregisterAllCallbacks();
-	void Call(Types type, std::vector<RValue*> vpArgs);
+	void Call(Types type, std::vector<void*> vpArgs);
 private:
 	std::map<Types, std::forward_list<PD_Routine>> Callbacks;
 };

@@ -39,7 +39,7 @@ void CCallbackManager::UnregisterAllCallbacks()
 	Callbacks.clear();
 }
 
-void CCallbackManager::Call(Types type, std::vector<RValue*> vpArgs)
+void CCallbackManager::Call(Types type, std::vector<void*> vpArgs)
 {
 	if (!Callbacks.contains(type))
 		Void.Error("Attempted to call invalid type %d!", StCa<int>(type));

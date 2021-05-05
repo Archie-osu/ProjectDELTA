@@ -59,6 +59,30 @@ unsigned long CMemoryManager::PatternScan(const char* Pattern, const char* Mask,
 	return 0;
 }
 
+unsigned long CMemoryManager::OffsetScan(uintptr_t Base, uintptr_t MaxOffset, const char* Pattern, const char* Mask)
+{
+	//Get length for our mask, this will allow us to loop through our array
+	DWORD patternLength = strlen(Mask);
+
+	for (unsigned i = 0; i < MaxOffset - patternLength; i++)
+	{
+		bool found = true;
+		for (DWORD j = 0; j < patternLength; j++)
+		{
+			//if we have a ? in our mask then we have true by default,
+			//or if the bytes match then we keep searching until finding it or not
+			found &= Mask[j] == '?' || Pattern[j] == *(char*)(Base + i + j);
+		}
+
+		//found = true, our entire pattern was found
+		if (found)
+		{
+			return (Base + i);
+		}
+	}
+	return 0;
+}
+
 //Thanks to GuidedHacking, adapted the source code slightly.
 unsigned long CMemoryManager::RegionScan(uintptr_t MaxOffset, const char* Pattern, const char* Mask)
 {
@@ -76,7 +100,6 @@ unsigned long CMemoryManager::RegionScan(uintptr_t MaxOffset, const char* Patter
 		if (!(memInformation.State & MEM_COMMIT))
 			continue;
 
-		//Check the first 256 bytes for the string FORM
 		for (unsigned i = 0; i < MaxOffset - strlen(Mask); i++)
 		{
 			bool found = true;

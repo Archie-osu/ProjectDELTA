@@ -8,6 +8,8 @@
 
 #include "../../SDK/Callback Manager/Callback Manager.hpp"
 
+#include "../../UI/UI.hpp"
+
 inline std::once_flag Init;
 HRESULT WINAPI Hooks::EndScene::Hook(LPDIRECT3DDEVICE9 lpDevice)
 {
@@ -17,9 +19,24 @@ HRESULT WINAPI Hooks::EndScene::Hook(LPDIRECT3DDEVICE9 lpDevice)
 		ImGui::CreateContext();
 		ImGui_ImplWin32_Init(Void.GetGameWindow());
 		ImGui_ImplDX9_Init(lpDevice);
+
+		char Systemroot[MAX_PATH] = { 0 };
+		GetEnvironmentVariableA("SystemRoot", Systemroot, MAX_PATH);
+
+		std::string Path = Systemroot; Path.append("\\Fonts\\verdana.ttf");
+
+		ImGuiIO& Io = ImGui::GetIO();
+
+		auto p = Io.Fonts->AddFontFromFileTTF(Path.c_str(), 16.0f);
+
+		if (!p)
+			Void.Error("pFont == nullptr");
 	});
 
 	auto Return = Void.HookSystem->GetOriginal<FN>("EndScene")(lpDevice);
+
+	if (GetAsyncKeyState(VK_INSERT) & 1)
+		UI::bOpen = !UI::bOpen;
 
 	ImGui_ImplDX9_NewFrame();
 	ImGui_ImplWin32_NewFrame();

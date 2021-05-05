@@ -1,12 +1,17 @@
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #include "SDK/Void.hpp"
+#include <stdio.h>
 
 #define DLL_EXPORT extern "C" __declspec(dllexport)
 HMODULE g_hDLL = nullptr;
 
 DWORD WINAPI Main(LPVOID)
 {
+	AllocConsole();
+	FILE* dum;
+	freopen_s(&dum, "CONOUT$", "w", stdout);
+
 	Void.Load();
 
 	while (!Void.ShouldUnload())

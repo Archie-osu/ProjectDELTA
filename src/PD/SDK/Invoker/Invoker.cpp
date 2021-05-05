@@ -41,6 +41,9 @@ RValue CInvoker::Call(const char* Function, std::vector<RValue> vArgs)
 	unsigned long dwAddress;
 	RValue Result;
 
+	if (Void.ShouldUnload())
+		return Result; //Don't care what get's returned, just stop.
+
 	if (!prFunctionMap.contains(Function)) //First check the function map, O(n) is better than O(n^2)!
 	{
 		//If it's not there, get the function address and put it into the map, so we won't have to search for it again.
@@ -65,4 +68,35 @@ RValue CInvoker::GetGlobal(const char* Name)
 RValue CInvoker::SetGlobal(const char* Name, const RValue& Value)
 {
 	return Call("variable_global_set", { &Name, Value });
+}
+
+RValue CInvoker::CreateObject(const char* Name, double PosX, double PosY)
+{ 
+	char LocalName[260]; strcpy_s<260>(LocalName, Name);
+	const char* tmp = LocalName;
+	const char** tmp2 = &tmp;
+
+	//I'd rather set these manually
+	RValue tmpVal; tmpVal.ppCharValue = tmp2; tmpVal.Kind = RV_String;
+
+	RValue rvAssetID = Call("asset_get_index", { tmpVal });
+	return Call("instance_create", { PosX, PosY, rvAssetID });
+}
+
+RValue CInvoker::CallSpoofed(const char* Function, std::vector<RValue> vArgs, OSFlavors Flavor)
+{
+	RValue oFlavor = GetGlobal("osflavor");
+	SetGlobal("osflavor", StCa<double>(Flavor));
+	auto Return = Call(Function, vArgs);
+	SetGlobal("osflavor", oFlavor);
+	return Return;
+}
+
+RValue CInvoker::CreateObjectSpoofed(const char* Name, double PosX, double PosY, OSFlavors Flavor)
+{
+	RValue oFlavor = GetGlobal("osflavor");
+	SetGlobal("osflavor", StCa<double>(Flavor));
+	auto Return = CreateObject(Name, PosX, PosY);
+	SetGlobal("osflavor", oFlavor);
+	return Return;
 }
