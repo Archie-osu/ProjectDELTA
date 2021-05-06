@@ -5,9 +5,12 @@ namespace UI
 {
 	struct prRValue;
 	inline bool bOpen = true;
+	inline bool bNoMovementInMenu = true;
+	inline bool bUseExperimentalSig = false;
 	void Render(std::vector<prRValue*>);
 	void ApplyStyle();
 	void ShowGameWarning();
+	void DrawMainMenuBar(); //Only returns true if we're unloading
 
 	void Deltarune();
 	void Undertale();

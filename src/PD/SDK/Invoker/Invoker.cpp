@@ -41,9 +41,6 @@ RValue CInvoker::Call(const char* Function, std::vector<RValue> vArgs)
 	unsigned long dwAddress;
 	RValue Result;
 
-	if (Void.ShouldUnload())
-		return Result; //Don't care what get's returned, just stop.
-
 	if (!prFunctionMap.contains(Function)) //First check the function map, O(n) is better than O(n^2)!
 	{
 		//If it's not there, get the function address and put it into the map, so we won't have to search for it again.

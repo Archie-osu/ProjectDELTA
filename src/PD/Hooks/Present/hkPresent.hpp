@@ -10,5 +10,6 @@ namespace Hooks
 		void* GetTargetAddress();
 
 		inline ID3D11RenderTargetView* pView;
+		inline ID3D11Device* pDevice;
 	}
 }

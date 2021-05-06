@@ -44,6 +44,9 @@ void CCallbackManager::Call(Types type, std::vector<void*> vpArgs)
 	if (!Callbacks.contains(type))
 		Void.Error("Attempted to call invalid type %d!", StCa<int>(type));
 
+	if (Void.ShouldUnload())
+		return;
+
 	for (auto ref : Callbacks.at(type))
 	{
 		if (!Void.ShouldUnload())

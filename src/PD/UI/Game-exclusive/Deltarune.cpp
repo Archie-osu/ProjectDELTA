@@ -8,6 +8,8 @@ void UI::Deltarune()
 	RValue glHP = Void.Invoker->GetGlobal("hp");
 	RValue glGold = Void.Invoker->GetGlobal("gold");
 
+    ImGui::ShowDemoWindow();
+
     if (ImGui::BeginChild("ch_Kris", ImVec2(320, 100), true, 0))
     {
         ImGui::Text("Kris");

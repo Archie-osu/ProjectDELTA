@@ -15,8 +15,18 @@ void* CHookSystem::Hook(const char* lpFuncName, void* lpTarget, void* lpDetour)
 	Info.Origin = lpOriginal;
 
 	if (prHookMap.contains(std::string(lpFuncName)))
+	{
+		if (prHookMap.at(std::string(lpFuncName)).Unhooked)
+		{
+			MH_EnableHook(lpTarget);
+			prHookMap.at(std::string(lpFuncName)).Unhooked = false;
+			prHookMap.at(std::string(lpFuncName)).Origin = lpOriginal;
+			return lpOriginal;
+		}
+		
 		Void.Error("Hook %s already registered!", lpFuncName);
-
+	}
+	
 	//Cache the hook
 	prHookMap.try_emplace(std::string(lpFuncName), Info);
 
@@ -40,12 +50,11 @@ void CHookSystem::Unhook(const char* lpFuncName)
 	MH_DisableHook(prHookMap.at(sFunction).Target);
 	MH_RemoveHook(prHookMap.at(sFunction).Target);
 
-	prHookMap.erase(sFunction);
+	prHookMap.at(sFunction).Unhooked = true;
 }
 
 void CHookSystem::UnhookAll()
 {
-	for (auto entry : prHookMap)
+	for (auto& entry : prHookMap)
 		this->Unhook(entry.first.c_str());
-	prHookMap.clear();
 }

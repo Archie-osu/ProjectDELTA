@@ -8,6 +8,7 @@ class CHookSystem
 		void* Target;
 		void* Detour;
 		void* Origin;
+		bool  Unhooked;
 	};
 
 	std::map<std::string, HookInfo_t> prHookMap;

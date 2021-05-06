@@ -12,22 +12,22 @@ enum OSFlavors //mmm, tasty
 
 enum RVKinds
 {
-	RV_Real,
-	RV_String,
-	RV_Array,
-	RV_Pointer,
-	RV_Vector3,
-	RV_Undefined,
-	RV_Object,
-	RV_Int32,
-	RV_Vector4,
-	RV_Matrix4x4,
-	RV_Int64,
-	RV_Accessor,
-	RV_JSNull,
-	RV_Bool,
-	RV_Iterator,
-	RV_Reference,
+	RV_Real = 0,
+	RV_String = 1,
+	RV_Array = 2,
+	RV_Pointer = 3,
+	RV_Vector3 = 4,
+	RV_Undefined = 5,
+	RV_Object = 6,
+	RV_Int32 = 7,
+	RV_Vector4 = 8,
+	RV_Matrix4x4 = 9,
+	RV_Int64 = 10,
+	RV_Accessor = 11,
+	RV_JSNull = 12,
+	RV_Bool = 13,
+	RV_Iterator = 14,
+	RV_Reference = 15,
 	RV_Unset = 0xFFFFFF
 };
 

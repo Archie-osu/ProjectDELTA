@@ -160,6 +160,7 @@
     <ClInclude Include="src\Dependencies\Include\ImGui\imstb_rectpack.h" />
     <ClInclude Include="src\Dependencies\Include\ImGui\imstb_textedit.h" />
     <ClInclude Include="src\Dependencies\Include\ImGui\imstb_truetype.h" />
+    <ClInclude Include="src\Dependencies\Include\ImGui\TextEditor.hpp" />
     <ClInclude Include="src\Dependencies\Include\lauxlib.h" />
     <ClInclude Include="src\Dependencies\Include\lua.h" />
     <ClInclude Include="src\Dependencies\Include\lua.hpp" />
@@ -191,6 +192,7 @@
     <ClCompile Include="src\Dependencies\Include\ImGui\imgui_impl_win32.cpp" />
     <ClCompile Include="src\Dependencies\Include\ImGui\imgui_tables.cpp" />
     <ClCompile Include="src\Dependencies\Include\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="src\Dependencies\Include\ImGui\TextEditor.cpp" />
     <ClCompile Include="src\PD\DllMain.cpp" />
     <ClCompile Include="src\PD\Hooks\EndScene\hkEndScene.cpp" />
     <ClCompile Include="src\PD\Hooks\ExecuteIt\hkExecuteIt.cpp" />

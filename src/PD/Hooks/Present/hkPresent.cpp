@@ -34,46 +34,56 @@ HRESULT __stdcall Hooks::Present::Hook(IDXGISwapChain* pThis, UINT Sync, UINT Fl
 	Void.CallbackManager->Call(CCallbackManager::Types::FRAME_BEGIN, {});
 
 	std::call_once(Init, [&]() {
+		ID3D11DeviceContext* pContext = nullptr;
+		ImFont* pFont = nullptr;
+		HWND gmHWND = nullptr;
+		char SystemRoot[MAX_PATH];
+
+		pDevice = ReCa<ID3D11Device*>(Void.GetGameDevice());
+		
+		if (!pDevice)
+			Void.Error("[D3D11 Init] Failed to get the game device (null pointer)!");
+
+		pDevice->GetImmediateContext(&pContext);
+
+		if (!pContext)
+			Void.Error("[D3D11 Init] Failed to get the devices' context (null pointer)!");
+
+		gmHWND = ReCa<HWND>(Void.GetGameWindow());
 
 		ImGui::CreateContext();
-		ImGui_ImplWin32_Init(Void.GetGameWindow());
 
-		ID3D11Device* GameDevice = ReCa<ID3D11Device*>(Void.GetGameDevice());
-		ImGui_ImplDX11_Init(GameDevice, ReCa<ID3D11DeviceContext*>(Void.GetGameContext()));
+		ImGui_ImplWin32_Init(gmHWND);
+		ImGui_ImplDX11_Init(pDevice, pContext);
 
-		char Systemroot[MAX_PATH] = { 0 };
-		GetEnvironmentVariableA("SystemRoot", Systemroot, MAX_PATH);
+		GetEnvironmentVariableA("SystemRoot", SystemRoot, MAX_PATH);
 
-		std::string Path = Systemroot; Path.append("\\Fonts\\verdana.ttf");
+		std::string Path = SystemRoot; Path.append("\\Fonts\\verdana.ttf");
 
-		ImGuiIO& Io = ImGui::GetIO();
+		pFont = ImGui::GetIO().Fonts->AddFontFromFileTTF(Path.c_str(), 16.0f);
 
-		auto p = Io.Fonts->AddFontFromFileTTF(Path.c_str(), 16.0f);
+		if (!pFont)
+			Void.Error("[D3D11 Init] Failed to get the Font handle (null pointer!)");
 
-		if (!p)
-			Void.Error("pFont == nullptr");
-
-		CreateRenderTargetView(pThis, GameDevice, &pView);
+		CreateRenderTargetView(pThis, pDevice, &pView);
 	});
 
 	if (GetAsyncKeyState(VK_INSERT) & 1)
 		UI::bOpen = !UI::bOpen;
 
+	ID3D11DeviceContext* pContext = nullptr;
+	pDevice->GetImmediateContext(&pContext);
+
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+
 	Void.CallbackManager->Call(CCallbackManager::Types::FRAME_RENDER, {});
 
 	ImGui::Render();
 
-	ReCa<ID3D11DeviceContext*>(Void.GetGameContext())->OMSetRenderTargets(1, &pView, NULL);
-
-	auto DrawData = ImGui::GetDrawData();
-
-	if (!DrawData)
-		Void.Error("DrawData was nullptr!");
-
-	ImGui_ImplDX11_RenderDrawData(DrawData);
+	pContext->OMSetRenderTargets(1, &pView, nullptr);
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 	ImGui::EndFrame();
 
 	//Run original
@@ -115,7 +125,6 @@ void* Hooks::Present::GetTargetAddress()
 
 	D3D_FEATURE_LEVEL featureLevel;
 	const D3D_FEATURE_LEVEL featureLevelArray[6] = { D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_1, D3D_FEATURE_LEVEL_10_0, D3D_FEATURE_LEVEL_9_3, D3D_FEATURE_LEVEL_9_2, D3D_FEATURE_LEVEL_9_1};
-
 
 	IDXGISwapChain* pSwapChain = nullptr;
 

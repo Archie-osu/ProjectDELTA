@@ -58,11 +58,37 @@ void CVoid::Load()
 		Void.CallbackManager->RegisterCallback(CCallbackManager::Types::FRAME_RENDER, ReCa<CCallbackManager::PD_Routine>(UI::Render));
 	}
 	
+	
 	{
 		//Expose Lua Functions
 		auto& state = this->LuaEngine->GetState();
 		state.open_libraries();
-		state.new_usertype<RValue>("RValue", "RealValue", &RValue::DoubleValue, "Kind", &RValue::Kind);
+
+		sol::constructors<
+			RValue(),
+			RValue(double),
+			RValue(Int32),
+			RValue(Int64)>
+		ConstrList;
+
+		state.new_enum("yykind",
+			"real",
+			RVKinds::RV_Real,
+			"int32",
+			RVKinds::RV_Int32,
+			"array",
+			RVKinds::RV_Array,
+			"int64",
+			RVKinds::RV_Int64,
+			"string",
+			RVKinds::RV_String,
+			"undefined",
+			RVKinds::RV_Undefined,
+			"unset",
+			RVKinds::RV_Unset
+		);
+
+		sol::usertype<RValue> yyValue = state.new_usertype<RValue>("yyvalue", ConstrList, "kind", &RValue::Kind, "realval", &RValue::DoubleValue, "i32val", &RValue::Int32Value, "i64val", &RValue::Int64Value);
 
 		state.set_function("call_fn", [](std::string String, sol::variadic_args va) 
 		{
@@ -74,28 +100,70 @@ void CVoid::Load()
 				vecRv.push_back(rv);
 			}
 
-			Void.Invoker->Call(String.c_str(), vecRv);
+			return Void.Invoker->Call(String.c_str(), vecRv);
 		});
 
 		state.set_function("create_obj", [](std::string ObjName, double X, double Y) 
 		{
-			Void.Invoker->CreateObject(ObjName.c_str(), X, Y);
+			return Void.Invoker->CreateObject(ObjName.c_str(), X, Y);
 		});
 
 		state.set_function("set_global", [](std::string Name, RValue Val)
 		{
 			Void.Invoker->SetGlobal(Name.c_str(), Val);
 		});
+
+		state.set_function("get_global", [](std::string Name)
+		{
+			return Void.Invoker->GetGlobal(Name.c_str());
+		});
+
+		state.set_function("get_obj_id", [](std::string Name)
+		{
+			const char* szString = Name.c_str();
+			RValue rv(&szString);
+			return Void.Invoker->Call("asset_get_index", { rv }).DoubleValue;
+		});
+
+		state.set_function("get_obj_instances", [](double Object)
+		{
+			std::vector<RValue> ret;
+			RValue rvTotalInstances = Void.Invoker->Call("instance_number", { Object });
+
+			int TotalInstances = rvTotalInstances.DoubleValue;
+
+			for (int i = 0; i < TotalInstances; i++)
+				ret.push_back(Void.Invoker->Call("instance_find", { Object, RValue((double)(i)) }));
+
+			return ret;
+		});
+
+		state.set_function("array_get_element", [](RValue Value, int index)
+		{
+			return Value.at(index);
+		});
+
+		state.set_function("array_set_element", [](RValue Array, int index, RValue Value)
+		{
+			Array.at(index) = Value;
+		});
+
+		state.set_function("array_get_size", [](RValue Value)
+		{
+			if (Value.ArrayValue && Value.Kind == RVKinds::RV_Array)
+				if (Value.ArrayValue->pArray)
+					return Value.ArrayValue->pArray->nArrayLength;
+			return -1;
+		});
 	}
 }
 
-//This is fucking retarded and crashes for whatever reason sometimes idfk why
 void CVoid::Unload()
 {
 	SetWindowLongW(ReCa<HWND>(GetGameWindow()), GWLP_WNDPROC, ReCa<ULONG>(Hooks::WndProc::Original));
-	MH_QueueDisableHook(MH_ALL_HOOKS);
+	
+	Void.HookSystem->UnhookAll();
 	Sleep(100); //Wait for stuff to unhook
-	this->HookSystem->UnhookAll();
 
 	MH_Uninitialize();
 	FreeConsole();
@@ -137,10 +205,10 @@ void* CVoid::FindGameData()
 {
 	void* p = ReCa<void*>(MemoryManager->RegionScan(128, "\x46\x4F\x52\x4D\x00\x00\x00\x00\x47\x45\x4E\x38", "xxxx????xxxx"));
 
-	if (!p)
+	if (!p && UI::bUseExperimentalSig)
 	{
 		//This should never happen.
-		//cCA9IFJlQ2E8dm9pZCo+KE1lbW9yeU1hbmFnZXItPlJlZ2lvblNjYW4oNDA5NiwgIlx4MDBceDAwXHgwMFx4MDBceDAwXHgwMFx4MDBceDAwXHg0N1x4NDVceDRFXHgzOCIsICI/Pz8/Pz8/P3h4eHgiKSk7
+		p = ReCa<void*>(MemoryManager->RegionScan(4096, "\x00\x00\x00\x00\x00\x00\x00\x00\x47\x45\x4E\x38", "????????xxxx"));
 	}
 
 	return p;

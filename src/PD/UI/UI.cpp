@@ -7,6 +7,8 @@
 #include "../SDK/Invoker/Invoker.hpp"
 #include "../SDK/Lua Engine/Lua Engine.hpp"
 
+#include <ImGui/TextEditor.hpp>
+
 bool stricontains(const std::string& String, const std::string& ToFind)
 {
     std::string LowerString;
@@ -34,27 +36,13 @@ void UI::Render(std::vector<prRValue*>)
 	auto GameForm = (GameForm_t*)Void.GetGameData();
 
     if (GameForm)
-    {
         BaseTitle.append(GameForm->ReadString(GameForm->Gen8.DisplayNameOffset));
 
-        if (ImGui::BeginMainMenuBar())
-        {
-            ImGui::Text(BaseTitle.c_str());
-            ImGui::EndMainMenuBar();
-        }
-    }
-    else
-    {
-        if (ImGui::BeginMainMenuBar())
-        {
-            ImGui::Text("Project DELTA Beta Build - Compatibility Mode");
-            ImGui::EndMainMenuBar();
-        }
-    }
+    DrawMainMenuBar();
 
     ImGui::SetNextWindowSizeConstraints(ImVec2(256, 144), ImVec2(512, 380)); //16:9 kinda
 
-	if (ImGui::Begin("Project DELTA v3", nullptr, ImGuiWindowFlags_NoSavedSettings))
+	if (ImGui::Begin("Project DELTA v3", nullptr, ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse))
 	{
         if (stricontains(BaseTitle, "SURVEY_PROGRAM"))
             Deltarune();
@@ -183,6 +171,34 @@ void UI::ShowGameWarning()
     }
 }
 
+void UI::DrawMainMenuBar()
+{
+    ImGui::BeginMainMenuBar();
+
+    if (ImGui::BeginMenu("Tool"))
+    {
+        if (ImGui::BeginMenu("Settings"))
+        {
+            ImGui::Checkbox("Disable Menu Movement", &UI::bNoMovementInMenu);
+            ImGui::EndMenu();
+        };
+
+        if (ImGui::BeginMenu("Debug"))
+        {
+            ImGui::Text("data.win base: %p", Void.GetGameData());
+            ImGui::Text("device: %p", Void.GetGameDevice());
+            ImGui::Checkbox("Use experimental sig", &UI::bUseExperimentalSig);
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMenu();
+    }
+
+    ImGui::Text("Project DELTA v3 (b2)");
+
+    ImGui::EndMainMenuBar();
+}
+
 void CLuaConsole::ExecuteCommand(std::string Command)
 {
     if (Command.starts_with("dbg-echo ") && Command.length() > 10)
@@ -204,21 +220,54 @@ void CLuaConsole::Echo(std::string text)
 
 void CLuaConsole::Render()
 {
-    ImGui::SetNextWindowSize(ImVec2(310, 320));
+    ImGui::SetNextWindowSize(ImVec2(420, 420));
 
     if (ImGui::Begin("PD Console", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse))
     {
+        static TextEditor Editor;
+        Editor.SetShowWhitespaces(false);
+
         ImGui::Text("Console output");
-        if (ImGui::BeginChildFrame(0xFFFC, ImVec2(290, 120)))
-        {
+        if (ImGui::BeginChildFrame(0xFFFC, ImVec2(400, 120)))
             ImGui::TextWrapped(this->Text.c_str());
-        }
+
         ImGui::EndChildFrame();
 
         ImGui::Text("Command input");
-        ImGui::InputTextMultiline("##TEST", Buffer, 512, ImVec2(290, 80));
+        {
+            auto Language = TextEditor::LanguageDefinition::Lua();
+
+            std::vector<std::string> szAPINames = { "yyvalue", "create_obj", "get_global", "set_global", "call_fn", "get_obj_id", "get_obj_instances", "array_get_element", "array_get_size", "array_set_element" };
+            std::vector<std::string> szAPIDecls =
+            {
+                "A generic data value",
+                "Create an instance of an object\ncreate_obj(Name, PosX, PosY)\nReturn value: Instance ID of the created object (YYValue)",
+                "Get a game global\nget_global(Name)\nReturn value: Value of the global (YYValue)",
+                "Set a game global\nset_global(Name, Value)\nReturn value: None",
+                "Call a GML Function\ncall_fn(Name, ...)\nArguments variable, see GML reference.\nReturn value: Whatever the GML function returns (YYValue).",
+                "Get the master ID of a given asset\nget_obj_id(Name)\nReturn value: The master ID (native Lua number).",
+                "Get all instances of a given object\nget_obj_instances(Master ID)\nReturn value: All instances (Lua-style array of YYValues)\nRemarks: Using array_get_element on Lua-style arrays is unsupported. Use for loops.",
+                "Get an element of a GML-style YYValue array\narray_get_element(Value, Index)\nReturn value: Element at the given index (starts at 1).\nRemarks: Use array_get_size to get the size of the array.",
+                "Get a size of a GML-style YYValue array\narray_get_size(YYValue)\nReturn value: -1 if the array isn't valid, otherwise a non-zero native number.\nRemarks: Only use this function on GML-style arrays!",
+                "Set an element of a GML-style YYValue array\narray_set_element(Array, Index, Value)\nReturn value: None",
+            };
+
+            for (int n = 0; n < szAPINames.size(); n++)
+            {
+                TextEditor::Identifier id;
+                id.mDeclaration = szAPIDecls[n];
+                Language.mIdentifiers.insert(std::make_pair(szAPINames[n], id));
+            }
+
+            Editor.SetLanguageDefinition(Language);
+            
+            Editor.Render("ConIn", ImVec2(400, 160), true);
+        }
+
+        ImGui::NewLine();
+
         if (ImGui::Button("Run Script", ImVec2(140, 30)))
-            ExecuteCommand(std::string(Buffer));
+            ExecuteCommand(Editor.GetText());
 
         ImGui::SameLine();
         
