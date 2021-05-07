@@ -34,6 +34,8 @@ void CVoid::Load()
 
 		if (!lpData)
 			Void.Warning("Failed to find the data.win file\nInitializing in compatibility mode.");
+
+		LuaEngine->Init();
 	}
 
 	MH_Initialize();
@@ -56,105 +58,6 @@ void CVoid::Load()
 	{
 		//Callbacks
 		Void.CallbackManager->RegisterCallback(CCallbackManager::Types::FRAME_RENDER, ReCa<CCallbackManager::PD_Routine>(UI::Render));
-	}
-	
-	
-	{
-		//Expose Lua Functions
-		auto& state = this->LuaEngine->GetState();
-		state.open_libraries();
-
-		sol::constructors<
-			RValue(),
-			RValue(double),
-			RValue(Int32),
-			RValue(Int64)>
-		ConstrList;
-
-		state.new_enum("yykind",
-			"real",
-			RVKinds::RV_Real,
-			"int32",
-			RVKinds::RV_Int32,
-			"array",
-			RVKinds::RV_Array,
-			"int64",
-			RVKinds::RV_Int64,
-			"string",
-			RVKinds::RV_String,
-			"undefined",
-			RVKinds::RV_Undefined,
-			"unset",
-			RVKinds::RV_Unset
-		);
-
-		sol::usertype<RValue> yyValue = state.new_usertype<RValue>("yyvalue", ConstrList, "kind", &RValue::Kind, "realval", &RValue::DoubleValue, "i32val", &RValue::Int32Value, "i64val", &RValue::Int64Value);
-
-		state.set_function("call_fn", [](std::string String, sol::variadic_args va) 
-		{
-			std::vector<RValue> vecRv;
-
-			for (auto arg : va)
-			{
-				RValue rv = arg.as<RValue>();
-				vecRv.push_back(rv);
-			}
-
-			return Void.Invoker->Call(String.c_str(), vecRv);
-		});
-
-		state.set_function("create_obj", [](std::string ObjName, double X, double Y) 
-		{
-			return Void.Invoker->CreateObject(ObjName.c_str(), X, Y);
-		});
-
-		state.set_function("set_global", [](std::string Name, RValue Val)
-		{
-			Void.Invoker->SetGlobal(Name.c_str(), Val);
-		});
-
-		state.set_function("get_global", [](std::string Name)
-		{
-			return Void.Invoker->GetGlobal(Name.c_str());
-		});
-
-		state.set_function("get_obj_id", [](std::string Name)
-		{
-			const char* szString = Name.c_str();
-			RValue rv(&szString);
-			return Void.Invoker->Call("asset_get_index", { rv }).DoubleValue;
-		});
-
-		state.set_function("get_obj_instances", [](double Object)
-		{
-			std::vector<RValue> ret;
-			RValue rvTotalInstances = Void.Invoker->Call("instance_number", { Object });
-
-			int TotalInstances = rvTotalInstances.DoubleValue;
-
-			for (int i = 0; i < TotalInstances; i++)
-				ret.push_back(Void.Invoker->Call("instance_find", { Object, RValue((double)(i)) }));
-
-			return ret;
-		});
-
-		state.set_function("array_get_element", [](RValue Value, int index)
-		{
-			return Value.at(index);
-		});
-
-		state.set_function("array_set_element", [](RValue Array, int index, RValue Value)
-		{
-			Array.at(index) = Value;
-		});
-
-		state.set_function("array_get_size", [](RValue Value)
-		{
-			if (Value.ArrayValue && Value.Kind == RVKinds::RV_Array)
-				if (Value.ArrayValue->pArray)
-					return Value.ArrayValue->pArray->nArrayLength;
-			return -1;
-		});
 	}
 }
 

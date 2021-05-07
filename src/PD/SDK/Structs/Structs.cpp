@@ -10,40 +10,41 @@ RValue& RValue::at(int index)
 	return *this;
 }
 
-RValue::RValue(Int32 Value)
-{
-	this->Kind = RV_Int32;
-	this->Int32Value = Value;
-}
-
-RValue::RValue(Int64 Value)
-{
-	this->Kind = RV_Int64;
-	this->Int64Value = Value;
-}
-
 RValue::RValue(double Value)
 {
 	this->Kind = RV_Real;
 	this->DoubleValue = Value;
 }
 
+RValue::RValue(std::string str)
+{
+	this->Kind = RV_String;
+	this->pStringVal = new RStringRef;
+	this->pStringVal->nRefCount = 1;
+	this->HeapAllocString = new char[512];
+	memcpy(HeapAllocString, str.c_str(), str.length() + 1);
+	this->pStringVal->String = HeapAllocString;
+}
+
 RValue::RValue(const char** Value)
 {
 	this->Kind = RV_String;
 	this->ppCharValue = Value;
+	this->HeapAllocString = 0;
 }
 
 RValue::RValue(void* Value)
 {
 	this->Kind = RV_Pointer;
 	this->PointerValue = Value;
+	this->HeapAllocString = 0;
 }
 
 RValue::RValue(RStringRef* Value)
 {
 	this->Kind = RV_String;
 	this->StringValue = Value;
+	this->HeapAllocString = 0;
 }
 
 RValue* RValue::operator&()

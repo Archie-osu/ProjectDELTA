@@ -1,6 +1,7 @@
 #pragma once
 #include <guiddef.h>
 #include <stdint.h>
+#include <string>
 
 enum OSFlavors //mmm, tasty
 {
@@ -66,6 +67,11 @@ struct RValue
 		const char** ppCharValue;
 		RArrayRef* ArrayValue;
 		RStringRef* StringValue;
+		struct
+		{
+			RStringRef* pStringVal;
+			char* HeapAllocString;
+		};
 	};
 
 	Int32 Flags;
@@ -73,11 +79,9 @@ struct RValue
 
 	RValue() : PointerValue(nullptr) {}
 
-	RValue(Int32 Value);
-
-	RValue(Int64 Value);
-
 	RValue(double Value);
+
+	RValue(std::string str);
 
 	RValue(RStringRef* Value);
 
@@ -88,6 +92,45 @@ struct RValue
 	RValue* operator& ();
 
 	RValue& at(int index);
+
+	RValue(const RValue& old)
+	{
+		memcpy(this, &old, sizeof(old));
+		if (old.Kind == RV_String)
+		{
+			if (old.StringValue)
+				this->StringValue->nRefCount += 1;
+		}
+	}
+
+	~RValue()
+	{
+		if (this->Kind == RV_String)
+		{
+			if (this->pStringVal && this->HeapAllocString)
+			{
+				if (_CrtIsMemoryBlock(pStringVal, sizeof(RStringRef), NULL, NULL, NULL))
+				{
+					pStringVal->nRefCount -= 1;
+
+					if (pStringVal->nRefCount < 1)
+					{
+						if (_CrtIsValidHeapPointer(pStringVal))
+							delete StringValue;
+					}
+
+					if (_CrtIsMemoryBlock(HeapAllocString, 512, NULL, NULL, NULL))
+					{
+						if (pStringVal->nRefCount < 1)
+						{
+							if (_CrtIsValidHeapPointer(HeapAllocString))
+								delete StringValue;
+						}
+					}
+				}
+			}
+		}
+	}
 };
 
 //Data.win files, everyone!

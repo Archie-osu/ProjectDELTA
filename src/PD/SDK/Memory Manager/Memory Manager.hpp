@@ -1,6 +1,5 @@
 #pragma once
 #include <vadefs.h>
-
 class CMemoryManager
 {
 public:

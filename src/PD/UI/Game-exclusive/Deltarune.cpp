@@ -6,6 +6,7 @@
 void UI::Deltarune()
 {
 	RValue glHP = Void.Invoker->GetGlobal("hp");
+    RValue glMaxHP = Void.Invoker->GetGlobal("maxhp");
 	RValue glGold = Void.Invoker->GetGlobal("gold");
 
     ImGui::ShowDemoWindow();
@@ -14,7 +15,7 @@ void UI::Deltarune()
     {
         ImGui::Text("Kris");
         ImGui::SliderDouble("HP", &glHP.at(1).DoubleValue, 0, 120, "%.0f", 1.0f);
-        ImGui::SliderDouble("Max HP", &glHP.at(1).DoubleValue, 0, 120, "%.0f", 1.0f);
+        ImGui::SliderDouble("Max HP", &glMaxHP.at(1).DoubleValue, 0, 120, "%.0f", 1.0f);
     }
     ImGui::EndChild();
 
@@ -22,7 +23,7 @@ void UI::Deltarune()
     {
         ImGui::Text("Ralsei");
         ImGui::SliderDouble("HP", &glHP.at(3).DoubleValue, 0, 120, "%.0f", 1.0f);
-        ImGui::SliderDouble("Max HP", &glHP.at(3).DoubleValue, 0, 120, "%.0f", 1.0f);
+        ImGui::SliderDouble("Max HP", &glMaxHP.at(3).DoubleValue, 0, 120, "%.0f", 1.0f);
     }
     ImGui::EndChild();
 
@@ -30,12 +31,13 @@ void UI::Deltarune()
     {
         ImGui::Text("Susie");
         ImGui::SliderDouble("HP", &glHP.at(2).DoubleValue, 0, 120, "%.0f", 1.0f);
-        ImGui::SliderDouble("Max HP", &glHP.at(2).DoubleValue, 0, 120, "%.0f", 1.0f);
+        ImGui::SliderDouble("Max HP", &glMaxHP.at(2).DoubleValue, 0, 120, "%.0f", 1.0f);
     }
     ImGui::EndChild();
 
     ImGui::SliderDouble("Money", &glGold.DoubleValue, 0, 1000, "%.0f", 1.0f);
 
+    Void.Invoker->SetGlobal("maxhp", glMaxHP);
     Void.Invoker->SetGlobal("hp", glHP);
     Void.Invoker->SetGlobal("gold", glGold);
 }
