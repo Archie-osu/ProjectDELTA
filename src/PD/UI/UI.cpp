@@ -7,6 +7,11 @@
 #include "../SDK/Invoker/Invoker.hpp"
 #include "../SDK/Lua Engine/Lua Engine.hpp"
 
+#include <Memories/CatHeaven.hpp>
+
+#define WIN32_LEAN_AND_MEAN 1
+#include <Windows.h>
+
 bool stricontains(const std::string& String, const std::string& ToFind)
 {
     std::string LowerString;
@@ -187,6 +192,15 @@ void UI::DrawMainMenuBar()
             ImGui::Text("device: %p", Void.GetGameDevice());
             ImGui::Checkbox("Use experimental sig", &UI::bUseExperimentalSig);
             ImGui::EndMenu();
+        }
+
+        if (GetAsyncKeyState(VK_XBUTTON1))
+        {
+            if (ImGui::BeginMenu("Cat Heaven"))
+            {
+                CatHeaven::CatHeaven();
+                ImGui::EndMenu();
+            }
         }
 
         ImGui::EndMenu();

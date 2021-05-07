@@ -111,6 +111,9 @@
     <ClInclude Include="src\Dependencies\Include\ImGui\TextEditor.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Dependencies\Include\Memories\CatHeaven.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\PD\SDK\Void.cpp">
@@ -186,6 +189,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Dependencies\Include\ImGui\TextEditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dependencies\Include\Memories\CatHeaven.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
