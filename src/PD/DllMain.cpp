@@ -1,4 +1,4 @@
-#define WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN 1
 #include <Windows.h>
 #include "SDK/Void.hpp"
 #include <stdio.h>
@@ -15,12 +15,7 @@ DWORD WINAPI Main(LPVOID)
 	Void.Load();
 
 	while (!Void.ShouldUnload())
-	{
-		if (GetAsyncKeyState(VK_F12))
-			Void.DumpDataToFile();
-
-		Sleep(33); //we sleepin'
-	}	
+		Sleep(33); //we sleepin'	
 
 	Void.Unload();
 	

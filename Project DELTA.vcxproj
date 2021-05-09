@@ -182,6 +182,7 @@
     <ClInclude Include="src\PD\SDK\Structs\Structs.hpp" />
     <ClInclude Include="src\PD\SDK\Memory Manager\Memory Manager.hpp" />
     <ClInclude Include="src\PD\SDK\Void.hpp" />
+    <ClInclude Include="src\PD\UI\Lua Console\Lua Console.hpp" />
     <ClInclude Include="src\PD\UI\UI.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -210,6 +211,7 @@
     <ClCompile Include="src\PD\UI\Game-exclusive\Deltarune.cpp" />
     <ClCompile Include="src\PD\UI\Game-exclusive\TS_Underswap.cpp" />
     <ClCompile Include="src\PD\UI\Game-exclusive\Undertale.cpp" />
+    <ClCompile Include="src\PD\UI\Lua Console\Lua Console.cpp" />
     <ClCompile Include="src\PD\UI\UI.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

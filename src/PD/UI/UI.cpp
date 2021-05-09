@@ -5,12 +5,10 @@
 #include "../SDK/Void.hpp"
 #include "../SDK/Structs/Structs.hpp"
 #include "../SDK/Invoker/Invoker.hpp"
-#include "../SDK/Lua Engine/Lua Engine.hpp"
+
+#include "Lua Console/Lua Console.hpp"
 
 #include <Memories/CatHeaven.hpp>
-
-#define WIN32_LEAN_AND_MEAN 1
-#include <Windows.h>
 
 bool stricontains(const std::string& String, const std::string& ToFind)
 {
@@ -59,14 +57,18 @@ void UI::Render(std::vector<prRValue*>)
         else
             Default();
 
-        LuaConsole.Render();
+        if (bDrawLuaConsole)
+            gLuaConsole.Render();
+
+        if (bDrawDebugMenu)
+            DrawDebug();
 	}
     ImGui::End();
 }
 
 void UI::Default()
 {
-    ImGui::Text("Example text for an unrecognized game.");
+    ImGui::Text("Automatic game recognition failed.\nIf you wish, you may use the Lua API to change variables and call functions though.");
 }
 
 void UI::ApplyStyle()
@@ -183,6 +185,8 @@ void UI::DrawMainMenuBar()
         if (ImGui::BeginMenu("Settings"))
         {
             ImGui::Checkbox("Disable Menu Movement", &UI::bNoMovementInMenu);
+            ImGui::Checkbox("Draw Unfinished Menu", &UI::bDrawDebugMenu);
+            ImGui::Checkbox("Draw Lua Console", &UI::bDrawLuaConsole);
             ImGui::EndMenu();
         };
 
@@ -194,7 +198,7 @@ void UI::DrawMainMenuBar()
             ImGui::EndMenu();
         }
 
-        if (GetAsyncKeyState(VK_XBUTTON1))
+        if (bUseExperimentalSig && !UI::bNoMovementInMenu && UI::bDrawDebugMenu && !UI::bDrawLuaConsole)
         {
             if (ImGui::BeginMenu("Cat Heaven"))
             {
@@ -211,53 +215,26 @@ void UI::DrawMainMenuBar()
     ImGui::EndMainMenuBar();
 }
 
-void CLuaConsole::ExecuteCommand(std::string Command)
+void UI::DrawDebug()
 {
-    if (Command.starts_with("dbg-echo ") && Command.length() > 10)
+    if (ImGui::Begin("PDV3 - Debug / Beta Features"))
     {
-        Echo(std::string(Command.begin() + 9, Command.end()));
-    }
-    else
-    {
-        std::string ErrorMsg = Void.LuaEngine->RunScript(Command);
-        if (!ErrorMsg.empty())
-            Echo(ErrorMsg);
-    }   
-}
+        GameForm_t* pGameData = nullptr;
+        pGameData = ReCa<GameForm_t*>(Void.GetGameData());
 
-void CLuaConsole::Echo(std::string text)
-{
-    this->Text.append(text); this->Text.push_back('\n');
-}
-
-void CLuaConsole::Render()
-{
-    ImGui::SetNextWindowSize(ImVec2(420, 420));
-
-    if (ImGui::Begin("PD Console", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse))
-    {
-        static TextEditor Editor;
-        Void.LuaEngine->SetupLanguage(Editor);
-
-        ImGui::Text("Console output");
-        if (ImGui::BeginChildFrame(0xFFFC, ImVec2(400, 120)))
-            ImGui::TextWrapped(this->Text.c_str());
-
-        ImGui::EndChildFrame();
-
-        ImGui::Text("Command input");
-
-        Editor.Render("ConIn", ImVec2(400, 160), true);
-
-        ImGui::NewLine();
-
-        if (ImGui::Button("Run Script", ImVec2(140, 30)))
-            ExecuteCommand(Editor.GetText());
-
-        ImGui::SameLine();
-        
-        if (ImGui::Button("Clear console", ImVec2(140, 30)))
-            this->Text.clear();
+        if (pGameData)
+        {
+            char FORMString[5] = { 0 }; memcpy(FORMString, pGameData->FORM, 4);
+            ImGui::Text("Is FORM: %s", strcmp(FORMString, "FORM") == 0 ? "Yes" : "No");
+            ImGui::Text("File length: 0x%X", pGameData->FileLength);
+            ImGui::Separator();
+            ImGui::Text("GEN8 Length: 0x%X", pGameData->Gen8.Length);
+            ImGui::Checkbox("DisableDebug", &pGameData->Gen8.DisableDebug);
+            ImGui::Text("GameName: %s", pGameData->ReadString(pGameData->Gen8.GameNameOffset));
+            ImGui::Text("DisplayName: %s", pGameData->ReadString(pGameData->Gen8.DisplayNameOffset));
+            ImGui::Text("FileName: %s", pGameData->ReadString(pGameData->Gen8.FileNameOffset));
+            ImGui::Button("Save (overwrites data.win!)", ImVec2(210, 30));
+        }
     }
     ImGui::End();
 }

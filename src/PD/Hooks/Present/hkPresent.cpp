@@ -89,7 +89,7 @@ HRESULT __stdcall Hooks::Present::Hook(IDXGISwapChain* pThis, UINT Sync, UINT Fl
 	//Run original
 	auto Return = Void.HookSystem->GetOriginal<FN>("Present")(pThis, Sync, Flags);
 
-	Void.CallbackManager->Call(CCallbackManager::Types::FRAME_END, {});
+	Void.CallbackManager->Call(CCallbackManager::Types::FRAME_END, { &Return });
 
 	return Return;
 }

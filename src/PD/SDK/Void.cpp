@@ -6,10 +6,7 @@
 #include "../Hooks/ExecuteIt/hkExecuteIt.hpp"
 
 #include <MinHook.h>
-#include <stdio.h>
-#include <Windows.h>
 #include <fstream>
-#include <mutex>
 
 #include "Callback Manager/Callback Manager.hpp"
 #include "Hook System/Hook System.hpp"
@@ -123,30 +120,6 @@ void* CVoid::GetGameData()
 		lpData = FindGameData();
 
 	return lpData;
-}
-
-
-void CVoid::DumpDataToFile()
-{
-	byte* MemoryRegion = ReCa<byte*>(GetGameData());
-	Int32 Size = *(Int32*)(MemoryRegion + 0x4) + 8;
-	char buffer[MAX_PATH];
-	GetEnvironmentVariableA("USERPROFILE", buffer, MAX_PATH);
-
-	std::ofstream file(std::string(buffer + std::string("\\dump.bin")).c_str(), std::ios::binary | std::ios::out);
-
-	if (!file.is_open())
-		Void.Error("Failed to open the dump file!");
-	
-	for (byte* addr = MemoryRegion; addr < MemoryRegion + Size; addr += 1)
-		file.write(reinterpret_cast<const char*>(addr), sizeof(byte));
-
-	Void.Warning("Dumped to file: %s\\dump.bin", buffer);
-}
-
-const char* CVoid::GetGameName()
-{
-	return ReCa<GameForm_t*>(GetGameData())->ReadString(ReCa<GameForm_t*>(GetGameData())->Gen8.DisplayNameOffset);
 }
 
 bool CVoid::IsGameFullscreen()

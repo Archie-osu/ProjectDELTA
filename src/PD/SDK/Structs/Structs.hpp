@@ -124,7 +124,7 @@ struct RValue
 						if (pStringVal->nRefCount < 1)
 						{
 							if (_CrtIsValidHeapPointer(HeapAllocString))
-								delete StringValue;
+								delete HeapAllocString;
 						}
 					}
 				}

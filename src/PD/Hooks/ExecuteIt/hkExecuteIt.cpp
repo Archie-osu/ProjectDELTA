@@ -8,7 +8,7 @@ bool __cdecl Hooks::ExecuteIt::Hook(CInstance* Self, CInstance* Other, CCode* pC
 {
 	Void.CallbackManager->Call(CCallbackManager::Types::VMEXEC_BEGIN, { Self, Other, pCode, pArgs });
 	auto ret = Void.HookSystem->GetOriginal<FN>("ExecuteIt")(Self, Other, pCode, pArgs);
-	Void.CallbackManager->Call(CCallbackManager::Types::VMEXEC_END, { Self, Other, pCode, pArgs });
+	Void.CallbackManager->Call(CCallbackManager::Types::VMEXEC_END, { &ret, Self, Other, pCode, pArgs });
 
 	return ret;
 }

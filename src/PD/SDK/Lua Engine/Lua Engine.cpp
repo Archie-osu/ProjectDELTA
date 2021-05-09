@@ -50,6 +50,7 @@ void CLuaEngine::Init()
 
 	sol::usertype<RValue> yyValue = State.new_usertype<RValue>("yyvalue", ConstrList, "kind", &RValue::Kind, "realval", &RValue::DoubleValue, "i32val", &RValue::Int32Value, "i64val", &RValue::Int64Value);
 
+	//Test code: local str = yyvalue.new("gold"); local gold = call_fn("variable_global_get", str); print(gold.realval);
 	State.set_function("call_fn", [](std::string String, sol::variadic_args va)
 	{
 		std::vector<RValue> vecRv;
@@ -63,28 +64,40 @@ void CLuaEngine::Init()
 		return Void.Invoker->Call(String.c_str(), vecRv);
 	});
 	
+	//Test code: local rv = create_obj("obj_savepoint", 340, 230); print(rv.realval);
 	State.set_function("create_obj", [](std::string ObjName, double X, double Y)
 	{
 		return Void.Invoker->CreateObject(ObjName.c_str(), X, Y);
 	});
 
+	//Test code: local number = yyvalue.new(5000); set_global("gold", number);
 	State.set_function("set_global", [](std::string Name, RValue Val)
 	{
 		Void.Invoker->SetGlobal(Name.c_str(), Val);
 	});
 
+	//Test code: local gold = get_global("gold"); print(gold.realval);
 	State.set_function("get_global", [](std::string Name)
 	{
 		return Void.Invoker->GetGlobal(Name.c_str());
 	});
 
+	//Test code: local id = get_obj_id("obj_savepoint"); print(id);
 	State.set_function("get_obj_id", [](std::string Name)
 	{
-		const char* szString = Name.c_str();
-		RValue rv(&szString);
+		RValue rv(Name);
 		return Void.Invoker->Call("asset_get_index", { rv }).DoubleValue;
 	});
 
+	/*Test code:
+		local id = get_obj_id("obj_savepoint");
+		local instances = get_obj_instances(id);
+
+		for index=1, #instances do
+			local v = instances[index];
+			call_fn("instance_destroy", v);
+		end
+	*/
 	State.set_function("get_obj_instances", [](double Object)
 	{
 		std::vector<RValue> ret;
@@ -108,6 +121,7 @@ void CLuaEngine::Init()
 		Array.at(index) = Value;
 	});
 
+	//Test code: local maxhps = get_global("maxhp"); print(array_get_size(maxhps));
 	State.set_function("array_get_size", [](RValue Value)
 	{
 		if (Value.ArrayValue && Value.Kind == RVKinds::RV_Array)

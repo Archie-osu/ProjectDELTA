@@ -69,12 +69,9 @@ RValue CInvoker::SetGlobal(const char* Name, const RValue& Value)
 
 RValue CInvoker::CreateObject(const char* Name, double PosX, double PosY)
 {
-	char LocalName[260]; strcpy_s<260>(LocalName, Name);
-	const char* tmp = LocalName;
-
 	//I'd rather set these manually
 
-	RValue rvAssetID = Call("asset_get_index", { &tmp });
+	RValue rvAssetID = Call("asset_get_index", { std::string(Name) });
 	return Call("instance_create", { PosX, PosY, rvAssetID });
 }
 

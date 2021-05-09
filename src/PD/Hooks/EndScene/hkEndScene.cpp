@@ -50,7 +50,7 @@ HRESULT WINAPI Hooks::EndScene::Hook(LPDIRECT3DDEVICE9 lpDevice)
 	ImGui::Render();
 	ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
 
-	Void.CallbackManager->Call(CCallbackManager::Types::FRAME_END, {});
+	Void.CallbackManager->Call(CCallbackManager::Types::FRAME_END, { &Return });
 	return Return;
 }
 
