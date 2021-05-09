@@ -11,10 +11,9 @@ Tested releases:
 Libraries used: MinHook, ImGui
 
 # TODO List (in order of importance)
-- Reimplement existing features
-- Figure out how to get a path to ExecuteIt() and ~~DrawModelExecute()~~ ExecuteDrawEvent()
-- Get Lua working
+- Implement Lua callbacks
 - Release the damn thing already
+- Reverse engineer how global variables are stored in memory
 
 # FAQ
 **Q:** Where are the releases? Where can I download this tool?
@@ -30,4 +29,4 @@ Libraries used: MinHook, ImGui
 **A:** The loader comes with statically linked libraries, thus some AVs interpret it as malware. Simply make an exception in your Antivirus software. This is not malware.
 
 # Special Thanks To:
-elite_pleb, colinator27, nkrapivin
+elite\_pleb, colinator27, nkrapivin, \_creepersbane, Grossley (Moo)
