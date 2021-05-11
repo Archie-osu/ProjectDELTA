@@ -33,7 +33,7 @@ void UI::Render(std::vector<prRValue*>)
 
     ShowGameWarning();
 
-	std::string BaseTitle = "Project DELTA Beta Build - ";
+	std::string BaseTitle = "Project DELTA v3 - ";
 	auto GameForm = (GameForm_t*)Void.GetGameData();
 
     if (GameForm)
@@ -41,9 +41,10 @@ void UI::Render(std::vector<prRValue*>)
 
     DrawMainMenuBar();
 
-    ImGui::SetNextWindowSizeConstraints(ImVec2(256, 144), ImVec2(512, 380)); //16:9 kinda
+    ImGui::SetNextWindowSizeConstraints(ImVec2(256, 144), ImVec2(512, 400)); //16:9 kinda
+    ImGui::SetNextWindowSize(ImVec2(360, 390), ImGuiCond_FirstUseEver);
 
-	if (ImGui::Begin("Project DELTA v3", nullptr, ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse))
+	if (ImGui::Begin(BaseTitle.c_str(), nullptr, ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse))
 	{
         if (stricontains(BaseTitle, "SURVEY_PROGRAM"))
             Deltarune();
@@ -185,7 +186,7 @@ void UI::DrawMainMenuBar()
         if (ImGui::BeginMenu("Settings"))
         {
             ImGui::Checkbox("Disable Menu Movement", &UI::bNoMovementInMenu);
-            ImGui::Checkbox("Draw Unfinished Menu", &UI::bDrawDebugMenu);
+            ImGui::Checkbox("Draw Debug Menu", &UI::bDrawDebugMenu);
             ImGui::Checkbox("Draw Lua Console", &UI::bDrawLuaConsole);
             ImGui::EndMenu();
         };
@@ -210,14 +211,14 @@ void UI::DrawMainMenuBar()
         ImGui::EndMenu();
     }
 
-    ImGui::Text("Project DELTA v3 (b2)");
+    ImGui::Text("Project DELTA v3 (b3)");
 
     ImGui::EndMainMenuBar();
 }
 
 void UI::DrawDebug()
 {
-    if (ImGui::Begin("PDV3 - Debug / Beta Features"))
+    if (ImGui::Begin("PD v3 - Debug / Beta Features"))
     {
         GameForm_t* pGameData = nullptr;
         pGameData = ReCa<GameForm_t*>(Void.GetGameData());
@@ -233,7 +234,6 @@ void UI::DrawDebug()
             ImGui::Text("GameName: %s", pGameData->ReadString(pGameData->Gen8.GameNameOffset));
             ImGui::Text("DisplayName: %s", pGameData->ReadString(pGameData->Gen8.DisplayNameOffset));
             ImGui::Text("FileName: %s", pGameData->ReadString(pGameData->Gen8.FileNameOffset));
-            ImGui::Button("Save (overwrites data.win!)", ImVec2(210, 30));
         }
     }
     ImGui::End();

@@ -52,6 +52,7 @@ RValue CInvoker::Call(const char* Function, std::vector<RValue> vArgs)
 		//If it is in the function map already, just retrieve it from there, and call.
 		dwAddress = prFunctionMap.at(Function);
 	}
+
 	Invoke(Result, vArgs, dwAddress);
 
 	return Result;  //Finish.

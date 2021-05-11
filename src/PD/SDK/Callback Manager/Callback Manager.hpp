@@ -3,6 +3,8 @@
 #include <forward_list>
 #include <vector>
 
+//Handles C++ callbacks, see Lua Engine.hpp for Lua callbacks
+
 class CCallbackManager
 {
 public:

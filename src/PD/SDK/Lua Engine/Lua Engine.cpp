@@ -48,6 +48,15 @@ void CLuaEngine::Init()
 		RVKinds::RV_Unset
 	);
 
+	State.new_enum("callbacktype",
+		"on_frame",
+		CLuaCallbackManager::Types::ON_FRAME,
+		"on_script",
+		CLuaCallbackManager::Types::ON_VMEXEC,
+		"on_draw",
+		CLuaCallbackManager::Types::ON_DRAW
+	);
+
 	sol::usertype<RValue> yyValue = State.new_usertype<RValue>("yyvalue", ConstrList, "kind", &RValue::Kind, "realval", &RValue::DoubleValue, "i32val", &RValue::Int32Value, "i64val", &RValue::Int64Value);
 
 	//Test code: local str = yyvalue.new("gold"); local gold = call_fn("variable_global_get", str); print(gold.realval);
@@ -129,31 +138,47 @@ void CLuaEngine::Init()
 				return Value.ArrayValue->pArray->nArrayLength;
 		return -1;
 	});
-	
+
+	State.set_function("add_callback", [](CLuaCallbackManager::Types type, std::string name)
+	{
+		Void.LuaCallbackManager->RegisterCallback(type, name);
+	});
+
+	State.set_function("remove_callback", [](CLuaCallbackManager::Types type, std::string name)
+	{
+		Void.LuaCallbackManager->UnregisterCallback(type, name);
+	});
 }
 
 void CLuaEngine::SetupLanguage(TextEditor& editor)
 {
 	auto Language = TextEditor::LanguageDefinition::Lua();
-	editor.SetShowWhitespaces(false);
 
-	std::vector<std::string> szAPINames = 
+	std::vector<std::string> szAPINames =
 	{
-		"yyvalue", 
-		"create_obj", 
-		"get_global", 
-		"set_global", 
-		"call_fn", 
-		"get_obj_id", 
-		"get_obj_instances", 
-		"array_get_element", 
-		"array_get_size", 
-		"array_set_element"
+		"yyvalue",
+		"callbacktype",
+		"create_obj",
+		"get_global",
+		"set_global",
+		"call_fn",
+		"get_obj_id",
+		"get_obj_instances",
+		"array_get_element",
+		"array_get_size",
+		"array_set_element",
+		"add_callback",
+		"remove_callback",
+
 	};
 	std::vector<std::string> szAPIDecls =
 	{
 		/* YYValue */
 		"A generic data value",
+
+		/* CallbackType */
+		"Indicates when a callback will be made\n"
+		"Possible values: on_frame, on_script, on_draw",
 
 		/* create_obj */
 		"Create an instance of an object\n"
@@ -202,6 +227,16 @@ void CLuaEngine::SetupLanguage(TextEditor& editor)
 		"Set an element of a GML-style YYValue array\n"
 		"array_set_element(Array, Index, Value)\n"
 		"Return value: None",
+
+		/* add_callback */
+		"Register a function to be called upon a game event\n"
+		"add_callback(Type, Function)\n"
+		"Return value: None",
+
+		/* remove_callback */
+		"Unregister a function registered with add_callback\n"
+		"remove_callback(Type, Function)\n"
+		"Return value: None",
 	};
 
 	for (size_t n = 0; n < szAPINames.size(); n++)
@@ -212,4 +247,56 @@ void CLuaEngine::SetupLanguage(TextEditor& editor)
 	}
 
 	editor.SetLanguageDefinition(Language);
+}
+
+CLuaCallbackManager::CLuaCallbackManager()
+{
+	std::forward_list<std::string> BaseList; BaseList.clear(); //Unnecessary cleaning..
+
+	this->prCallbackMap.clear();
+
+	this->prCallbackMap.emplace(Types::ON_FRAME, BaseList);
+	this->prCallbackMap.emplace(Types::ON_VMEXEC, BaseList);
+	this->prCallbackMap.emplace(Types::ON_DRAW, BaseList);
+}
+
+void CLuaCallbackManager::RegisterCallback(Types type, std::string name)
+{
+	prCallbackMap.at(type).remove(name); //Fix for multiple functions with the same name
+	prCallbackMap.at(type).push_front(name);
+}
+
+void CLuaCallbackManager::Call(Types type)
+{
+	if (!prCallbackMap.contains(type))
+		Void.Error("[Lua] Attempted to call invalid type %i", StCa<int>(type));
+
+	for (const auto& strName : prCallbackMap.at(type))
+	{
+		if (!Void.ShouldUnload())
+		{
+			sol::state& state = Void.LuaEngine->GetState();
+			auto fn = state[strName];
+			fn.call();
+		}
+	}
+}
+
+void CLuaCallbackManager::Purge()
+{
+	std::forward_list<std::string> BaseList; BaseList.clear(); //Unnecessary cleaning..
+	this->prCallbackMap.clear();
+
+	this->prCallbackMap.emplace(Types::ON_FRAME, BaseList);
+	this->prCallbackMap.emplace(Types::ON_VMEXEC, BaseList);
+	this->prCallbackMap.emplace(Types::ON_DRAW, BaseList);
+}
+
+
+void CLuaCallbackManager::UnregisterCallback(Types type, std::string name)
+{
+	if (!prCallbackMap.contains(type))
+		Void.Error("[Lua] Attempted to unregister invalid type %i", StCa<int>(type));
+
+	prCallbackMap.at(type).remove(name);
 }

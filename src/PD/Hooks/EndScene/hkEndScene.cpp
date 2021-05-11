@@ -1,14 +1,12 @@
 #include "hkEndScene.hpp"
-#include "../../SDK/Void.hpp"
+#include "../../SDK/Callback Manager/Callback Manager.hpp"
 #include "../../SDK/Hook System/Hook System.hpp"
-#include <mutex>
-
+#include "../../SDK/Lua Engine/Lua Engine.hpp"
+#include "../../SDK/Void.hpp"
+#include "../../UI/UI.hpp"
 #include <ImGui/imgui_impl_dx9.h>
 #include <ImGui/imgui_impl_win32.h>
-
-#include "../../SDK/Callback Manager/Callback Manager.hpp"
-
-#include "../../UI/UI.hpp"
+#include <mutex>
 
 inline std::once_flag Init;
 HRESULT WINAPI Hooks::EndScene::Hook(LPDIRECT3DDEVICE9 lpDevice)
@@ -44,6 +42,7 @@ HRESULT WINAPI Hooks::EndScene::Hook(LPDIRECT3DDEVICE9 lpDevice)
 	ImGui::NewFrame();
 	
 	Void.CallbackManager->Call(CCallbackManager::Types::FRAME_RENDER, {});
+	Void.LuaCallbackManager->Call(CLuaCallbackManager::Types::ON_FRAME);
 
 	ImGui::EndFrame();
 

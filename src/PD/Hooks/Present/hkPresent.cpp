@@ -2,6 +2,7 @@
 #include "../../SDK/Callback Manager/Callback Manager.hpp"
 #include "../../SDK/Hook System/Hook System.hpp"
 #include "../../SDK/Void.hpp"
+#include "../../SDK/Lua Engine/Lua Engine.hpp"
 
 #include <ImGui/imgui_impl_win32.h>
 #include <ImGui/imgui_impl_dx11.h>
@@ -79,6 +80,7 @@ HRESULT __stdcall Hooks::Present::Hook(IDXGISwapChain* pThis, UINT Sync, UINT Fl
 	ImGui::NewFrame();
 
 	Void.CallbackManager->Call(CCallbackManager::Types::FRAME_RENDER, {});
+	Void.LuaCallbackManager->Call(CLuaCallbackManager::Types::ON_FRAME);
 
 	ImGui::Render();
 

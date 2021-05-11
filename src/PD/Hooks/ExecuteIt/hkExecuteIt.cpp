@@ -3,11 +3,29 @@
 #include "../../SDK/Hook System/Hook System.hpp"
 #include "../../SDK/Memory Manager/Memory Manager.hpp"
 #include "../../SDK/Callback Manager/Callback Manager.hpp"
+#include "../../SDK/Lua Engine/Lua Engine.hpp"
 
 bool __cdecl Hooks::ExecuteIt::Hook(CInstance* Self, CInstance* Other, CCode* pCode, RValue* pArgs)
 {
+	bool bIsDrawEvent = false;
+
+	if (strstr(pCode->i_pName, "Draw_0"))
+		bIsDrawEvent = true;
+
 	Void.CallbackManager->Call(CCallbackManager::Types::VMEXEC_BEGIN, { Self, Other, pCode, pArgs });
+
+	if (bIsDrawEvent)
+	{
+		Void.CallbackManager->Call(CCallbackManager::Types::DRAW_BEGIN, { Self, Other, pCode, pArgs });
+		Void.LuaCallbackManager->Call(CLuaCallbackManager::Types::ON_DRAW);
+	}
+
 	auto ret = Void.HookSystem->GetOriginal<FN>("ExecuteIt")(Self, Other, pCode, pArgs);
+
+	if (bIsDrawEvent)
+		Void.CallbackManager->Call(CCallbackManager::Types::DRAW_END, { &ret, Self, Other, pCode, pArgs });
+
+	Void.LuaCallbackManager->Call(CLuaCallbackManager::Types::ON_VMEXEC);
 	Void.CallbackManager->Call(CCallbackManager::Types::VMEXEC_END, { &ret, Self, Other, pCode, pArgs });
 
 	return ret;

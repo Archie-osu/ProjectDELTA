@@ -20,9 +20,6 @@ CCallbackManager::CCallbackManager()
 
 void CCallbackManager::RegisterCallback(Types type, PD_Routine Routine)
 {
-	if (!Callbacks.contains(type))
-		Void.Error("Type %d already registered!", ReCa<int>(Routine));
-
 	this->Callbacks.at(type).push_front(Routine);
 }
 

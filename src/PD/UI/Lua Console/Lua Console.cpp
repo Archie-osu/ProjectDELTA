@@ -25,7 +25,7 @@ void CLuaConsole::Render()
 {
     ImGui::SetNextWindowSize(ImVec2(420, 420));
 
-    if (ImGui::Begin("PD Console", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse))
+    if (ImGui::Begin("Lua Console", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse))
     {
         static TextEditor Editor;
         Void.LuaEngine->SetupLanguage(Editor);
@@ -42,13 +42,22 @@ void CLuaConsole::Render()
 
         ImGui::NewLine();
 
-        if (ImGui::Button("Run Script", ImVec2(140, 30)))
+        if (ImGui::Button("Run Script", ImVec2(120, 30)))
             ExecuteCommand(Editor.GetText());
 
         ImGui::SameLine();
 
-        if (ImGui::Button("Clear console", ImVec2(140, 30)))
+        if (ImGui::Button("Clear", ImVec2(120, 30)))
             this->Text.clear();
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("Reset API", ImVec2(120, 30)))
+        {
+            Void.LuaEngine->GetState() = sol::state(); //Reset state
+            Void.LuaCallbackManager->Purge();
+            Void.LuaEngine->Init();
+        }
     }
     ImGui::End();
 }

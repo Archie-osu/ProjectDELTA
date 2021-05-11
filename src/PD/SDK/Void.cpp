@@ -15,13 +15,55 @@
 #include "Memory Manager/Memory Manager.hpp"
 
 #include "../UI/UI.hpp"
+#include <Dbghelp.h>
+
+void DumpProcess(struct _EXCEPTION_POINTERS* pException)
+{
+	//POV: Microsoft naming convention
+	using fnWriteDump = BOOL(WINAPI*)(HANDLE, DWORD, HANDLE, MINIDUMP_TYPE, CONST PMINIDUMP_EXCEPTION_INFORMATION, CONST PMINIDUMP_USER_STREAM_INFORMATION, CONST PMINIDUMP_CALLBACK_INFORMATION);
+	using fnGetEnvA = DWORD(WINAPI*)(LPCSTR, LPSTR, DWORD);
+
+	MessageBoxA(0, "The Void Engine encountered a critical error.\n"
+		"The game has been stopped to prevent damage to your save files.\n"
+		"A process dump will be written to your user directory (VoidDump.dmp).\n"
+		"Please report this to the Project DELTA GitHub or reach out to Archie#7097 on Discord.", "[Void Security Manager]", MB_OK | MB_TOPMOST | MB_ICONERROR);
+
+	HMODULE dbgLib = LoadLibraryA("dbghelp.dll");
+	fnWriteDump pMinidump = reinterpret_cast<fnWriteDump>(GetProcAddress(dbgLib, "MiniDumpWriteDump"));
+
+	char UserDirectory[MAX_PATH];
+	HMODULE krLib = LoadLibraryA("kernel32.dll");
+	reinterpret_cast<fnGetEnvA>(GetProcAddress(krLib, "GetEnvironmentVariableA"))("USERPROFILE", UserDirectory, MAX_PATH);
+
+	std::string Path = UserDirectory; Path.append("\\VoidDump.dmp");
+
+	HANDLE hFile = CreateFileA(Path.c_str(), GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS,
+		FILE_ATTRIBUTE_NORMAL, NULL);
+
+	_MINIDUMP_EXCEPTION_INFORMATION ExInfo;
+	ExInfo.ThreadId = GetCurrentThreadId();
+	ExInfo.ExceptionPointers = pException;
+	ExInfo.ClientPointers = FALSE;
+
+	pMinidump(GetCurrentProcess(), GetCurrentProcessId(), hFile, MiniDumpNormal, &ExInfo, NULL, NULL);
+	::CloseHandle(hFile);
+}
+
+LONG WINAPI CrashHandler(struct _EXCEPTION_POINTERS* apExceptionInfo)
+{
+	DumpProcess(apExceptionInfo);
+	return EXCEPTION_CONTINUE_SEARCH;
+}
 
 void CVoid::Load()
 {
+	SetUnhandledExceptionFilter(CrashHandler); //Set this first, so even errors in constructors get caught
+
 	this->HookSystem = new CHookSystem;
 	this->Invoker = new CInvoker;
 	this->LuaEngine = new CLuaEngine;
 	this->CallbackManager = new CCallbackManager;
+	this->LuaCallbackManager = new CLuaCallbackManager;
 	this->MemoryManager = new CMemoryManager;
 	this->lpData = 0;
 
@@ -63,6 +105,7 @@ void CVoid::Unload()
 	SetWindowLongW(ReCa<HWND>(GetGameWindow()), GWLP_WNDPROC, ReCa<ULONG>(Hooks::WndProc::Original));
 	
 	Void.HookSystem->UnhookAll();
+	Void.LuaCallbackManager->Purge();
 	Sleep(100); //Wait for stuff to unhook
 
 	MH_Uninitialize();
@@ -72,6 +115,7 @@ void CVoid::Unload()
 	delete this->Invoker;
 	delete this->LuaEngine;
 	delete this->CallbackManager;
+	delete this->LuaCallbackManager;
 	delete this->MemoryManager;
 	Beep(500, 100);
 }

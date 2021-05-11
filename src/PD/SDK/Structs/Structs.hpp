@@ -3,6 +3,8 @@
 #include <stdint.h>
 #include <string>
 
+#pragma warning(disable : 26495)
+
 enum OSFlavors //mmm, tasty
 {
 	OSF_Windows = 1,

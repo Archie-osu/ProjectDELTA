@@ -8,9 +8,9 @@ HMODULE g_hDLL = nullptr;
 
 DWORD WINAPI Main(LPVOID)
 {
-	//AllocConsole();
-	//FILE* dum;
-	//freopen_s(&dum, "CONOUT$", "w", stdout);
+	AllocConsole();
+	FILE* dum;
+	freopen_s(&dum, "CONOUT$", "w", stdout);
 
 	Void.Load();
 
