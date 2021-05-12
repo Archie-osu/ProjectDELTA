@@ -2,6 +2,7 @@
 #include "../Void.hpp"
 #include <Windows.h>
 #include <Psapi.h>
+#include <crtdbg.h>
 
 MODULEINFO GetCurrentModuleInfo()
 {
@@ -116,4 +117,9 @@ unsigned long CMemoryManager::RegionScan(uintptr_t MaxOffset, const char* Patter
 	}
 
 	return 0;
+}
+
+bool CMemoryManager::IsValidMemory(void* Pointer, size_t size)
+{
+	return (_CrtIsMemoryBlock(Pointer, size, NULL, NULL, NULL));
 }

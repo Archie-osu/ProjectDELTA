@@ -11,4 +11,6 @@ public:
 
 	//Limited pattern scanning for all modules
 	unsigned long RegionScan(uintptr_t MaxOffset, const char* Pattern, const char* Mask);
+
+	bool IsValidMemory(void* Pointer, size_t size);
 };

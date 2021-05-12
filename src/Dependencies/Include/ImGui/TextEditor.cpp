@@ -2374,12 +2374,14 @@ void TextEditor::ColorizeInternal()
 
 	if (mColorRangeMin < mColorRangeMax)
 	{
-		const int increment = (mLanguageDefinition.mTokenize == nullptr) ? 10000 : 10000; //I guess they made it only 10 lines because it's slow? Anyway, getting rid of that.
-		const int to = std::min(mColorRangeMin + increment, mColorRangeMax);
-		ColorizeRange(mColorRangeMin, to);
-		mColorRangeMin = to;
+		static int LastMax = 0;
 
-		if (mColorRangeMax == mColorRangeMin)
+		const int increment = (mLanguageDefinition.mTokenize == nullptr) ? 10 : 10000; //I guess they made it only 10 lines because it's slow? Anyway, getting rid of that.
+		const int to = std::min(LastMax + increment, mColorRangeMax);
+		ColorizeRange(LastMax, to);
+		LastMax = to;
+
+		if (mColorRangeMax >= mColorRangeMin)
 		{
 			mColorRangeMin = std::numeric_limits<int>::max();
 			mColorRangeMax = 0;

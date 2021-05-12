@@ -8,9 +8,9 @@
 bool __cdecl Hooks::ExecuteIt::Hook(CInstance* Self, CInstance* Other, CCode* pCode, RValue* pArgs)
 {
 	bool bIsDrawEvent = false;
-
-	if (strstr(pCode->i_pName, "Draw_0"))
-		bIsDrawEvent = true;
+	if (pCode)
+		if (pCode->i_pName)
+			bIsDrawEvent = strstr(pCode->i_pName, "Draw_0");
 
 	Void.CallbackManager->Call(CCallbackManager::Types::VMEXEC_BEGIN, { Self, Other, pCode, pArgs });
 
@@ -31,18 +31,18 @@ bool __cdecl Hooks::ExecuteIt::Hook(CInstance* Self, CInstance* Other, CCode* pC
 	return ret;
 }
 
-uint8_t NormalizeHook(uint32_t base)
+uint8_t Hooks::ExecuteIt::NormalizeHook(uint32_t Base)
 {
 	constexpr char sub_esp_8[] = { "\x83\xEC\x08" };
 
-	if (memcmp(ReCa<void*>(base - 3), sub_esp_8, 3) == 0)
+	if (memcmp(ReCa<void*>(Base - 3), sub_esp_8, 3) == 0)
 		return 3;
 
 	uint8_t Instruction;
-	memcpy(&Instruction, ReCa<const void*>(base - 1), 1);
+	memcpy(&Instruction, ReCa<const void*>(Base - 1), 1);
 
 	if (Instruction > 0x4F && Instruction < 0x58) /* push eax <-> push edi */
-			return 1;
+		return 1;
 
 	return 0;
 }
@@ -57,7 +57,7 @@ void* Hooks::ExecuteIt::GetTargetAddress()
 		return nullptr;
 	}
 		
-	p -= NormalizeHook(p);
+	p -= Hooks::ExecuteIt::NormalizeHook(p);
 
 	return ReCa<void*>(p);
 }

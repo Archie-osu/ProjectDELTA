@@ -13,6 +13,7 @@ public:
 	class CCallbackManager* CallbackManager;
 	class CMemoryManager* MemoryManager;
 	class CLuaCallbackManager* LuaCallbackManager; //Cut down version of the C++ callback manager.
+	class CLuaHookManager* LuaHookManager; //A lot has changed, thus I can't really merge it to the normal hook manager.
 
 	void* GetGameWindow(); //HWND
 	void* GetGameDevice(); //D3DDevice*

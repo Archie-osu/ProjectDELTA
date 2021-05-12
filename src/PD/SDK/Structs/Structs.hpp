@@ -58,6 +58,7 @@ struct RStringRef
 	Int32 nSize;
 };
 
+#pragma pack(push, 4)
 struct RValue
 {
 	union
@@ -134,6 +135,7 @@ struct RValue
 		}
 	}
 };
+#pragma pack(pop)
 
 //Data.win files, everyone!
 //Shoutout to colinator27 for linking me to his awesome github repo:
@@ -195,6 +197,7 @@ struct RToken
 
 struct VMBuffer
 {
+	void** vTable;
 	int m_size;
 	int m_numLocalVarsUsed;
 	int m_numArguments;
@@ -205,18 +208,20 @@ struct VMBuffer
 
 struct CInstance;
 
+#pragma pack(push, 4)
 struct CCode
 {
+	void** vTable;
 	CCode* m_pNext;
 	int i_kind;
-	bool i_compiled;
+	int i_compiled;
 	const char* i_str;
 	RToken i_token;
 	RValue i_value;
 	VMBuffer* i_pVM;
 	VMBuffer* i_pVMDebugInfo;
 	char* i_pCode;
-	const char* i_pName;
+	const char* i_pName; //0x5C
 	int i_CodeIndex;
 	void* i_pFunc;
 	bool i_watch;
@@ -226,6 +231,7 @@ struct CCode
 	int i_flags;
 	void* i_pPrototype;
 };
+#pragma pack(pop)
 
 /*
 struct CInstance : public YYObjectBase
@@ -280,5 +286,122 @@ struct CInstance : public YYObjectBase
 	float i_currentdepth;
 	float i_lastImageNumber;
 	unsigned int m_collisionTestNumber;
+};
+*/
+
+template <typename Key, typename Value>
+struct CHashMapElement
+{
+	Value v;
+	Key k;
+	unsigned int hash;
+};
+
+template <typename Key, typename Value>
+struct CHashMap
+{
+	int m_curSize;
+	int m_numUsed;
+	int m_curMask;
+	int m_growThreshold;
+	
+	CHashMapElement<Key, Value>* mElements;
+};
+
+struct CInstanceBase
+{
+	RValue* yyvars;
+};
+
+struct YYObjectBase;
+using FnGetOwnProperty = void(YYObjectBase*, RValue*, const char*);
+using FnDeleteProperty = void(YYObjectBase*, RValue*, const char*, bool);
+using FnDefineOwnProperty = void(YYObjectBase*, const char*, RValue*, bool);
+
+struct YYObjectBase : CInstanceBase
+{
+	YYObjectBase* m_pNextObject;
+	YYObjectBase* m_pPrevObject;
+	YYObjectBase* m_prototype;
+	void* m_pcre;
+	void* m_pcreExtra;
+	const char* m_class;
+	FnGetOwnProperty* m_getOwnProperty;
+	FnDeleteProperty* m_deleteProperty;
+	FnDefineOwnProperty* m_defineOwnProperty;
+	CHashMap<int, RValue*>* m_yyvarsMap;
+	void** m_pWeakRefs;
+	uint32_t m_numWeakRefs;
+	uint32_t m_nvars;
+	uint32_t m_flags;
+	uint32_t m_capacity;
+	uint32_t m_visited;
+	uint32_t m_visitedGC;
+	int32_t m_GCgen;
+	int32_t m_GCcreationframe;
+	int m_slot;
+	int m_kind;
+	int m_rvalueInitType;
+	int m_curSlot;
+};
+
+
+struct CStream
+{
+	bool m_ReadOnly;
+	int internal_buffer_size; //These might not be i64, but i32 - someone check that please.
+	int internal_current_position;
+	void* internal_buffer;
+};
+
+__declspec(align(8)) struct CScript
+{
+	void** vTable;
+	CStream* s_text;
+	CCode* s_code;
+	void* s_pFunc;
+	CInstance* s_pStaticObject;
+
+	union
+	{
+		const char* s_script;
+		int s_compiledIndex;
+	};
+
+	const char* s_name;
+	int s_offset;
+};
+
+struct VMExec;
+
+/*
+* This changes version to version, not worth having
+struct VMExec
+{
+	VMExec* pPrev;
+	VMExec* pNext;
+	uint8_t* pStack;
+	int localCount;
+	YYObjectBase* pLocals;
+	YYObjectBase* pSelf;
+	YYObjectBase* pOther;
+	CCode* pCCode;
+	RValue* pArgs;
+	int argumentCount;
+	const uint8_t* pCode;
+	uint8_t* pBP;
+	VMBuffer* pBuffer;
+	int line;
+	const char* pName;
+	VMBuffer* pDebugInfo;
+	const char* pScript;
+	int stackSize;
+	int offs;
+	int boffs;
+	int retCount;
+	int bufferSize;
+	int prevoffs;
+	void** buff;
+	int* jt;
 };
 */

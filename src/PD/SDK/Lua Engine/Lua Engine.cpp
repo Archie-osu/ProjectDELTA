@@ -148,6 +148,11 @@ void CLuaEngine::Init()
 	{
 		Void.LuaCallbackManager->UnregisterCallback(type, name);
 	});
+
+	State.set_function("hookfunction", [](std::string GMLFunction, std::string LuaFunction)
+	{
+			Void.LuaHookManager;
+	});
 }
 
 void CLuaEngine::SetupLanguage(TextEditor& editor)
@@ -169,7 +174,7 @@ void CLuaEngine::SetupLanguage(TextEditor& editor)
 		"array_set_element",
 		"add_callback",
 		"remove_callback",
-
+		"set_hook"
 	};
 	std::vector<std::string> szAPIDecls =
 	{
@@ -182,60 +187,70 @@ void CLuaEngine::SetupLanguage(TextEditor& editor)
 
 		/* create_obj */
 		"Create an instance of an object\n"
-		"create_obj(Name, PosX, PosY)\n"
-		"Return value: Instance ID of the created object (YYValue)",
+		"<yyvalue> create_obj(<string> Name, <real> PosX, <real> PosY)\n"
+		"Return value: Instance ID of the created object",
 
 		/* get_global */
 		"Get a game global\n"
-		"get_global(Name)\n"
-		"Return value: Value of the global (YYValue)",
+		"<yyvalue> get_global(<string> Name)\n"
+		"Return value: Value of the global",
 
 		/* set_global */
 		"Set a game global\n"
-		"set_global(Name, Value)\n"
+		"<void> set_global(<string> Name, <yyvalue> Value)\n"
 		"Return value: None",
 
 		/* call_fn */
-		"Call a GML Function\ncall_fn(Name, ...)\n"
+		"Call a GML Function\n"
+		"<yyvalue> call_fn(<string> Name, <yyvalue?> ...)\n"
 		"Arguments variable, see GML reference.\n"
-		"Return value: Whatever the GML function returns (YYValue).",
+		"Return value: Whatever the GML function returns",
 
 		/* get_obj_id */
 		"Get the master ID of a given asset\n"
-		"get_obj_id(Name)\n"
-		"Return value: The master ID (native Lua number).",
+		"<real> get_obj_id(<string> Name)\n"
+		"Return value: The master ID",
 
 		/* get_obj_instances */
 		"Get all instances of a given object\n"
-		"get_obj_instances(Master ID)\n"
-		"Return value: All instances (Lua-style array of YYValues)\n"
-		"Remarks: Using array_get_element on Lua-style arrays is unsupported. Use for loops.",
+		"<yyvalue[]> get_obj_instances(<real> MasterID)\n"
+		"Return value: All instances (Lua-Style Array)\n"
+		"Remarks: Using array_get_element on Lua-Style arrays is unsupported. Use for loops.",
 
 		/* array_get_element */
 		"Get an element of a GML-style YYValue array\n"
-		"array_get_element(Value, Index)\n"
+		"<yyvalue> array_get_element(<yyvalue[]> Array, <real> Index)\n"
 		"Return value: Element at the given index (starts at 1).\n"
 		"Remarks: Use array_get_size to get the size of the array.",
 
 		/* array_get_size */
 		"Get a size of a GML-style YYValue array\n"
-		"array_get_size(YYValue)\n"
-		"Return value: -1 if the array isn't valid, otherwise a non-zero native number.\n"
+		"<real> array_get_size(<yyvalue[]> Array)\n"
+		"Return value: -1 if the array isn't valid, otherwise a non-zero number.\n"
 		"Remarks: Only use this function on GML-style arrays!",
 
 		/* array_set_element */
 		"Set an element of a GML-style YYValue array\n"
-		"array_set_element(Array, Index, Value)\n"
+		"<void> array_set_element(<yyvalue[]> Array, <real> Index, <yyvalue> Value)\n"
 		"Return value: None",
 
 		/* add_callback */
 		"Register a function to be called upon a game event\n"
-		"add_callback(Type, Function)\n"
+		"<void> add_callback(<callbacktype> Type, <string> FunctionName)\n"
 		"Return value: None",
 
 		/* remove_callback */
 		"Unregister a function registered with add_callback\n"
-		"remove_callback(Type, Function)\n"
+		"<void> remove_callback(callbacktype, Function Name)\n"
+		"Return value: None",
+
+		"Create a detour inside a GML function\n"
+		"<void> hookfunction(<string> GMLFunctionName, <string> LuaFunctionName)\n"
+		"Return value: None\n"
+		"Remarks: The original function will get called the hook"
+
+		"Remove a detour inside a GML function\n"
+		"<function> unhookfunction(<string> GMLFunctionName)\n"
 		"Return value: None",
 	};
 

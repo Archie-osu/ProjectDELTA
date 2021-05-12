@@ -4,6 +4,7 @@
 #include "../Hooks/EndScene/hkEndScene.hpp"
 #include "../Hooks/Window Proc/hkWndProc.hpp"
 #include "../Hooks/ExecuteIt/hkExecuteIt.hpp"
+#include "../Hooks/DoCallScript/hkDoCallScript.hpp"
 
 #include <MinHook.h>
 #include <fstream>
@@ -90,6 +91,11 @@ void CVoid::Load()
 
 		if (lpExecuteIt)
 			Void.HookSystem->Hook("ExecuteIt", lpExecuteIt, Hooks::ExecuteIt::Hook);
+
+		void* lpDoCallScript = Hooks::DoCallScript::GetTargetAddress();
+
+		if (lpDoCallScript)
+			Void.HookSystem->Hook("DoCallScript", lpDoCallScript, Hooks::DoCallScript::Hook);
 
 		Hooks::WndProc::Init();
 	}

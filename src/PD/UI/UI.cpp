@@ -42,7 +42,6 @@ void UI::Render(std::vector<prRValue*>)
     DrawMainMenuBar();
 
     ImGui::SetNextWindowSizeConstraints(ImVec2(256, 144), ImVec2(512, 400)); //16:9 kinda
-    ImGui::SetNextWindowSize(ImVec2(360, 390), ImGuiCond_FirstUseEver);
 
 	if (ImGui::Begin(BaseTitle.c_str(), nullptr, ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse))
 	{

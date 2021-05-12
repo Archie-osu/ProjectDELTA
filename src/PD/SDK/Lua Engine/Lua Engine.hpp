@@ -1,6 +1,7 @@
 #pragma once
 #include <sol/sol.hpp>
 #include <ImGui/TextEditor.hpp>
+
 class CLuaEngine
 {
 private:

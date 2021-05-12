@@ -21,8 +21,8 @@ public:
 		DRAW_BEGIN, //Top of the Draw Event hook
 		DRAW_END, //After calling original
 
-		VMEXEC_BEGIN, //Before the VM executes any script
-		VMEXEC_END, //After the VM executes the script
+		VMEXEC_BEGIN, //Before the VM executes any code (script or object code)
+		VMEXEC_END, //After the VM executes the code
 	};
 
 	CCallbackManager();
