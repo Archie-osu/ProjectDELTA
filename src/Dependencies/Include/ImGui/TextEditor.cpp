@@ -2005,7 +2005,7 @@ void TextEditor::Redo(int aSteps)
 const TextEditor::Palette& TextEditor::GetDarkPalette()
 {
 	const static Palette p = { {
-			0xff7f7f7f,	// Default
+			0xffffffff,	// Default
 			0xffd69c56,	// Keyword	
 			0xff00ff00,	// Number
 			0xff7070e0,	// String
@@ -2380,6 +2380,9 @@ void TextEditor::ColorizeInternal()
 		const int to = std::min(LastMax + increment, mColorRangeMax);
 		ColorizeRange(LastMax, to);
 		LastMax = to;
+
+		if (LastMax >= mColorRangeMax)
+			LastMax = 0;
 
 		if (mColorRangeMax >= mColorRangeMin)
 		{

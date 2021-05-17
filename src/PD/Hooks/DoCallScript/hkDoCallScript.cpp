@@ -7,11 +7,29 @@
 
 uint8_t* __cdecl Hooks::DoCallScript::Hook(CScript* pScript, int argc, uint8_t* pStackPointer, VMExec* pVM, YYObjectBase* pLocals, YYObjectBase* pArguments)
 {
-	Void.CallbackManager->Call(CCallbackManager::Types::VMEXEC_BEGIN, { pScript, pVM, pScript->s_code, pLocals, pArguments });
+	Void.CallbackManager->Call(CCallbackManager::Types::VMEXEC_BEGIN, { 
+		ReCa<void*>(CCallbackManager::Types::VMEXEC_SCRIPT_BEGIN),
+		ReCa<void*>(pScript),
+		ReCa<void*>(argc),
+		ReCa<void*>(pStackPointer),
+		ReCa<void*>(pVM),
+		ReCa<void*>(pLocals),
+		ReCa<void*>(pArguments)
+	});
 
 	auto ret = Void.HookSystem->GetOriginal<FN>("DoCallScript")(pScript, argc, pStackPointer, pVM, pLocals, pArguments);
 
-	Void.CallbackManager->Call(CCallbackManager::Types::VMEXEC_END, { &ret, pScript, pVM, pScript->s_code, pLocals, pArguments });
+	Void.CallbackManager->Call(CCallbackManager::Types::VMEXEC_END, { 
+		ReCa<void*>(CCallbackManager::Types::VMEXEC_SCRIPT_END), 
+		ReCa<void*>(&ret), 
+		ReCa<void*>(pScript), 
+		ReCa<void*>(argc), 
+		ReCa<void*>(pStackPointer), 
+		ReCa<void*>(pVM), 
+		ReCa<void*>(pLocals), 
+		ReCa<void*>(pArguments) 
+	});
+
 	return ret;
 }
 
@@ -42,7 +60,7 @@ uint8_t Hooks::DoCallScript::NormalizeHook(uint32_t Base)
 
 void* Hooks::DoCallScript::GetTargetAddress()
 {
-	auto p = Void.MemoryManager->PatternScan("\x8B\x00\x24\x00\x00\x8B\x00\x24\x00\x85\x00\x75\x0E\x68", "x?x??x?x?x?xxx", false);
+	auto p = Void.PatternManager->PatternScan("\x8B\x00\x24\x00\x00\x8B\x00\x24\x00\x85\x00\x75\x0E\x68", "x?x??x?x?x?xxx", false);
 	
 	if (!p)
 	{

@@ -24,7 +24,7 @@ bool stricontains(const std::string& String, const std::string& ToFind)
     return (LowerString.find(LowerToFind) != std::string::npos);
 }
 
-void UI::Render(std::vector<prRValue*>)
+void UI::Render(std::vector<void*>)
 {
     if (!bOpen)
         return;
@@ -210,7 +210,7 @@ void UI::DrawMainMenuBar()
         ImGui::EndMenu();
     }
 
-    ImGui::Text("Project DELTA v3 (b3)");
+    ImGui::Text("Project DELTA v3 (b4)");
 
     ImGui::EndMainMenuBar();
 }

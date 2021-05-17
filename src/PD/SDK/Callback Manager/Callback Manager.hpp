@@ -23,6 +23,9 @@ public:
 
 		VMEXEC_BEGIN, //Before the VM executes any code (script or object code)
 		VMEXEC_END, //After the VM executes the code
+
+		VMEXEC_SCRIPT_BEGIN,
+		VMEXEC_SCRIPT_END
 	};
 
 	CCallbackManager();
@@ -32,5 +35,5 @@ public:
 	void UnregisterAllCallbacks();
 	void Call(Types type, std::vector<void*> vpArgs);
 private:
-	std::map<Types, std::forward_list<PD_Routine>> Callbacks;
+	std::map<Types, std::forward_list<PD_Routine>> prCallbackMap;
 };

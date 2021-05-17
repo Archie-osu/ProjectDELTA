@@ -11,8 +11,8 @@ class CInvoker
 public:
 	unsigned long FindFunction(const char* Name);
 	RValue Call(const char* Function, std::vector<RValue> vArgs);
-	RValue GetGlobal(const char* Name);
-	RValue SetGlobal(const char* Name, const RValue& Value);
+	RValue GetGlobal(std::string Name);
+	RValue SetGlobal(std::string Name, const RValue& Value);
 	RValue CreateObject(const char* Name, double PosX, double PosY);
 	RValue CreateObjectSpoofed(const char* Name, double PosX, double PosY, OSFlavors Flavor);
 	RValue CallSpoofed(const char* Function, std::vector<RValue> vArgs, OSFlavors Flavor);

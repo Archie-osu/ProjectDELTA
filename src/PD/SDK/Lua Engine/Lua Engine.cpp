@@ -2,6 +2,7 @@
 #include "../Structs/Structs.hpp"
 #include "../Void.hpp"
 #include "../Invoker/Invoker.hpp"
+#include "../Memory Manager/Memory Manager.hpp"
 
 std::string CLuaEngine::RunScript(std::string Script)
 {
@@ -149,20 +150,57 @@ void CLuaEngine::Init()
 		Void.LuaCallbackManager->UnregisterCallback(type, name);
 	});
 
-	State.set_function("hookfunction", [](std::string GMLFunction, std::string LuaFunction)
+	State.set_function("rv_tostring", [](RValue rv)
 	{
-			Void.LuaHookManager;
+		if (rv.Kind == RVKinds::RV_String)
+			if (Void.PatternManager->IsValidMemory(rv.pStringVal))
+				if (rv.pStringVal->m_Thing)
+					return std::string(rv.pStringVal->m_Thing);
+
+		return std::string();
 	});
+
+	State.set_function("add_scripthook", [](std::string ScriptName, std::string LuaFunctionName)
+	{
+		Void.LuaScriptHookManager->AddHook(ScriptName, LuaFunctionName);
+	});
+
+	State.set_function("remove_scripthook", [](std::string ScriptName, std::string LuaFunctionName)
+	{
+		Void.LuaScriptHookManager->RemoveHook(ScriptName, LuaFunctionName);
+	});
+
+	/* 
+		Memory Leak Test Code
+	
+		local index = 0;
+		while (index < 1000) do
+			local string = "gold";
+			local variable = get_global(string);
+			set_global(string, variable);
+			index = index + 1;
+		end
+
+		THEN AFTER THIS FINISHES
+
+
+	*/
+
 }
 
 void CLuaEngine::SetupLanguage(TextEditor& editor)
 {
 	auto Language = TextEditor::LanguageDefinition::Lua();
 
+	static const char* const keywords[] = {
+		"yyvalue", "callbacktype"
+	};
+
+	for (auto& k : keywords)
+		Language.mKeywords.insert(k);
+
 	std::vector<std::string> szAPINames =
 	{
-		"yyvalue",
-		"callbacktype",
 		"create_obj",
 		"get_global",
 		"set_global",
@@ -174,17 +212,12 @@ void CLuaEngine::SetupLanguage(TextEditor& editor)
 		"array_set_element",
 		"add_callback",
 		"remove_callback",
-		"set_hook"
+		"rv_tostring",
+		"add_scripthook",
+		"remove_scripthook"
 	};
 	std::vector<std::string> szAPIDecls =
 	{
-		/* YYValue */
-		"A generic data value",
-
-		/* CallbackType */
-		"Indicates when a callback will be made\n"
-		"Possible values: on_frame, on_script, on_draw",
-
 		/* create_obj */
 		"Create an instance of an object\n"
 		"<yyvalue> create_obj(<string> Name, <real> PosX, <real> PosY)\n"
@@ -236,22 +269,24 @@ void CLuaEngine::SetupLanguage(TextEditor& editor)
 
 		/* add_callback */
 		"Register a function to be called upon a game event\n"
-		"<void> add_callback(<callbacktype> Type, <string> FunctionName)\n"
+		"<void> add_callback(<callbacktype> Type, <string> LuaFunctionName)\n"
 		"Return value: None",
 
 		/* remove_callback */
 		"Unregister a function registered with add_callback\n"
-		"<void> remove_callback(callbacktype, Function Name)\n"
+		"<void> remove_callback(<callbacktype> Type, <string> LuaFunctionName)\n"
 		"Return value: None",
 
-		"Create a detour inside a GML function\n"
-		"<void> hookfunction(<string> GMLFunctionName, <string> LuaFunctionName)\n"
-		"Return value: None\n"
-		"Remarks: The original function will get called the hook"
+		/* rv_tostring */
+		"Converts a YYValue to a string\n"
+		"<string> rv_tostring(<yyvalue> Value)\n"
+		"Return value: The string, empty if invalid",
 
-		"Remove a detour inside a GML function\n"
-		"<function> unhookfunction(<string> GMLFunctionName)\n"
-		"Return value: None",
+		/* add_scripthook */
+		"Register a function to be called upon after a script\n"
+		"<void> add_scripthook(<string> ScriptName, <string> LuaFunctionName)\n"
+		"Return value: None\n",
+		"Remarks: Use the full script name (usually begins with gml_Script)"
 	};
 
 	for (size_t n = 0; n < szAPINames.size(); n++)
@@ -314,4 +349,53 @@ void CLuaCallbackManager::UnregisterCallback(Types type, std::string name)
 		Void.Error("[Lua] Attempted to unregister invalid type %i", StCa<int>(type));
 
 	prCallbackMap.at(type).remove(name);
+}
+
+void LuaScriptCallback(std::vector<void*> vpArgs)
+{
+	constexpr int VMEXEC_SCRIPT_END = 8;
+
+	//CallbackType, ReturnVal, CScript* pScript, int argc, uint8_t* pStackPointer, VMExec* pVM, YYObjectBase* pLocals, YYObjectBase* pArguments
+
+	if (ReCa<int>(vpArgs.at(0)) != VMEXEC_SCRIPT_END)
+		return;
+
+	CScript* pScript = ReCa<CScript*>(vpArgs.at(2));
+
+	char szScriptName[256] = { 0 };
+
+	if (Void.PatternManager->IsValidMemory(cast<void*>(pScript->s_code)))
+		if (Void.PatternManager->IsValidMemory(cast<void*>(pScript->s_code->i_pName)))
+			strcpy_s<256>(szScriptName, pScript->s_code->i_pName);
+
+	if (Void.LuaScriptHookManager->prScriptMap.contains(szScriptName))
+		Void.LuaScriptHookManager->Call(szScriptName);
+}
+
+void CLuaScriptHookSystem::Call(std::string ScriptName)
+{
+	if (prScriptMap.contains(ScriptName))
+	{
+		sol::state& state = Void.LuaEngine->GetState();
+
+		for (const auto& strName : prScriptMap.at(ScriptName))
+		{
+			if (!Void.ShouldUnload())
+			{
+				auto fn = state[strName];
+				fn.call();
+			}
+		}
+	}
+}
+
+void CLuaScriptHookSystem::AddHook(std::string ScriptName, std::string LuaName)
+{
+	this->prScriptMap[ScriptName].push_front(LuaName); //If it doesn't exist, create a new one.
+}
+
+void CLuaScriptHookSystem::RemoveHook(std::string ScriptName, std::string LuaName)
+{
+	if (prScriptMap.contains(ScriptName))
+		this->prScriptMap.at(ScriptName).remove(LuaName);
 }

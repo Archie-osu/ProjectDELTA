@@ -1,8 +1,8 @@
 #include "Memory Manager.hpp"
+#include "../Hook System/Hook System.hpp"
 #include "../Void.hpp"
 #include <Windows.h>
 #include <Psapi.h>
-#include <crtdbg.h>
 
 MODULEINFO GetCurrentModuleInfo()
 {
@@ -14,7 +14,7 @@ MODULEINFO GetCurrentModuleInfo()
 	return modinfo;
 }
 
-unsigned long CMemoryManager::GetFuncAddress(const char* ModuleName, const char* FunctionName)
+unsigned long CPatternManager::GetFuncAddress(const char* ModuleName, const char* FunctionName)
 {
 	HMODULE Module = GetModuleHandleA(ModuleName);
 
@@ -24,7 +24,7 @@ unsigned long CMemoryManager::GetFuncAddress(const char* ModuleName, const char*
 	return ReCa<unsigned long>(GetProcAddress(Module, FunctionName));
 }
 
-unsigned long CMemoryManager::PatternScan(const char* Pattern, const char* Mask, bool StringMode)
+unsigned long CPatternManager::PatternScan(const char* Pattern, const char* Mask, bool StringMode)
 {
 	//Get all module related information
 	MODULEINFO mInfo = GetCurrentModuleInfo();
@@ -60,7 +60,7 @@ unsigned long CMemoryManager::PatternScan(const char* Pattern, const char* Mask,
 	return 0;
 }
 
-unsigned long CMemoryManager::OffsetScan(uintptr_t Base, uintptr_t MaxOffset, const char* Pattern, const char* Mask)
+unsigned long CPatternManager::OffsetScan(uintptr_t Base, uintptr_t MaxOffset, const char* Pattern, const char* Mask)
 {
 	//Get length for our mask, this will allow us to loop through our array
 	DWORD patternLength = strlen(Mask);
@@ -85,7 +85,7 @@ unsigned long CMemoryManager::OffsetScan(uintptr_t Base, uintptr_t MaxOffset, co
 }
 
 //Thanks to GuidedHacking, adapted the source code slightly.
-unsigned long CMemoryManager::RegionScan(uintptr_t MaxOffset, const char* Pattern, const char* Mask)
+unsigned long CPatternManager::RegionScan(uintptr_t MaxOffset, const char* Pattern, const char* Mask)
 {
 	MEMORY_BASIC_INFORMATION memInformation;
 	unsigned long Address = ReCa<unsigned long>(GetModuleHandleA(NULL));
@@ -119,7 +119,44 @@ unsigned long CMemoryManager::RegionScan(uintptr_t MaxOffset, const char* Patter
 	return 0;
 }
 
-bool CMemoryManager::IsValidMemory(void* Pointer, size_t size)
+bool CPatternManager::IsValidMemory(void* Pointer)
 {
-	return (_CrtIsMemoryBlock(Pointer, size, NULL, NULL, NULL));
+	MEMORY_BASIC_INFORMATION info;
+	if (VirtualQuery(Pointer, &info, sizeof(info)))
+	{
+		if (info.Protect & PAGE_GUARD || info.Protect & PAGE_NOACCESS)
+			return false;
+
+		return true;
+	}
+
+	return false;
+}
+
+void* CMemoryManager::Alloc(size_t nSize, bool bZeroMemory)
+{
+	void* Data = Void.HookSystem->GetOriginal<void* (__cdecl*)(size_t, const char*, int, bool)>
+		("YYAlloc")(nSize, "PD\\SDK\\Memory Manager\\MemoryManager.cpp", 140, bZeroMemory);
+
+	if (bZeroMemory)
+		memset(Data, 0, nSize); //The game just doesn't do this for some reason, idk it's probably stoopid
+
+	printf("Memory Alloc: size %i, return %p\n", nSize, Data);
+	return Data;
+}
+
+void CMemoryManager::Free(void* block)
+{
+	Void.HookSystem->GetOriginal<void (__cdecl*)(void*)>
+		("YYFree")(block);
+}
+
+void CMemoryManager::strcpy_pi(char* dest, const char* source)
+{
+	size_t i = 0;
+	while (source[i] != '\x00') {
+		dest[i] = source[i];
+		i++;
+	}
+		
 }

@@ -12,6 +12,11 @@ LRESULT __stdcall Hooks::WndProc::Hook(HWND hWnd, UINT Msg, WPARAM w, LPARAM l)
 	if (Result = ImGui_ImplWin32_WndProcHandler(hWnd, Msg, w, l))
 		return Result;
 
+	if (Msg == WM_SIZE)
+	{
+		printf("OH BOY WE'RE IN BUSINESS!\n");
+	}
+
 	if (UI::bOpen && UI::bNoMovementInMenu)
 		return DefWindowProc(hWnd, Msg, w, l); //Disable input into the game while in the menu
 

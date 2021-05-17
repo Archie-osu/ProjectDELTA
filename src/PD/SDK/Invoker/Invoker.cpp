@@ -21,13 +21,13 @@ unsigned long CInvoker::FindFunction(const char* Name)
 	for (size_t i = 0; i <= sFunc.size(); i++)
 		sMask.push_back('x');
 
-	auto Pattern = Void.MemoryManager->PatternScan(sFunc.data(), sMask.c_str(), true);
+	auto Pattern = Void.PatternManager->PatternScan(sFunc.data(), sMask.c_str(), true);
 
 	unsigned char mem[5];
 	mem[0] = '\x68'; //Push instruction
 	memcpy(mem + 1, &Pattern, 4); //Create new pattern - push <offset>
 
-	unsigned char* dwReference = (unsigned char*)Void.MemoryManager->PatternScan(
+	unsigned char* dwReference = (unsigned char*)Void.PatternManager->PatternScan(
 		(const char*)mem,
 		"xxxxx",
 		false
@@ -58,20 +58,18 @@ RValue CInvoker::Call(const char* Function, std::vector<RValue> vArgs)
 	return Result;  //Finish.
 }
 
-RValue CInvoker::GetGlobal(const char* Name)
+RValue CInvoker::GetGlobal(std::string Name)
 {
-	return Call("variable_global_get", { &Name });
+	return Call("variable_global_get", { Name });
 }
 
-RValue CInvoker::SetGlobal(const char* Name, const RValue& Value)
+RValue CInvoker::SetGlobal(std::string Name, const RValue& Value)
 {
-	return Call("variable_global_set", { &Name, Value });
+	return Call("variable_global_set", { Name, Value });
 }
 
 RValue CInvoker::CreateObject(const char* Name, double PosX, double PosY)
 {
-	//I'd rather set these manually
-
 	RValue rvAssetID = Call("asset_get_index", { std::string(Name) });
 	return Call("instance_create", { PosX, PosY, rvAssetID });
 }

@@ -120,6 +120,9 @@
     <ClInclude Include="src\PD\Hooks\DoCallScript\hkDoCallScript.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\PD\Hooks\YYMemManager\YYMemManager.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\PD\SDK\Void.cpp">
@@ -204,6 +207,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\PD\Hooks\DoCallScript\hkDoCallScript.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PD\Hooks\YYMemManager\YYMemManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

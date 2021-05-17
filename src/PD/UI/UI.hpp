@@ -3,7 +3,6 @@
 #include <string>
 namespace UI
 {
-	struct prRValue;
 	inline bool bOpen = true;
 	inline bool bNoMovementInMenu = true;
 	inline bool bUseExperimentalSig = false;
@@ -11,7 +10,7 @@ namespace UI
 	inline bool bDrawLuaConsole = false;
 	inline bool bDrawDebugMenu = false;
 
-	void Render(std::vector<prRValue*>);
+	void Render(std::vector<void*>);
 	void ApplyStyle();
 	void ShowGameWarning();
 	void DrawMainMenuBar(); //Only returns true if we're unloading

@@ -51,12 +51,73 @@ struct RArrayRef
 	RValue* pOwner;
 };
 
-struct RStringRef
+void __cdecl YYSetString(RValue* _pVal, const char* _pS);
+
+void __cdecl YYCreateString(RValue* _pVal, const char* _pS);
+
+const char* __cdecl YYStrDup(const char* _pS);
+
+void* WrapperYYAlloc(size_t size, bool zero);
+
+void WrapperYYFree(void* block);
+
+
+template <typename T>
+struct _RefThing
 {
-	const char* String;
-	Int32 nRefCount;
-	Int32 nSize;
+	T m_Thing;
+	int m_refCount;
+	int m_Size;
+
+	//This is entirely transcripted from IDA disassembly, as I'm too dumb to code this
+	_RefThing(T thing, size_t size)
+	{
+		void* block = 0;
+
+		if (thing)
+		{
+			this->m_Size = size;
+			block = WrapperYYAlloc(size + 1, false);
+			memcpy(block, thing, size + 1);
+		}
+		else
+		{
+			this->m_Size = 0;
+		}
+
+		this->m_Thing = (T)block;
+		this->m_refCount = 1;
+	}
+
+	void Dec()
+	{
+		auto ShouldFree = this->m_refCount-- == 1;
+
+		if (ShouldFree)
+		{
+			WrapperYYFree((void*)this->m_Thing);
+			this->m_Size = 0;
+			this->m_Thing = nullptr;
+			delete this; //This has to be heap-allocated apparently
+			return;
+		}
+	}
+
+	void Inc()
+	{
+		this->m_refCount += 1;
+	}
+
+	~_RefThing()
+	{
+		this->Dec();
+	}
+
+	static _RefThing<T>* assign(_RefThing<T>* _other) { if (_other != nullptr) { _other->Inc(); } return _other; }
+	static _RefThing<T>* remove(_RefThing<T>* _other) { if (_other != nullptr) { _other->Dec(); } return nullptr; }
 };
+
+using RefString = _RefThing<const char*>;
 
 #pragma pack(push, 4)
 struct RValue
@@ -69,11 +130,11 @@ struct RValue
 		void* PointerValue;
 		const char** ppCharValue;
 		RArrayRef* ArrayValue;
-		RStringRef* StringValue;
+		RefString* StringValue;
 		struct
 		{
-			RStringRef* pStringVal;
-			char* HeapAllocString;
+			RefString* pStringVal;
+			int ChecksumValid;
 		};
 	};
 
@@ -82,11 +143,11 @@ struct RValue
 
 	RValue() : PointerValue(nullptr) {}
 
-	RValue(double Value);
+	RValue(const double& Value);
 
-	RValue(std::string str);
+	RValue(const std::string& str);
 
-	RValue(RStringRef* Value);
+	RValue(const RValue& Other);
 
 	RValue(const char** Value);
 
@@ -94,46 +155,7 @@ struct RValue
 
 	RValue* operator& ();
 
-	RValue& at(int index);
-
-	RValue(const RValue& old)
-	{
-		memcpy(this, &old, sizeof(old));
-		if (old.Kind == RV_String)
-		{
-			if (old.StringValue)
-				this->StringValue->nRefCount += 1;
-		}
-	}
-
-	~RValue()
-	{
-		if (this->Kind == RV_String)
-		{
-			if (this->pStringVal && this->HeapAllocString)
-			{
-				if (_CrtIsMemoryBlock(pStringVal, sizeof(RStringRef), NULL, NULL, NULL))
-				{
-					pStringVal->nRefCount -= 1;
-
-					if (pStringVal->nRefCount < 1)
-					{
-						if (_CrtIsValidHeapPointer(pStringVal))
-							delete StringValue;
-					}
-
-					if (_CrtIsMemoryBlock(HeapAllocString, 512, NULL, NULL, NULL))
-					{
-						if (pStringVal->nRefCount < 1)
-						{
-							if (_CrtIsValidHeapPointer(HeapAllocString))
-								delete HeapAllocString;
-						}
-					}
-				}
-			}
-		}
-	}
+	RValue& at(const int& index);
 };
 #pragma pack(pop)
 
@@ -168,7 +190,7 @@ struct GameForm_t
 {
 	char FORM[4]; //Literally has the string FORM, not null terminated.
 	Int32 FileLength; //Self-explanatory.
-	char GEN8[4];
+	char GEN8String[4];
 	GEN8Chunk_t Gen8;
 
 	const char* ReadString(unsigned long Offset);

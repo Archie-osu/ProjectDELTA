@@ -8,10 +8,15 @@ HMODULE g_hDLL = nullptr;
 
 DWORD WINAPI Main(LPVOID)
 {
+#ifdef _DEBUG
 	AllocConsole();
 	FILE* dum;
 	freopen_s(&dum, "CONOUT$", "w", stdout);
+#endif
 
+#ifdef _WIN64
+	#error Compile in x86, dummy!
+#endif
 	Void.Load();
 
 	while (!Void.ShouldUnload())

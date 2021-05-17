@@ -79,8 +79,9 @@ HRESULT __stdcall Hooks::Present::Hook(IDXGISwapChain* pThis, UINT Sync, UINT Fl
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
-	Void.CallbackManager->Call(CCallbackManager::Types::FRAME_RENDER, {});
-	Void.LuaCallbackManager->Call(CLuaCallbackManager::Types::ON_FRAME);
+	Void.CallbackManager->Call(CCallbackManager::Types::FRAME_RENDER, {
+		ReCa<void*>(CCallbackManager::Types::FRAME_RENDER)
+	});
 
 	ImGui::Render();
 
@@ -91,7 +92,10 @@ HRESULT __stdcall Hooks::Present::Hook(IDXGISwapChain* pThis, UINT Sync, UINT Fl
 	//Run original
 	auto Return = Void.HookSystem->GetOriginal<FN>("Present")(pThis, Sync, Flags);
 
-	Void.CallbackManager->Call(CCallbackManager::Types::FRAME_END, { &Return });
+	Void.CallbackManager->Call(CCallbackManager::Types::FRAME_END, { 
+		ReCa<void*>(CCallbackManager::Types::FRAME_END),
+		ReCa<void*>(&Return)
+	});
 
 	return Return;
 }

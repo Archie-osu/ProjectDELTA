@@ -27,13 +27,25 @@ public:
 		ON_DRAW
 	};
 	void RegisterCallback(Types type, std::string name);
-
-	//Visual studio is fucking autistic thinking this fn doesnt exist...
 	void UnregisterCallback(Types type, std::string name);
 
 	void Call(Types type);
-
 	void Purge(); //Reinitialize
 private:
 	std::map<Types, std::forward_list<std::string>> prCallbackMap;
 };
+
+//For C++, use the normal Callback Manager with VMEXEC_xxx (see LuaScriptCallback() for reference)
+class CLuaScriptHookSystem
+{
+public:
+	friend void LuaScriptCallback(std::vector<void*>);
+
+	void Call(std::string ScriptName);
+	void AddHook(std::string ScriptName, std::string LuaName);
+	void RemoveHook(std::string ScriptName, std::string LuaName);
+private:
+	std::map<std::string, std::forward_list<std::string>> prScriptMap;
+};
+
+void LuaScriptCallback(std::vector<void*>);

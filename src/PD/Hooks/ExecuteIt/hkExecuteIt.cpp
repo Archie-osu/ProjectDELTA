@@ -12,21 +12,51 @@ bool __cdecl Hooks::ExecuteIt::Hook(CInstance* Self, CInstance* Other, CCode* pC
 		if (pCode->i_pName)
 			bIsDrawEvent = strstr(pCode->i_pName, "Draw_0");
 
-	Void.CallbackManager->Call(CCallbackManager::Types::VMEXEC_BEGIN, { Self, Other, pCode, pArgs });
+	Void.CallbackManager->Call(CCallbackManager::Types::VMEXEC_BEGIN, {
+		ReCa<void*>(CCallbackManager::Types::VMEXEC_BEGIN),
+		ReCa<void*>(Self),
+		ReCa<void*>(Other),
+		ReCa<void*>(pCode),
+		ReCa<void*>(pArgs)
+	});
 
 	if (bIsDrawEvent)
 	{
-		Void.CallbackManager->Call(CCallbackManager::Types::DRAW_BEGIN, { Self, Other, pCode, pArgs });
+		Void.CallbackManager->Call(CCallbackManager::Types::DRAW_BEGIN, {
+			ReCa<void*>(CCallbackManager::Types::DRAW_BEGIN),
+			ReCa<void*>(Self),
+			ReCa<void*>(Other),
+			ReCa<void*>(pCode),
+			ReCa<void*>(pArgs)
+		});
+
 		Void.LuaCallbackManager->Call(CLuaCallbackManager::Types::ON_DRAW);
 	}
 
 	auto ret = Void.HookSystem->GetOriginal<FN>("ExecuteIt")(Self, Other, pCode, pArgs);
 
 	if (bIsDrawEvent)
-		Void.CallbackManager->Call(CCallbackManager::Types::DRAW_END, { &ret, Self, Other, pCode, pArgs });
-
+	{
+		Void.CallbackManager->Call(CCallbackManager::Types::DRAW_END, {
+			ReCa<void*>(CCallbackManager::Types::DRAW_END),
+			ReCa<void*>(&ret),
+			ReCa<void*>(Self),
+			ReCa<void*>(Other),
+			ReCa<void*>(pCode),
+			ReCa<void*>(pArgs)
+		});
+	}
+		
 	Void.LuaCallbackManager->Call(CLuaCallbackManager::Types::ON_VMEXEC);
-	Void.CallbackManager->Call(CCallbackManager::Types::VMEXEC_END, { &ret, Self, Other, pCode, pArgs });
+
+	Void.CallbackManager->Call(CCallbackManager::Types::VMEXEC_END, {
+		ReCa<void*>(CCallbackManager::Types::VMEXEC_END),
+		ReCa<void*>(&ret),
+		ReCa<void*>(Self),
+		ReCa<void*>(Other),
+		ReCa<void*>(pCode),
+		ReCa<void*>(pArgs)
+	});
 
 	return ret;
 }
@@ -49,7 +79,7 @@ uint8_t Hooks::ExecuteIt::NormalizeHook(uint32_t Base)
 
 void* Hooks::ExecuteIt::GetTargetAddress()
 {
-	auto p = Void.MemoryManager->PatternScan("\x80\x3D\x00\x00\x00\x00\x00\x00\x0F\x84", "xx????x?xx", false);
+	auto p = Void.PatternManager->PatternScan("\x80\x3D\x00\x00\x00\x00\x00\x00\x0F\x84", "xx????x?xx", false);
 
 	if (!p)
 	{

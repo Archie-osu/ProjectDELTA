@@ -1,10 +1,11 @@
 #include "Void.hpp"
 
-#include "../Hooks/Present/hkPresent.hpp"
-#include "../Hooks/EndScene/hkEndScene.hpp"
-#include "../Hooks/Window Proc/hkWndProc.hpp"
-#include "../Hooks/ExecuteIt/hkExecuteIt.hpp"
 #include "../Hooks/DoCallScript/hkDoCallScript.hpp"
+#include "../Hooks/EndScene/hkEndScene.hpp"
+#include "../Hooks/ExecuteIt/hkExecuteIt.hpp"
+#include "../Hooks/Present/hkPresent.hpp"
+#include "../Hooks/Window Proc/hkWndProc.hpp"
+#include "../Hooks/YYMemManager/YYMemManager.hpp"
 
 #include <MinHook.h>
 #include <fstream>
@@ -18,16 +19,19 @@
 #include "../UI/UI.hpp"
 #include <Dbghelp.h>
 
-void DumpProcess(struct _EXCEPTION_POINTERS* pException)
+bool DumpProcess(struct _EXCEPTION_POINTERS* pException)
 {
+	bool ret = false;
+
 	//POV: Microsoft naming convention
 	using fnWriteDump = BOOL(WINAPI*)(HANDLE, DWORD, HANDLE, MINIDUMP_TYPE, CONST PMINIDUMP_EXCEPTION_INFORMATION, CONST PMINIDUMP_USER_STREAM_INFORMATION, CONST PMINIDUMP_CALLBACK_INFORMATION);
 	using fnGetEnvA = DWORD(WINAPI*)(LPCSTR, LPSTR, DWORD);
 
-	MessageBoxA(0, "The Void Engine encountered a critical error.\n"
-		"The game has been stopped to prevent damage to your save files.\n"
+	ret = (MessageBoxA(0, "The Void Engine encountered a critical error.\n"
+		"The game has been paused to prevent potential damage to your save files.\n"
 		"A process dump will be written to your user directory (VoidDump.dmp).\n"
-		"Please report this to the Project DELTA GitHub or reach out to Archie#7097 on Discord.", "[Void Security Manager]", MB_OK | MB_TOPMOST | MB_ICONERROR);
+		"Please report this to the Project DELTA GitHub or reach out to Archie#7097 on Discord.\n"
+		"Do you want to continue anyway? (Experimental, could crash anyway)", "Void Exception Handler", MB_TOPMOST | MB_ICONERROR | MB_YESNO) == IDYES);
 
 	HMODULE dbgLib = LoadLibraryA("dbghelp.dll");
 	fnWriteDump pMinidump = reinterpret_cast<fnWriteDump>(GetProcAddress(dbgLib, "MiniDumpWriteDump"));
@@ -48,14 +52,17 @@ void DumpProcess(struct _EXCEPTION_POINTERS* pException)
 
 	pMinidump(GetCurrentProcess(), GetCurrentProcessId(), hFile, MiniDumpNormal, &ExInfo, NULL, NULL);
 	::CloseHandle(hFile);
+
+	return ret;
 }
 
 LONG WINAPI CrashHandler(struct _EXCEPTION_POINTERS* apExceptionInfo)
 {
-	DumpProcess(apExceptionInfo);
+	if (DumpProcess(apExceptionInfo))
+		return EXCEPTION_CONTINUE_EXECUTION;
+
 	return EXCEPTION_CONTINUE_SEARCH;
 }
-
 void CVoid::Load()
 {
 	SetUnhandledExceptionFilter(CrashHandler); //Set this first, so even errors in constructors get caught
@@ -65,8 +72,21 @@ void CVoid::Load()
 	this->LuaEngine = new CLuaEngine;
 	this->CallbackManager = new CCallbackManager;
 	this->LuaCallbackManager = new CLuaCallbackManager;
+	this->PatternManager = new CPatternManager;
 	this->MemoryManager = new CMemoryManager;
+	this->LuaScriptHookManager = new CLuaScriptHookSystem;
 	this->lpData = 0;
+
+	//Window Properties
+	{
+		this->Invoker->Call("window_set_size", { 1280, 720 });
+		this->Invoker->Call("window_set_min_width", { 320 });
+		this->Invoker->Call("window_set_min_height", { 240 });
+
+		this->Invoker->Call("window_set_max_width", { 3840 });
+		this->Invoker->Call("window_set_max_height", { 2160 });
+	}
+	
 
 	{
 		//Init internals
@@ -97,12 +117,15 @@ void CVoid::Load()
 		if (lpDoCallScript)
 			Void.HookSystem->Hook("DoCallScript", lpDoCallScript, Hooks::DoCallScript::Hook);
 
+		Hooks::YYMemManager::Init();
+
 		Hooks::WndProc::Init();
 	}
 
 	{
 		//Callbacks
 		Void.CallbackManager->RegisterCallback(CCallbackManager::Types::FRAME_RENDER, ReCa<CCallbackManager::PD_Routine>(UI::Render));
+		Void.CallbackManager->RegisterCallback(CCallbackManager::Types::VMEXEC_SCRIPT_END, ReCa<CCallbackManager::PD_Routine>(LuaScriptCallback));
 	}
 }
 
@@ -123,6 +146,8 @@ void CVoid::Unload()
 	delete this->CallbackManager;
 	delete this->LuaCallbackManager;
 	delete this->MemoryManager;
+	delete this->PatternManager;
+	delete this->LuaScriptHookManager;
 	Beep(500, 100);
 }
 
@@ -153,12 +178,12 @@ void* CVoid::GetGameContext()
 
 void* CVoid::FindGameData()
 {
-	void* p = ReCa<void*>(MemoryManager->RegionScan(128, "\x46\x4F\x52\x4D\x00\x00\x00\x00\x47\x45\x4E\x38", "xxxx????xxxx"));
+	void* p = ReCa<void*>(PatternManager->RegionScan(128, "\x46\x4F\x52\x4D\x00\x00\x00\x00\x47\x45\x4E\x38", "xxxx????xxxx"));
 
 	if (!p && UI::bUseExperimentalSig)
 	{
 		//This should never happen.
-		p = ReCa<void*>(MemoryManager->RegionScan(4096, "\x00\x00\x00\x00\x00\x00\x00\x00\x47\x45\x4E\x38", "????????xxxx"));
+		p = ReCa<void*>(PatternManager->RegionScan(4096, "\x00\x00\x00\x00\x00\x00\x00\x00\x47\x45\x4E\x38", "????????xxxx"));
 	}
 
 	return p;

@@ -2,6 +2,13 @@
 #define ReCa reinterpret_cast
 #define StCa static_cast
 
+template <typename T, typename N>
+
+T cast(N Stuff)
+{
+	return (T)(Stuff);
+}
+
 struct CVoid
 {
 private:
@@ -10,10 +17,12 @@ public:
 	class CInvoker* Invoker;
 	class CHookSystem* HookSystem;
 	class CLuaEngine* LuaEngine;
+	class CReversed* Reversed;
 	class CCallbackManager* CallbackManager;
+	class CPatternManager* PatternManager;
 	class CMemoryManager* MemoryManager;
 	class CLuaCallbackManager* LuaCallbackManager; //Cut down version of the C++ callback manager.
-	class CLuaHookManager* LuaHookManager; //A lot has changed, thus I can't really merge it to the normal hook manager.
+	class CLuaScriptHookSystem* LuaScriptHookManager;
 
 	void* GetGameWindow(); //HWND
 	void* GetGameDevice(); //D3DDevice*

@@ -1,6 +1,7 @@
 #pragma once
 #include <vadefs.h>
-class CMemoryManager
+#include <list>
+class CPatternManager
 {
 public:
 	unsigned long GetFuncAddress(const char* ModuleName, const char* FunctionName);
@@ -12,5 +13,21 @@ public:
 	//Limited pattern scanning for all modules
 	unsigned long RegionScan(uintptr_t MaxOffset, const char* Pattern, const char* Mask);
 
-	bool IsValidMemory(void* Pointer, size_t size);
+	bool IsValidMemory(void* Pointer);
+};
+
+class CMemoryManager
+{
+public:
+
+	struct CAllocatedMemory
+	{
+		size_t m_Size;
+		void* data;
+	};
+
+	void* Alloc(size_t nSize, bool bZeroMemory);
+	void Free(void* block);
+
+	void strcpy_pi(char* dest, const char* source);
 };
