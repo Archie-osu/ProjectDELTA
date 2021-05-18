@@ -85,21 +85,19 @@ struct _RefThing
 			this->m_Size = 0;
 		}
 
-		this->m_Thing = (T)block;
+		this->m_Thing = cast<T>(block);
 		this->m_refCount = 1;
 	}
 
-	void Dec()
+	bool Dec()
 	{
 		auto ShouldFree = this->m_refCount-- == 1;
 
 		if (ShouldFree)
 		{
-			WrapperYYFree((void*)this->m_Thing);
+			WrapperYYFree(cast<void*>(this->m_Thing));
 			this->m_Size = 0;
 			this->m_Thing = nullptr;
-			delete this; //This has to be heap-allocated apparently
-			return;
 		}
 	}
 
@@ -108,9 +106,16 @@ struct _RefThing
 		this->m_refCount += 1;
 	}
 
+	bool ShouldFree()
+	{
+		return ((this->m_refCount - 1) == 1);
+	}
+
 	~_RefThing()
 	{
-		this->Dec();
+		this->Dec(); //TODO: Figure out how to automatically delete this heap allocated pointer
+		//Maybe the YoYo lib has the answers?
+		//Right now it just deletes the string, but leaves the _RefThing on the heap, leaking memory.
 	}
 
 	static _RefThing<T>* assign(_RefThing<T>* _other) { if (_other != nullptr) { _other->Inc(); } return _other; }
