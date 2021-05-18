@@ -98,19 +98,13 @@ struct _RefThing
 			WrapperYYFree((void*)this->m_Thing);
 			this->m_Size = 0;
 			this->m_Thing = nullptr;
-			delete this; //This has to be heap-allocated apparently
-			return;
+			delete this;
 		}
 	}
 
 	void Inc()
 	{
 		this->m_refCount += 1;
-	}
-
-	~_RefThing()
-	{
-		this->Dec();
 	}
 
 	static _RefThing<T>* assign(_RefThing<T>* _other) { if (_other != nullptr) { _other->Inc(); } return _other; }
@@ -131,11 +125,6 @@ struct RValue
 		const char** ppCharValue;
 		RArrayRef* ArrayValue;
 		RefString* StringValue;
-		struct
-		{
-			RefString* pStringVal;
-			int ChecksumValid;
-		};
 	};
 
 	Int32 Flags;
@@ -156,6 +145,8 @@ struct RValue
 	RValue* operator& ();
 
 	RValue& at(const int& index);
+
+	~RValue();
 };
 #pragma pack(pop)
 

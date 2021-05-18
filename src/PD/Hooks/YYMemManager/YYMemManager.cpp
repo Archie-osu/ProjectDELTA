@@ -11,7 +11,6 @@ void* Hooks::YYMemManager::AllocHook(unsigned int size, const char* szFile, int 
 
 void Hooks::YYMemManager::FreeHook(void* block)
 {
-	printf("Freeing %p\n", block);
 	Void.HookSystem->GetOriginal<FNFree>("YYFree")(block);
 }
 

@@ -153,9 +153,9 @@ void CLuaEngine::Init()
 	State.set_function("rv_tostring", [](RValue rv)
 	{
 		if (rv.Kind == RVKinds::RV_String)
-			if (Void.PatternManager->IsValidMemory(rv.pStringVal))
-				if (rv.pStringVal->m_Thing)
-					return std::string(rv.pStringVal->m_Thing);
+			if (Void.PatternManager->IsValidMemory(rv.StringValue))
+				if (rv.StringValue->m_Thing)
+					return std::string(rv.StringValue->m_Thing);
 
 		return std::string();
 	});
@@ -180,10 +180,6 @@ void CLuaEngine::Init()
 			set_global(string, variable);
 			index = index + 1;
 		end
-
-		THEN AFTER THIS FINISHES
-
-
 	*/
 
 }

@@ -147,6 +147,7 @@ void* CMemoryManager::Alloc(size_t nSize, bool bZeroMemory)
 
 void CMemoryManager::Free(void* block)
 {
+	printf("Memory Free: block %p\n", block);
 	Void.HookSystem->GetOriginal<void (__cdecl*)(void*)>
 		("YYFree")(block);
 }

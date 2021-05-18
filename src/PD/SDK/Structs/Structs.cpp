@@ -22,16 +22,7 @@ void __cdecl YYSetString(RValue* _pVal, const char* _pS)
 
 void __cdecl YYCreateString(RValue* _pVal, const char* _pS)
 {
-	switch (_pVal->Kind)
-	{
-	case RV_String:
-		if (_pVal->StringValue)
-			_pVal->StringValue->Dec();
-		break;
-	default:
-		break;
-	}
-
+	//No need to decrement manually, the destructor gets called if the object's valid!
 	_pVal->Flags = 0;
 	_pVal->StringValue = nullptr;
 	_pVal->StringValue = new RefString(_pS, strlen(_pS));
@@ -61,6 +52,16 @@ RValue& RValue::at(const int& index)
 	return *this;
 }
 
+RValue::~RValue()
+{
+	if (Kind == RV_String)
+	{
+		RefString::remove(this->StringValue);
+		this->StringValue = nullptr;
+	}
+	//Arrays too, sometime.
+}
+
 RValue::RValue(const RValue& old)
 {
 	this->Kind = old.Kind;
@@ -74,8 +75,8 @@ RValue::RValue(const RValue& old)
 
 		break;
 	case RV_String:
-		if (this->pStringVal)
-			this->pStringVal = RefString::assign(old.StringValue);
+		if (this->StringValue)
+			this->StringValue = RefString::assign(old.StringValue);
 		else
 			YYCreateString(this, "<Undeclared Project DELTA String>");
 		break;
