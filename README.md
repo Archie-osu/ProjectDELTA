@@ -1,7 +1,7 @@
 # Project DELTA v3
 Project DELTA - An open-source, modular mod menu for Toby Fox's games and their spin-offs.
 
-**Important note to Grossley: No, it's not out yet**
+**Important note to Grossley: Yes, it is out.**
 
 Tested releases:
 -  UNDERTALE v1.08
