@@ -101,7 +101,7 @@ unsigned long CPatternManager::RegionScan(uintptr_t MaxOffset, const char* Patte
 		if (!(memInformation.State & MEM_COMMIT))
 			continue;
 
-		for (unsigned i = 0; i < MaxOffset - strlen(Mask); i++)
+		for (unsigned i = 0; i < MaxOffset - strlen(Mask) && i < memInformation.RegionSize - strlen(Mask); i++)
 		{
 			bool found = true;
 			for (unsigned j = 0; j < strlen(Mask); j++)

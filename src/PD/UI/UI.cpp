@@ -68,7 +68,7 @@ void UI::Render(std::vector<void*>)
 
 void UI::Default()
 {
-    ImGui::Text("Automatic game recognition failed.\nIf you wish, you may use the Lua API to change variables and call functions though.");
+    ImGui::Text("Automatic game recognition failed.\nIf you wish, you may use the Lua API to interact with the game.");
 }
 
 void UI::ApplyStyle()
@@ -163,7 +163,7 @@ void UI::ShowGameWarning()
 
     ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 
-    if (ImGui::BeginPopupModal("PD - Warning", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+    if (ImGui::BeginPopupModal("PD - Warning", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings))
     {
         ImGui::Text("Using Project DELTA online may get you banned.\nUse at your own risk!\n\n");
         ImGui::Separator();
@@ -210,14 +210,14 @@ void UI::DrawMainMenuBar()
         ImGui::EndMenu();
     }
 
-    ImGui::Text("Project DELTA v3 (b4)");
+    ImGui::Text("Project DELTA v3 - Experimental Build");
 
     ImGui::EndMainMenuBar();
 }
 
 void UI::DrawDebug()
 {
-    if (ImGui::Begin("PD v3 - Debug / Beta Features"))
+    if (ImGui::Begin("PD v3 - data viewer", nullptr, ImGuiWindowFlags_NoSavedSettings))
     {
         GameForm_t* pGameData = nullptr;
         pGameData = ReCa<GameForm_t*>(Void.GetGameData());

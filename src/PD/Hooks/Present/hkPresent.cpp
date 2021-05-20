@@ -53,6 +53,7 @@ HRESULT __stdcall Hooks::Present::Hook(IDXGISwapChain* pThis, UINT Sync, UINT Fl
 		gmHWND = ReCa<HWND>(Void.GetGameWindow());
 
 		ImGui::CreateContext();
+		ImGuiIO& io = ImGui::GetIO(); //Forced to violate suckless a little because of references.
 
 		ImGui_ImplWin32_Init(gmHWND);
 		ImGui_ImplDX11_Init(pDevice, pContext);
@@ -61,10 +62,14 @@ HRESULT __stdcall Hooks::Present::Hook(IDXGISwapChain* pThis, UINT Sync, UINT Fl
 
 		std::string Path = SystemRoot; Path.append("\\Fonts\\verdana.ttf");
 
-		pFont = ImGui::GetIO().Fonts->AddFontFromFileTTF(Path.c_str(), 16.0f);
+		pFont = io.Fonts->AddFontFromFileTTF(Path.c_str(), 16.0f);
 
 		if (!pFont)
 			Void.Error("[D3D11 Init] Failed to get the Font handle (null pointer!)");
+
+		io.Fonts->Build();
+		ImGui_ImplDX11_InvalidateDeviceObjects(); 
+		ImGui_ImplDX11_CreateDeviceObjects();
 
 		CreateRenderTargetView(pThis, pDevice, &pView);
 	});

@@ -6462,6 +6462,8 @@ void ImGui::SetCurrentFont(ImFont* font)
     g.FontBaseSize = ImMax(1.0f, g.IO.FontGlobalScale * g.Font->FontSize * g.Font->Scale);
     g.FontSize = g.CurrentWindow ? g.CurrentWindow->CalcFontSize() : 0.0f;
 
+    IM_ASSERT(g.Font->ContainerAtlas && "Font atlas not built! SetCurrentFont() was null!");
+
     ImFontAtlas* atlas = g.Font->ContainerAtlas;
     g.DrawListSharedData.TexUvWhitePixel = atlas->TexUvWhitePixel;
     g.DrawListSharedData.TexUvLines = atlas->TexUvLines;

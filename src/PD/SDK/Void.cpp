@@ -77,16 +77,12 @@ void CVoid::Load()
 	this->LuaScriptHookManager = new CLuaScriptHookSystem;
 	this->lpData = 0;
 
-	//Window Properties
 	{
+		//Pre-Hook Calls
 		this->Invoker->Call("window_set_size", { 1280, 720 });
-		this->Invoker->Call("window_set_min_width", { 320 });
-		this->Invoker->Call("window_set_min_height", { 240 });
-
-		this->Invoker->Call("window_set_max_width", { 3840 });
-		this->Invoker->Call("window_set_max_height", { 2160 });
 	}
 	
+	Sleep(66); //Sleep for two frames, just give it time to resize.
 
 	{
 		//Init internals
@@ -140,14 +136,15 @@ void CVoid::Unload()
 	MH_Uninitialize();
 	FreeConsole();
 
-	delete this->HookSystem;
+
 	delete this->Invoker;
-	delete this->LuaEngine;
 	delete this->CallbackManager;
+	delete this->LuaEngine;
 	delete this->LuaCallbackManager;
+	delete this->LuaScriptHookManager;
 	delete this->MemoryManager;
 	delete this->PatternManager;
-	delete this->LuaScriptHookManager;
+	delete this->HookSystem;
 	Beep(500, 100);
 }
 
@@ -182,8 +179,14 @@ void* CVoid::FindGameData()
 
 	if (!p && UI::bUseExperimentalSig)
 	{
-		//This should never happen.
-		p = ReCa<void*>(PatternManager->RegionScan(4096, "\x00\x00\x00\x00\x00\x00\x00\x00\x47\x45\x4E\x38", "????????xxxx"));
+		//Works for YYC - bigger range, check for FORM header
+		p = ReCa<void*>(PatternManager->RegionScan(0x7FFFF, "\x46\x4F\x52\x4D\x00\x00\x00\x00\x47\x45\x4E\x38", "xxxx????xxxx"));
+
+		if (!p)
+		{
+			//YYC-level range, no FORM header, just GEN8
+			p = ReCa<void*>(PatternManager->RegionScan(0x7FFFF, "\x00\x00\x00\x00\x00\x00\x00\x00\x47\x45\x4E\x38", "????????xxxx"));
+		}
 	}
 
 	return p;

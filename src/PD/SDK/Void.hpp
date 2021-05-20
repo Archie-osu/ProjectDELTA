@@ -17,7 +17,6 @@ public:
 	class CInvoker* Invoker;
 	class CHookSystem* HookSystem;
 	class CLuaEngine* LuaEngine;
-	class CReversed* Reversed;
 	class CCallbackManager* CallbackManager;
 	class CPatternManager* PatternManager;
 	class CMemoryManager* MemoryManager;

@@ -98,7 +98,9 @@ struct _RefThing
 			WrapperYYFree(cast<void*>(this->m_Thing));
 			this->m_Size = 0;
 			this->m_Thing = nullptr;
+			return true;
 		}
+		return false;
 	}
 
 	void Inc()
@@ -161,6 +163,8 @@ struct RValue
 	RValue* operator& ();
 
 	RValue& at(const int& index);
+
+	~RValue();
 };
 #pragma pack(pop)
 

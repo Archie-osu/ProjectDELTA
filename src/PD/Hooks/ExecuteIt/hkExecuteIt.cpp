@@ -86,7 +86,7 @@ void* Hooks::ExecuteIt::GetTargetAddress()
 		Void.Warning("Cannot find the ExecuteIt function. This is usually because the game is made with YYC.");
 		return nullptr;
 	}
-		
+	
 	p -= Hooks::ExecuteIt::NormalizeHook(p);
 
 	return ReCa<void*>(p);
