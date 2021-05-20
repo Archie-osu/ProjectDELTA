@@ -11,9 +11,8 @@ Tested releases:
 Libraries used: MinHook, ImGui
 
 # TODO List (in order of importance)
-- Implement Lua callbacks
-- Release the damn thing already
-- Reverse engineer how global variables are stored in memory
+- idk, fix bugs I guess
+- maybe refactor stuff?
 
 # FAQ
 **Q:** Where are the releases? Where can I download this tool?
