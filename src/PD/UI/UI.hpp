@@ -4,6 +4,7 @@
 namespace UI
 {
 	inline bool bOpen = true;
+	inline bool bSetStyle = false;
 	inline bool bNoMovementInMenu = true;
 	inline bool bUseExperimentalSig = false;
 

@@ -141,23 +141,11 @@ void* CMemoryManager::Alloc(size_t nSize, bool bZeroMemory)
 	if (bZeroMemory)
 		memset(Data, 0, nSize); //The game just doesn't do this for some reason, idk it's probably stoopid
 
-	printf("Memory Alloc: size %i, return %p\n", nSize, Data);
 	return Data;
 }
 
 void CMemoryManager::Free(void* block)
 {
-	printf("Memory Free: block %p\n", block);
 	Void.HookSystem->GetOriginal<void (__cdecl*)(void*)>
 		("YYFree")(block);
-}
-
-void CMemoryManager::strcpy_pi(char* dest, const char* source)
-{
-	size_t i = 0;
-	while (source[i] != '\x00') {
-		dest[i] = source[i];
-		i++;
-	}
-		
 }

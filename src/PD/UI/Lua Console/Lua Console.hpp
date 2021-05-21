@@ -1,14 +1,13 @@
 #pragma once
 #include <string>
+
+//Refactor this
 class CLuaConsole
 {
-private:
-	std::string Text; //The text inside the console
 public:
-	char Buffer[512] = { 0 }; //The text input
-	void ExecuteCommand(std::string Command);
-	void Echo(std::string text);
+	void* pMainFont = nullptr;  void* pCodeFont = nullptr;
 
+	void ExecuteCommand(std::string Command);
 	void Render();
 };
 

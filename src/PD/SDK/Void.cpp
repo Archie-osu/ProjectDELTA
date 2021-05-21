@@ -29,9 +29,9 @@ bool DumpProcess(struct _EXCEPTION_POINTERS* pException)
 
 	ret = (MessageBoxA(0, "The Void Engine encountered a critical error.\n"
 		"The game has been paused to prevent potential damage to your save files.\n"
-		"A process dump will be written to your user directory (VoidDump.dmp).\n"
-		"Please report this to the Project DELTA GitHub or reach out to Archie#7097 on Discord.\n"
-		"Do you want to continue anyway? (Experimental, could crash anyway)", "Void Exception Handler", MB_TOPMOST | MB_ICONERROR | MB_YESNO) == IDYES);
+		"Process dumps will be written to your user directory.\n"
+		"Please report this to the Project DELTA GitHub or to Archie#7097 on Discord.\n"
+		"Continue anyway?", "Void Exception Handler", MB_TOPMOST | MB_ICONERROR | MB_YESNO) == IDYES);
 
 	HMODULE dbgLib = LoadLibraryA("dbghelp.dll");
 	fnWriteDump pMinidump = reinterpret_cast<fnWriteDump>(GetProcAddress(dbgLib, "MiniDumpWriteDump"));
@@ -40,18 +40,27 @@ bool DumpProcess(struct _EXCEPTION_POINTERS* pException)
 	HMODULE krLib = LoadLibraryA("kernel32.dll");
 	reinterpret_cast<fnGetEnvA>(GetProcAddress(krLib, "GetEnvironmentVariableA"))("USERPROFILE", UserDirectory, MAX_PATH);
 
-	std::string Path = UserDirectory; Path.append("\\VoidDump.dmp");
+	std::string Path = UserDirectory; Path.append("\\VoidEngine_FullDump.dmp");
 
-	HANDLE hFile = CreateFileA(Path.c_str(), GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS,
+	HANDLE hFullDumpFile = CreateFileA(Path.c_str(), GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS,
 		FILE_ATTRIBUTE_NORMAL, NULL);
+
+	Path = UserDirectory; Path.append("\\VoidEngine_MiniDump.dmp");
+
+	HANDLE hMiniDumpFile = CreateFileA(Path.c_str(), GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS,
+		FILE_ATTRIBUTE_NORMAL, NULL);
+
 
 	_MINIDUMP_EXCEPTION_INFORMATION ExInfo;
 	ExInfo.ThreadId = GetCurrentThreadId();
 	ExInfo.ExceptionPointers = pException;
 	ExInfo.ClientPointers = FALSE;
 
-	pMinidump(GetCurrentProcess(), GetCurrentProcessId(), hFile, MiniDumpNormal, &ExInfo, NULL, NULL);
-	::CloseHandle(hFile);
+	pMinidump(GetCurrentProcess(), GetCurrentProcessId(), hFullDumpFile, MiniDumpWithIndirectlyReferencedMemory, &ExInfo, NULL, NULL);
+	pMinidump(GetCurrentProcess(), GetCurrentProcessId(), hMiniDumpFile, MiniDumpNormal, &ExInfo, NULL, NULL);
+
+	::CloseHandle(hFullDumpFile);
+	::CloseHandle(hMiniDumpFile);
 
 	return ret;
 }

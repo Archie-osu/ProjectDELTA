@@ -25,10 +25,17 @@ HRESULT WINAPI Hooks::EndScene::Hook(LPDIRECT3DDEVICE9 lpDevice)
 
 		ImGuiIO& Io = ImGui::GetIO();
 
-		auto p = Io.Fonts->AddFontFromFileTTF(Path.c_str(), 16.0f);
+		Void.pMainFont = Io.Fonts->AddFontFromFileTTF(Path.c_str(), 16.0f);
 
-		if (!p)
-			Void.Error("pFont == nullptr");
+		if (!Void.pMainFont)
+			Void.Error("[D3D9 Init] pMainFont was nullptr!");
+
+		Path = Systemroot; Path.append("\\Fonts\\consola.ttf");
+
+		Void.pCodeFont = Io.Fonts->AddFontFromFileTTF(Path.c_str(), 14.0f);
+
+		if (!Void.pCodeFont)
+			Void.Error("[D3D9 Init] pCodeFont was nullptr!");
 	});
 
 	auto Return = Void.HookSystem->GetOriginal<FN>("EndScene")(lpDevice);

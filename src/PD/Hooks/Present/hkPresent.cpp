@@ -7,6 +7,7 @@
 #include <ImGui/imgui_impl_win32.h>
 #include <ImGui/imgui_impl_dx11.h>
 
+#include "../../PD/SDK/Void.hpp"
 #include "../../UI/UI.hpp"
 
 #include <mutex>
@@ -62,10 +63,17 @@ HRESULT __stdcall Hooks::Present::Hook(IDXGISwapChain* pThis, UINT Sync, UINT Fl
 
 		std::string Path = SystemRoot; Path.append("\\Fonts\\verdana.ttf");
 
-		pFont = io.Fonts->AddFontFromFileTTF(Path.c_str(), 16.0f);
+		Void.pMainFont = io.Fonts->AddFontFromFileTTF(Path.c_str(), 16.0f);
 
-		if (!pFont)
-			Void.Error("[D3D11 Init] Failed to get the Font handle (null pointer!)");
+		if (!Void.pMainFont)
+			Void.Error("[D3D11 Init] Failed to get the main Font handle (null pointer!)");
+
+		Path = SystemRoot; Path.append("\\Fonts\\consola.ttf");
+
+		Void.pCodeFont = io.Fonts->AddFontFromFileTTF(Path.c_str(), 14.0f);
+
+		if (!Void.pCodeFont)
+			Void.Error("[D3D11 Init] Failed to get the code Font handle (null pointer!)");
 
 		io.Fonts->Build();
 		ImGui_ImplDX11_InvalidateDeviceObjects(); 

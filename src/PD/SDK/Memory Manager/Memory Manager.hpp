@@ -19,15 +19,6 @@ public:
 class CMemoryManager
 {
 public:
-
-	struct CAllocatedMemory
-	{
-		size_t m_Size;
-		void* data;
-	};
-
 	void* Alloc(size_t nSize, bool bZeroMemory);
 	void Free(void* block);
-
-	void strcpy_pi(char* dest, const char* source);
 };

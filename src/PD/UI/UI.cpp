@@ -73,6 +73,9 @@ void UI::Default()
 
 void UI::ApplyStyle()
 {
+    if (bSetStyle)
+        return;
+
     ImGuiStyle& style = ImGui::GetStyle();
     style.WindowPadding = ImVec2(10, 10);
     style.FramePadding = ImVec2(4, 4);
@@ -152,6 +155,8 @@ void UI::ApplyStyle()
     colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.00f, 1.00f, 1.00f, 0.70f);
     colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
     colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
+
+    bSetStyle = true;
 }
 
 void UI::ShowGameWarning()
@@ -178,6 +183,8 @@ void UI::ShowGameWarning()
 
 void UI::DrawMainMenuBar()
 {
+    static bool bShowDemo = false;
+
     ImGui::BeginMainMenuBar();
 
     if (ImGui::BeginMenu("Tool"))
@@ -192,9 +199,12 @@ void UI::DrawMainMenuBar()
 
         if (ImGui::BeginMenu("Debug"))
         {
+            
             ImGui::Text("data.win base: %p", Void.GetGameData());
             ImGui::Text("device: %p", Void.GetGameDevice());
             ImGui::Checkbox("Use experimental sig", &UI::bUseExperimentalSig);
+            ImGui::Checkbox("Show Demo Window", &bShowDemo);
+
             ImGui::EndMenu();
         }
 
@@ -213,6 +223,9 @@ void UI::DrawMainMenuBar()
     ImGui::Text("Project DELTA v3 - Experimental Build");
 
     ImGui::EndMainMenuBar();
+
+    if (bShowDemo)
+        ImGui::ShowDemoWindow(nullptr);
 }
 
 void UI::DrawDebug()

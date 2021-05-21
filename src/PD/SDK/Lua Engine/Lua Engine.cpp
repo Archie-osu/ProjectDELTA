@@ -27,8 +27,8 @@ void CLuaEngine::Init()
 
 	sol::constructors<
 		RValue(),
-		RValue(double),
-		RValue(std::string)
+		RValue(const double&),
+		RValue(const std::string&)
 	>
 		ConstrList;
 

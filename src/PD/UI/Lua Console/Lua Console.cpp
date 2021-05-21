@@ -4,51 +4,31 @@
 
 void CLuaConsole::ExecuteCommand(std::string Command)
 {
-    if (Command.starts_with("dbg-echo ") && Command.length() > 10)
+    std::string ErrorMsg = Void.LuaEngine->RunScript(Command);
+    if (!ErrorMsg.empty())
     {
-        Echo(std::string(Command.begin() + 9, Command.end()));
+        Void.Warning("Lua Script Execution Error\n\n%s", ErrorMsg.c_str());
     }
-    else
-    {
-        std::string ErrorMsg = Void.LuaEngine->RunScript(Command);
-        if (!ErrorMsg.empty())
-            Echo(ErrorMsg);
-    }
-}
-
-void CLuaConsole::Echo(std::string text)
-{
-    this->Text.append(text); this->Text.push_back('\n');
 }
 
 void CLuaConsole::Render()
 {
-    ImGui::SetNextWindowSize(ImVec2(420, 420));
+    ImGui::SetNextWindowSize(ImVec2(560, 320));
 
     if (ImGui::Begin("Lua Console", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse))
     {
-        static TextEditor Editor;
+        static TextEditor Editor; //Make this a member of Void.LuaEngine or something idk
+
         Void.LuaEngine->SetupLanguage(Editor);
 
-        ImGui::Text("Console output");
-        if (ImGui::BeginChildFrame(0xFFFC, ImVec2(400, 120)))
-            ImGui::TextWrapped(this->Text.c_str());
+        ImGui::PushFont(cast<ImFont*>(Void.pCodeFont));
 
-        ImGui::EndChildFrame();
+        Editor.Render("ConIn", ImVec2(540, 240), true);
 
-        ImGui::Text("Command input");
+        ImGui::PopFont();
 
-        Editor.Render("ConIn", ImVec2(400, 160), true);
-
-        ImGui::NewLine();
-
-        if (ImGui::Button("Run Script", ImVec2(120, 30)))
+        if (ImGui::Button("Execute", ImVec2(120, 30)))
             ExecuteCommand(Editor.GetText());
-
-        ImGui::SameLine();
-
-        if (ImGui::Button("Clear", ImVec2(120, 30)))
-            this->Text.clear();
 
         ImGui::SameLine();
 

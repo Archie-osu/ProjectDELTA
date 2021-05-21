@@ -14,14 +14,17 @@ struct CVoid
 private:
 	void* lpData;
 public:
+	void* pMainFont = nullptr; 
+	void* pCodeFont = nullptr;
+
 	class CInvoker* Invoker;
 	class CHookSystem* HookSystem;
-	class CLuaEngine* LuaEngine;
+	class CLuaEngine* LuaEngine; //Make all these into a central thing
 	class CCallbackManager* CallbackManager;
 	class CPatternManager* PatternManager;
 	class CMemoryManager* MemoryManager;
-	class CLuaCallbackManager* LuaCallbackManager; //Cut down version of the C++ callback manager.
-	class CLuaScriptHookSystem* LuaScriptHookManager;
+	class CLuaCallbackManager* LuaCallbackManager; //Make all these into a central thing
+	class CLuaScriptHookSystem* LuaScriptHookManager; //Make all these into a central thing
 
 	void* GetGameWindow(); //HWND
 	void* GetGameDevice(); //D3DDevice*
