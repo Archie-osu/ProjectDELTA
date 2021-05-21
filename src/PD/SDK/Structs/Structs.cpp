@@ -75,6 +75,7 @@ RValue::RValue(const RValue& old)
 
 		break;
 	case RV_String:
+		this->StringValue = old.StringValue;
 		if (this->StringValue)
 			this->StringValue = RefString::assign(old.StringValue);
 		else
