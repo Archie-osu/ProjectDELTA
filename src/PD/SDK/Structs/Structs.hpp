@@ -115,9 +115,7 @@ struct _RefThing
 
 	~_RefThing()
 	{
-		this->Dec(); //TODO: Figure out how to automatically delete this heap allocated pointer
-		//Maybe the YoYo lib has the answers?
-		//Right now it just deletes the string, but leaves the _RefThing on the heap, leaking memory.
+		this->Dec();
 	}
 
 	static _RefThing<T>* assign(_RefThing<T>* _other) { if (_other != nullptr) { _other->Inc(); } return _other; }
