@@ -220,7 +220,7 @@ void UI::DrawMainMenuBar()
         ImGui::EndMenu();
     }
 
-    ImGui::Text("Project DELTA v3 - Experimental Build");
+    ImGui::Text("Project DELTA v3.0.1 - Build date: %s @ %s", __DATE__, __TIME__);
 
     ImGui::EndMainMenuBar();
 

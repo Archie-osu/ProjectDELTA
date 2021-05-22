@@ -136,15 +136,8 @@ bool CPatternManager::IsValidMemory(void* Pointer)
 void* CMemoryManager::Alloc(size_t nSize, bool bZeroMemory)
 {
 	void* Data = Void.HookSystem->GetOriginal<void* (__cdecl*)(size_t, const char*, int, bool)>
-<<<<<<< Updated upstream
-		("YYAlloc")(nSize, "PD\\SDK\\Memory Manager\\MemoryManager.cpp", 140, bZeroMemory);
+		("YYAlloc")(nSize, "PD\\SDK\\Memory Manager\\MemoryManager.cpp", __LINE__, bZeroMemory);
 
-	if (bZeroMemory)
-		memset(Data, 0, nSize); //The game just doesn't do this for some reason, idk it's probably stoopid
-
-=======
-		("YYAlloc")(nSize, "PD\\SDK\\Memory Manager\\MemoryManager.cpp", 139, bZeroMemory);
->>>>>>> Stashed changes
 	return Data;
 }
 

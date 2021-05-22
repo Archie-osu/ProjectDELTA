@@ -8,7 +8,7 @@ HMODULE g_hDLL = nullptr;
 
 DWORD WINAPI Main(LPVOID)
 {
-#if _DEBUG or 1
+#if _DEBUG
 	AllocConsole();
 	FILE* dum;
 	freopen_s(&dum, "CONOUT$", "w", stdout);
