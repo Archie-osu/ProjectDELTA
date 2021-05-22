@@ -75,11 +75,9 @@ RValue::RValue(const RValue& old)
 
 		break;
 	case RV_String:
-		this->StringValue = old.StringValue;
-		if (this->StringValue)
-			this->StringValue = RefString::assign(old.StringValue);
-		else
-			YYCreateString(this, "<Undeclared Project DELTA String>");
+		this->StringValue = RefString::assign(old.StringValue);
+		if (!this->StringValue)
+			YYCreateString(this, "<Undeclared PD String>");
 		break;
 	default:
 		this->Int64Value = old.Int64Value; //Like memcpy, but without the call.

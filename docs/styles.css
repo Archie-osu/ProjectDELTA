@@ -1,0 +1,100 @@
+body {
+    background-color: #181818;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    
+}
+
+h1 {
+    text-decoration: underline solid;
+    text-align: center;
+}
+
+h2 {
+    padding-left: 20px;
+}
+img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    
+
+}
+
+img.cnt {
+        display: block;
+        margin-left: 20px;
+        border-radius: 100%;
+}
+
+a {
+    color: white;
+}
+
+iframe {
+    
+    padding-left: 20px;
+}
+
+hr {  
+    border-top: solid 3px white;
+}
+
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+}
+  
+  .image {
+    
+    display: block;
+    padding-left: 0px;
+}
+  
+  .text {
+    font-size: 30px;
+    padding-left: 20px;
+}
+
+.fa {
+    padding: 20px;
+    font-size: 60px;
+    width: 50px;
+    text-align: center;
+    text-decoration: none;
+  }
+  
+  /* Add a hover effect if you want */
+  .fa:hover {
+    opacity: 0.7;
+  }
+  
+.fa-youtube {
+    background: #bb0000;
+    color: white;
+
+}
+
+.fa-github {
+    background: rgb(59, 59, 59);
+}
+
+.fa-twitch {
+    background: #6441a5;
+}
+
+.buttonBg {
+    background-color: rgb(59, 59, 59);
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+
+    cursor: pointer;
+  }

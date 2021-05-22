@@ -45,6 +45,7 @@ public:
 	void Call(std::string ScriptName);
 	void AddHook(std::string ScriptName, std::string LuaName);
 	void RemoveHook(std::string ScriptName, std::string LuaName);
+	void Purge();
 private:
 	std::map<std::string, std::forward_list<std::string>> prScriptMap;
 };

@@ -72,7 +72,7 @@ struct _RefThing
 	//This is entirely transcripted from IDA disassembly, as I'm too dumb to code this
 	_RefThing(T thing, size_t size)
 	{
-		void* block = 0;
+		void* block = nullptr;
 
 		if (thing)
 		{
@@ -86,12 +86,13 @@ struct _RefThing
 		}
 
 		this->m_Thing = cast<T>(block);
-		this->m_refCount = 1;
+		this->m_refCount = 'PD3'; //Start with a large refcount, to trick the game into not freeing our memory
 	}
 
 	bool Dec()
 	{
-		auto ShouldFree = this->m_refCount-- == 1;
+		auto ShouldFree = this->m_refCount-- == 'PD3'; //Free manually if the refCount is 'PD3'.
+		//The game handles normal refcounts itself, so I don't need to worry about that.
 
 		if (ShouldFree)
 		{
@@ -106,11 +107,6 @@ struct _RefThing
 	void Inc()
 	{
 		this->m_refCount += 1;
-	}
-
-	bool ShouldFree()
-	{
-		return ((this->m_refCount - 1) == 1);
 	}
 
 	~_RefThing()

@@ -37,6 +37,7 @@ void CLuaConsole::Render()
             Void.LuaEngine->GetState() = sol::state(); //Reset state
             Void.LuaCallbackManager->Purge();
             Void.LuaEngine->Init();
+            Void.LuaScriptHookManager->Purge();
         }
     }
     ImGui::End();

@@ -395,3 +395,8 @@ void CLuaScriptHookSystem::RemoveHook(std::string ScriptName, std::string LuaNam
 	if (prScriptMap.contains(ScriptName))
 		this->prScriptMap.at(ScriptName).remove(LuaName);
 }
+
+void CLuaScriptHookSystem::Purge()
+{
+	this->prScriptMap.clear();
+}
