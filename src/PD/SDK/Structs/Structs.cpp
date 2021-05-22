@@ -52,6 +52,15 @@ RValue& RValue::at(const int& index)
 	return *this;
 }
 
+std::vector<RValue> RValue::GetArrayVec()
+{
+	std::vector<RValue> vec;
+	for (int i = 0; i < this->ArrayValue->pArray->nArrayLength; i++)
+		vec.push_back(this->at(i));
+
+	return vec;
+}
+
 RValue::~RValue()
 {
 	if (Kind == RV_String)
@@ -107,6 +116,11 @@ RValue::RValue(void* Value)
 {
 	this->Kind = RV_Pointer;
 	this->PointerValue = Value;
+}
+
+RValue& RValue::operator[](int index)
+{
+	return this->at(index);
 }
 
 RValue* RValue::operator&()

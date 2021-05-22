@@ -80,10 +80,8 @@ void CVoid::Load()
 	this->Invoker = new CInvoker;
 	this->LuaEngine = new CLuaEngine;
 	this->CallbackManager = new CCallbackManager;
-	this->LuaCallbackManager = new CLuaCallbackManager;
 	this->PatternManager = new CPatternManager;
 	this->MemoryManager = new CMemoryManager;
-	this->LuaScriptHookManager = new CLuaScriptHookSystem;
 	this->lpData = 0;
 
 	{
@@ -139,7 +137,6 @@ void CVoid::Unload()
 	SetWindowLongW(ReCa<HWND>(GetGameWindow()), GWLP_WNDPROC, ReCa<ULONG>(Hooks::WndProc::Original));
 	
 	Void.HookSystem->UnhookAll();
-	Void.LuaCallbackManager->Purge();
 	Sleep(100); //Wait for stuff to unhook
 
 	MH_Uninitialize();
@@ -149,8 +146,6 @@ void CVoid::Unload()
 	delete this->Invoker;
 	delete this->CallbackManager;
 	delete this->LuaEngine;
-	delete this->LuaCallbackManager;
-	delete this->LuaScriptHookManager;
 	delete this->MemoryManager;
 	delete this->PatternManager;
 	delete this->HookSystem;

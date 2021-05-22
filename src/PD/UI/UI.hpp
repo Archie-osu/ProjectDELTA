@@ -14,7 +14,8 @@ namespace UI
 	void Render(std::vector<void*>);
 	void ApplyStyle();
 	void ShowGameWarning();
-	void DrawMainMenuBar(); //Only returns true if we're unloading
+	void DrawMainMenuBar();
+	void DrawLuaConsole();
 
 	void DrawDebug();
 

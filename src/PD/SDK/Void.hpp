@@ -19,12 +19,10 @@ public:
 
 	class CInvoker* Invoker;
 	class CHookSystem* HookSystem;
-	class CLuaEngine* LuaEngine; //Make all these into a central thing
+	class CLuaEngine* LuaEngine;
 	class CCallbackManager* CallbackManager;
 	class CPatternManager* PatternManager;
 	class CMemoryManager* MemoryManager;
-	class CLuaCallbackManager* LuaCallbackManager; //Make all these into a central thing
-	class CLuaScriptHookSystem* LuaScriptHookManager; //Make all these into a central thing
 
 	void* GetGameWindow(); //HWND
 	void* GetGameDevice(); //D3DDevice*

@@ -5,8 +5,7 @@
 #include "../SDK/Void.hpp"
 #include "../SDK/Structs/Structs.hpp"
 #include "../SDK/Invoker/Invoker.hpp"
-
-#include "Lua Console/Lua Console.hpp"
+#include "../SDK/Lua Engine/Lua Engine.hpp"
 
 #include <Memories/CatHeaven.hpp>
 
@@ -58,7 +57,7 @@ void UI::Render(std::vector<void*>)
             Default();
 
         if (bDrawLuaConsole)
-            gLuaConsole.Render();
+            DrawLuaConsole();
 
         if (bDrawDebugMenu)
             DrawDebug();
@@ -220,7 +219,7 @@ void UI::DrawMainMenuBar()
         ImGui::EndMenu();
     }
 
-    ImGui::Text("Project DELTA v3.0.1 - Build date: %s @ %s", __DATE__, __TIME__);
+    ImGui::Text("Project DELTA v3.0.2 - Build date: %s @ %s", __DATE__, __TIME__);
 
     ImGui::EndMainMenuBar();
 
@@ -246,6 +245,34 @@ void UI::DrawDebug()
             ImGui::Text("GameName: %s", pGameData->ReadString(pGameData->Gen8.GameNameOffset));
             ImGui::Text("DisplayName: %s", pGameData->ReadString(pGameData->Gen8.DisplayNameOffset));
             ImGui::Text("FileName: %s", pGameData->ReadString(pGameData->Gen8.FileNameOffset));
+        }
+    }
+    ImGui::End();
+}
+
+void UI::DrawLuaConsole()
+{
+    ImGui::SetNextWindowSize(ImVec2(560, 320));
+
+    if (ImGui::Begin("Lua Console", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse))
+    {
+        ImGui::PushFont(cast<ImFont*>(Void.pCodeFont));
+
+        Void.LuaEngine->puTextEditor.Render("ConIn", ImVec2(540, 240), true);
+
+        ImGui::PopFont();
+
+        if (ImGui::Button("Execute", ImVec2(120, 30))) {
+            auto Error = Void.LuaEngine->RunScript(Void.LuaEngine->puTextEditor.GetText());
+            if (!Error.empty())
+                Void.Warning(Error.c_str());
+        }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("Reset API", ImVec2(120, 30)))
+        {
+            Void.LuaEngine->Init(); //Reset state
         }
     }
     ImGui::End();

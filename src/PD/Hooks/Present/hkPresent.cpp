@@ -96,6 +96,8 @@ HRESULT __stdcall Hooks::Present::Hook(IDXGISwapChain* pThis, UINT Sync, UINT Fl
 		ReCa<void*>(CCallbackManager::Types::FRAME_RENDER)
 	});
 
+	Void.LuaEngine->RunCallbacks(std::string(LCT_ONFRAME));
+
 	ImGui::Render();
 
 	pContext->OMSetRenderTargets(1, &pView, nullptr);

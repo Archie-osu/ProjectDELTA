@@ -2,6 +2,7 @@
 #include <guiddef.h>
 #include <stdint.h>
 #include <string>
+#include <vector>
 
 #pragma warning(disable : 26495)
 
@@ -154,9 +155,13 @@ struct RValue
 
 	RValue(void* Value);
 
+	RValue& operator[](int index);
+
 	RValue* operator& ();
 
 	RValue& at(const int& index);
+
+	std::vector<RValue> GetArrayVec();
 
 	~RValue();
 };

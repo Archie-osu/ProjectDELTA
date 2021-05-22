@@ -49,7 +49,7 @@ HRESULT WINAPI Hooks::EndScene::Hook(LPDIRECT3DDEVICE9 lpDevice)
 	ImGui::NewFrame();
 	
 	Void.CallbackManager->Call(CCallbackManager::Types::FRAME_RENDER, {});
-	Void.LuaCallbackManager->Call(CLuaCallbackManager::Types::ON_FRAME);
+	Void.LuaEngine->RunCallbacks(std::string(LCT_ONFRAME));
 
 	ImGui::EndFrame();
 

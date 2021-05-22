@@ -30,7 +30,6 @@ bool __cdecl Hooks::ExecuteIt::Hook(CInstance* Self, CInstance* Other, CCode* pC
 			ReCa<void*>(pArgs)
 		});
 
-		Void.LuaCallbackManager->Call(CLuaCallbackManager::Types::ON_DRAW);
 	}
 
 	auto ret = Void.HookSystem->GetOriginal<FN>("ExecuteIt")(Self, Other, pCode, pArgs);
@@ -46,8 +45,6 @@ bool __cdecl Hooks::ExecuteIt::Hook(CInstance* Self, CInstance* Other, CCode* pC
 			ReCa<void*>(pArgs)
 		});
 	}
-		
-	Void.LuaCallbackManager->Call(CLuaCallbackManager::Types::ON_VMEXEC);
 
 	Void.CallbackManager->Call(CCallbackManager::Types::VMEXEC_END, {
 		ReCa<void*>(CCallbackManager::Types::VMEXEC_END),
