@@ -16,6 +16,7 @@ private:
 public:
 	void* pMainFont = nullptr; 
 	void* pCodeFont = nullptr;
+	bool bIsUnloading = false;
 
 	class CInvoker* Invoker;
 	class CHookSystem* HookSystem;

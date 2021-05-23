@@ -7,7 +7,7 @@ class CLuaEngine
 {
 private:
 	sol::state prState;
-	std::map<std::string, std::forward_list<std::string>> prHookMap;
+	std::map<std::string, std::forward_list<std::pair<std::string, bool>>> prHookMap;
 public:
 	TextEditor puTextEditor;
 	std::string RunScript(std::string Script);
@@ -16,10 +16,10 @@ public:
 	void Init();
 	void SetupLanguage(TextEditor& texteditor);
 
-	void CreateCallback(std::string GameEvent, std::string LuaFunction);
+	void CreateCallback(std::string GameEvent, std::string LuaFunction, bool bRunBeforeScript);
 	void RemoveCallback(std::string GameEvent, std::string LuaFunction);
 	void PurgeCallbacks();
-	void RunCallbacks(std::string GameEvent);
+	void RunCallbacks(bool bBeforeScript, std::string GameEvent, std::string TrueEventName = std::string());
 };
 
 void LuaScriptCallback(std::vector<void*> vpArgs);

@@ -128,7 +128,8 @@ void CVoid::Load()
 	{
 		//Callbacks
 		Void.CallbackManager->RegisterCallback(CCallbackManager::Types::FRAME_RENDER, ReCa<CCallbackManager::PD_Routine>(UI::Render));
-		Void.CallbackManager->RegisterCallback(CCallbackManager::Types::VMEXEC_SCRIPT_END, ReCa<CCallbackManager::PD_Routine>(LuaScriptCallback));
+		Void.CallbackManager->RegisterCallback(CCallbackManager::Types::VMEXEC_BEGIN, ReCa<CCallbackManager::PD_Routine>(LuaScriptCallback));
+		Void.CallbackManager->RegisterCallback(CCallbackManager::Types::VMEXEC_END, ReCa<CCallbackManager::PD_Routine>(LuaScriptCallback));
 	}
 }
 
@@ -136,6 +137,7 @@ void CVoid::Unload()
 {
 	SetWindowLongW(ReCa<HWND>(GetGameWindow()), GWLP_WNDPROC, ReCa<ULONG>(Hooks::WndProc::Original));
 	
+	Void.LuaEngine->PurgeCallbacks();
 	Void.HookSystem->UnhookAll();
 	Sleep(100); //Wait for stuff to unhook
 
@@ -183,7 +185,7 @@ void* CVoid::FindGameData()
 
 	if (!p && UI::bUseExperimentalSig)
 	{
-		//Works for YYC - bigger range, check for FORM header
+		//Works for YYC - bigger range, check for FORM header - wasteful to check for though, just use the more leniant one
 		p = ReCa<void*>(PatternManager->RegionScan(0x7FFFF, "\x46\x4F\x52\x4D\x00\x00\x00\x00\x47\x45\x4E\x38", "xxxx????xxxx"));
 
 		if (!p)

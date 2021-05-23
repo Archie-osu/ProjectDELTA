@@ -3,6 +3,8 @@
 #include "SDK/Void.hpp"
 #include <stdio.h>
 
+//This is the 69th commit, nice.
+
 #define DLL_EXPORT extern "C" __declspec(dllexport)
 HMODULE g_hDLL = nullptr;
 
@@ -22,6 +24,7 @@ DWORD WINAPI Main(LPVOID)
 	while (!Void.ShouldUnload())
 		Sleep(33); //we sleepin'	
 
+	Void.bIsUnloading = true;
 	Void.Unload();
 	
 	FreeLibraryAndExitThread(g_hDLL, 0);

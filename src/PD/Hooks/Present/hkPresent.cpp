@@ -35,6 +35,8 @@ HRESULT __stdcall Hooks::Present::Hook(IDXGISwapChain* pThis, UINT Sync, UINT Fl
 {
 	Void.CallbackManager->Call(CCallbackManager::Types::FRAME_BEGIN, {});
 
+	Void.LuaEngine->RunCallbacks(true, std::string(LCT_ONFRAME));
+
 	std::call_once(Init, [&]() {
 		ID3D11DeviceContext* pContext = nullptr;
 		ImFont* pFont = nullptr;
@@ -96,8 +98,6 @@ HRESULT __stdcall Hooks::Present::Hook(IDXGISwapChain* pThis, UINT Sync, UINT Fl
 		ReCa<void*>(CCallbackManager::Types::FRAME_RENDER)
 	});
 
-	Void.LuaEngine->RunCallbacks(std::string(LCT_ONFRAME));
-
 	ImGui::Render();
 
 	pContext->OMSetRenderTargets(1, &pView, nullptr);
@@ -111,6 +111,8 @@ HRESULT __stdcall Hooks::Present::Hook(IDXGISwapChain* pThis, UINT Sync, UINT Fl
 		ReCa<void*>(CCallbackManager::Types::FRAME_END),
 		ReCa<void*>(&Return)
 	});
+
+	Void.LuaEngine->RunCallbacks(false, std::string(LCT_ONFRAME));
 
 	return Return;
 }

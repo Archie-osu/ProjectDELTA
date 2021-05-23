@@ -62,7 +62,6 @@ void CLuaEngine::Init()
 		LCT_ONDRAW
 	);
 
-	//TODO: Either fix this or add an .at function
 	sol::usertype<RValue> RValueUserType = State.new_usertype<RValue>("RValue", ConstrList,
 		"kind", &RValue::Kind,
 		"realval", &RValue::DoubleValue,
@@ -102,7 +101,12 @@ void CLuaEngine::Init()
 			vecRv.push_back(rv);
 		}
 
-		return Void.Invoker->Call(String.c_str(), vecRv);
+		auto result = Void.Invoker->Call(String.c_str(), vecRv);
+
+		if (result.Kind == RV_Fail)
+			Void.Warning("Attempted to call invalid function \"%s\"!", String.c_str());
+
+		return result;
 	});
 	
 	//Test code: local rv = CreateObject("obj_savepoint", 340, 230); print(rv.realval);
@@ -161,9 +165,9 @@ void CLuaEngine::Init()
 		return -1;
 	});
 
-	State.set_function("HookFunction", [](std::string Script, std::string LuaFunction)
+	State.set_function("HookFunction", [](std::string Script, std::string LuaFunction, bool RunBeforeScript)
 	{
-		Void.LuaEngine->CreateCallback(Script, LuaFunction);
+		Void.LuaEngine->CreateCallback(Script, LuaFunction, RunBeforeScript);
 	});
 
 	State.set_function("UnhookFunction", [](std::string Script, std::string LuaFunction)
@@ -236,7 +240,7 @@ void CLuaEngine::SetupLanguage(TextEditor& editor)
 		"<RValue> GetGlobal(<string> GlobalName)",
 		//GetAssetID
 		"Get the Master ID of a given asset (objects, scripts, audio files)\n"
-		"<RValue> GetAssetID(<string> GlobalName)",
+		"<RValue> GetAssetID(<string> AssetName)",
 		//GetObjectInstances
 		"Get all instances of a given asset\n"
 		"<RValue> GetObjectInstances(<Real> MasterID)",
@@ -245,7 +249,8 @@ void CLuaEngine::SetupLanguage(TextEditor& editor)
 		"<RValue> ArrayGetSize(<RValue> Array)",
 		//HookFunction
 		"Run your function whenever a game calls a script\n"
-		"<void> HookFunction(<string / LCT> GameScript, <string> LuaFunctionName)",
+		"<void> HookFunction(<string / LCT> GameScript, <string> LuaFunctionName, <boolean> RunBeforeScript)\n"
+		"Remarks: If RunBeforeScript is false, hooks run after the game script has finished.",
 		//UnhookFunction
 		"Stop a hooked function from running\n"
 		"<void> UnhookFunction(<string / LCT> GameScript, <string> LuaFunctionName)",
@@ -267,15 +272,16 @@ void CLuaEngine::SetupLanguage(TextEditor& editor)
 	editor.SetLanguageDefinition(Language);
 }
 
-void CLuaEngine::CreateCallback(std::string GameEvent, std::string LuaFunction)
+void CLuaEngine::CreateCallback(std::string GameEvent, std::string LuaFunction, bool RunBeforeScript)
 {
-	prHookMap[GameEvent].push_front(LuaFunction);
+	prHookMap[GameEvent].push_front(std::make_pair(LuaFunction, RunBeforeScript));
 	prHookMap[GameEvent].unique();
 }
 
 void CLuaEngine::RemoveCallback(std::string GameEvent, std::string LuaFunction)
 {
-	prHookMap[GameEvent].remove(LuaFunction);
+	prHookMap[GameEvent].remove(std::make_pair(LuaFunction, false));
+	prHookMap[GameEvent].remove(std::make_pair(LuaFunction, true));
 }
 
 void CLuaEngine::PurgeCallbacks()
@@ -283,46 +289,58 @@ void CLuaEngine::PurgeCallbacks()
 	prHookMap.clear();
 }
 
-void CLuaEngine::RunCallbacks(std::string GameEvent)
+void CLuaEngine::RunCallbacks(bool BeginScript, std::string GameEvent, std::string TrueEventName)
 {
+	if (TrueEventName.empty())
+		TrueEventName = GameEvent;
+
 	auto& state = this->GetState();
-	for (const auto& string : prHookMap[GameEvent])
+	for (const auto& pair : prHookMap[GameEvent])
 	{
 		if (!Void.ShouldUnload())
 		{
-			auto fn = state[string];
-			fn.call();
+			if (pair.second == BeginScript) //Run begin callbacks only on begin, not on end.
+			{
+				auto fn = state[pair.first];
+				fn.call(TrueEventName);
+			}
 		}
 	}
 }
 
 void LuaScriptCallback(std::vector<void*> vpArgs)
 {
+	constexpr int VMEXEC_BEGIN = 5;
+	constexpr int VMEXEC_END = 6;
+	constexpr int VMEXEC_SCRIPT_BEGIN = 7;
 	constexpr int VMEXEC_SCRIPT_END = 8;
+
+	bool IsBeforeScript = (cast<int>(vpArgs.at(0)) == VMEXEC_BEGIN || cast<int>(vpArgs.at(0)) == VMEXEC_SCRIPT_BEGIN);
+
 	char szScriptName[256] = { 0 };
 
-	if (cast<int>(vpArgs.at(0)) == VMEXEC_SCRIPT_END)
+	if (cast<int>(vpArgs.at(0)) == VMEXEC_SCRIPT_BEGIN || cast<int>(vpArgs.at(0)) == VMEXEC_SCRIPT_END)
 	{
-		//CallbackType, ReturnVal, CScript* pScript, int argc, uint8_t* pStackPointer, VMExec* pVM, YYObjectBase* pLocals, YYObjectBase* pArguments
-		CScript* pScript = ReCa<CScript*>(vpArgs.at(2));		
-		if (Void.PatternManager->IsValidMemory(cast<void*>(pScript->s_code)))
-			if (Void.PatternManager->IsValidMemory(cast<void*>(pScript->s_code->i_pName)))
+		//CallbackType, (END) ReturnVal, CScript* pScript, int argc, uint8_t* pStackPointer, VMExec* pVM, YYObjectBase* pLocals, YYObjectBase* pArguments
+		CScript* pScript = ReCa<CScript*>(vpArgs.at((IsBeforeScript ? 1 : 2))); //No access violations on BeforeScript, please.
+		if (pScript->s_code)
+			if (pScript->s_code->i_pName)
 				strcpy_s<256>(szScriptName, pScript->s_code->i_pName);
 	}
 
 	else
 	{
 		//CallbackType, ReturnVal, CInstance* Self, CInstance* Other, CCode* pCode, RValue* Args
-		CCode* pCode = ReCa<CCode*>(vpArgs.at(4));
+		CCode* pCode = ReCa<CCode*>(vpArgs.at(IsBeforeScript ? 3 : 4));
 
-		if (Void.PatternManager->IsValidMemory(cast<void*>(pCode)))
-			if (Void.PatternManager->IsValidMemory(cast<void*>(pCode->i_pName)))
+		if (pCode) //Having VirtualQuery calls here slowed down the callbacks by a ton, now we only have nullptr checks.
+			if (pCode->i_pName)
 				strcpy_s<256>(szScriptName, pCode->i_pName);
 	}
 
 	if (strstr(szScriptName, "Draw_0"))
-		Void.LuaEngine->RunCallbacks(std::string(LCT_ONDRAW));
+		Void.LuaEngine->RunCallbacks(IsBeforeScript, std::string(LCT_ONDRAW), szScriptName);
 
-	Void.LuaEngine->RunCallbacks(std::string(LCT_ONSCRIPT));
-	Void.LuaEngine->RunCallbacks(std::string(szScriptName));
+	Void.LuaEngine->RunCallbacks(IsBeforeScript, std::string(LCT_ONSCRIPT), szScriptName);
+	Void.LuaEngine->RunCallbacks(IsBeforeScript, std::string(szScriptName));
 }

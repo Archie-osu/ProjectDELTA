@@ -23,6 +23,9 @@ unsigned long CInvoker::FindFunction(const char* Name)
 
 	auto Pattern = Void.PatternManager->PatternScan(sFunc.data(), sMask.c_str(), true);
 
+	if (!Pattern)
+		return 0;
+
 	unsigned char mem[5];
 	mem[0] = '\x68'; //Push instruction
 	memcpy(mem + 1, &Pattern, 4); //Create new pattern - push <offset>
@@ -45,14 +48,21 @@ RValue CInvoker::Call(const char* Function, std::vector<RValue> vArgs)
 	{
 		//If it's not there, get the function address and put it into the map, so we won't have to search for it again.
 		dwAddress = FindFunction(Function);
-		prFunctionMap.emplace(Function, dwAddress);
+
+		if (dwAddress)
+			prFunctionMap.emplace(Function, dwAddress);
 	}
 	else
 	{
 		//If it is in the function map already, just retrieve it from there, and call.
 		dwAddress = prFunctionMap.at(Function);
 	}
-
+	if (!dwAddress) {
+		Result.Int64Value = 0LL;
+		Result.Kind = RV_Fail;
+		return Result;
+	}
+		
 	Invoke(Result, vArgs, dwAddress);
 
 	return Result;  //Finish.

@@ -22,6 +22,7 @@ enum RVKinds : int32_t
 	RV_Bool = 13,
 	RV_Iterator = 14,
 	RV_Reference = 15,
+	RV_Fail = 16, //Used by PD, not actually a Kind in-game
 	RV_Unset = 0xFFFFFF
 };
 
@@ -40,7 +41,7 @@ struct RValue
 	};
 
 	int32_t Flags;
-	RVKinds Kind;
+	int32_t Kind;
 
 	RValue() : PointerValue(nullptr) {}
 

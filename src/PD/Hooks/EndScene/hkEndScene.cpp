@@ -12,6 +12,7 @@ inline std::once_flag Init;
 HRESULT WINAPI Hooks::EndScene::Hook(LPDIRECT3DDEVICE9 lpDevice)
 {
 	Void.CallbackManager->Call(CCallbackManager::Types::FRAME_BEGIN, {});
+	Void.LuaEngine->RunCallbacks(true, std::string(LCT_ONFRAME));
 
 	std::call_once(Init, [&]() {
 		ImGui::CreateContext();
@@ -49,7 +50,7 @@ HRESULT WINAPI Hooks::EndScene::Hook(LPDIRECT3DDEVICE9 lpDevice)
 	ImGui::NewFrame();
 	
 	Void.CallbackManager->Call(CCallbackManager::Types::FRAME_RENDER, {});
-	Void.LuaEngine->RunCallbacks(std::string(LCT_ONFRAME));
+
 
 	ImGui::EndFrame();
 
@@ -57,6 +58,7 @@ HRESULT WINAPI Hooks::EndScene::Hook(LPDIRECT3DDEVICE9 lpDevice)
 	ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
 
 	Void.CallbackManager->Call(CCallbackManager::Types::FRAME_END, { &Return });
+	Void.LuaEngine->RunCallbacks(false, std::string(LCT_ONFRAME));
 	return Return;
 }
 

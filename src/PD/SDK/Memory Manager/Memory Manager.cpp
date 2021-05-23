@@ -89,7 +89,7 @@ unsigned long CPatternManager::RegionScan(uintptr_t MaxOffset, const char* Patte
 {
 	MEMORY_BASIC_INFORMATION memInformation;
 	unsigned long Address = ReCa<unsigned long>(GetModuleHandleA(NULL));
-
+	
 	while (VirtualQuery(ReCa<LPCVOID>(Address), &memInformation, sizeof(memInformation)))
 	{
 		Address += memInformation.RegionSize;
