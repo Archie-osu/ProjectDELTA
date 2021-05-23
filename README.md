@@ -8,11 +8,10 @@ Tested releases:
 -  DELTARUNE
 -  TS!UNDERSWAP
 
-Libraries used: MinHook, ImGui
+Libraries used: MinHook, ImGui, sol2
 
 # TODO List (in order of importance)
-- idk, fix bugs I guess
-- maybe refactor stuff?
+- Maintain the release, fix bugs that arise
 
 # FAQ
 **Q:** Where are the releases? Where can I download this tool?
