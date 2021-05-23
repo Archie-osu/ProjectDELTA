@@ -34,7 +34,7 @@ void CLuaEngine::Init()
 		RValue(const double&),
 		RValue(const std::string&)
 	>
-	ConstrList;
+		ConstrList;
 
 	State.new_enum("RVKind",
 		"Real",
@@ -62,14 +62,24 @@ void CLuaEngine::Init()
 		LCT_ONDRAW
 	);
 
+	//TODO: Either fix this or add an .at function
 	sol::usertype<RValue> RValueUserType = State.new_usertype<RValue>("RValue", ConstrList,
 		"kind", &RValue::Kind,
 		"realval", &RValue::DoubleValue,
 		"i32val", &RValue::Int32Value,
 		"i64val", &RValue::Int64Value,
-		"arrayval", sol::property(&RValue::GetArrayVec), //Override arrays
 
-		// MyClass(...) syntax, only
+		sol::meta_function::index,
+		[](RValue& rv, int index) { 
+			printf("[get] index: %i\n", index);
+			return rv.at(index); 
+		},
+		sol::meta_function::new_index,
+		[](RValue& rv, int index, RValue value) {
+			printf("[set] index: %i\n", index);
+			rv.at(index) = value; 
+		},
+
 		sol::call_constructor,
 		sol::factories(
 			[](const double& d) {

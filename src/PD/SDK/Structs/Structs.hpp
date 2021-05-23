@@ -2,7 +2,9 @@
 #include <guiddef.h>
 #include <stdint.h>
 #include <string>
-#include <vector>
+#include "RValue/RValue.hpp"
+#include "RefThing/RefThing.hpp"
+#include "RArray/RArray.hpp"
 
 #pragma warning(disable : 26495)
 
@@ -14,159 +16,6 @@ enum OSFlavors //mmm, tasty
 	OSF_Switch = 5
 };
 
-enum RVKinds
-{
-	RV_Real = 0,
-	RV_String = 1,
-	RV_Array = 2,
-	RV_Pointer = 3,
-	RV_Vector3 = 4,
-	RV_Undefined = 5,
-	RV_Object = 6,
-	RV_Int32 = 7,
-	RV_Vector4 = 8,
-	RV_Matrix4x4 = 9,
-	RV_Int64 = 10,
-	RV_Accessor = 11,
-	RV_JSNull = 12,
-	RV_Bool = 13,
-	RV_Iterator = 14,
-	RV_Reference = 15,
-	RV_Unset = 0xFFFFFF
-};
-
-using Int32 = __int32;
-using Int64 = __int64;
-struct RValue;
-
-struct RArray
-{
-	Int32 nArrayLength;
-	RValue* pArray;
-};
-
-struct RArrayRef
-{
-	Int32 nRefCount;
-	RArray* pArray;
-	RValue* pOwner;
-};
-
-void __cdecl YYSetString(RValue* _pVal, const char* _pS);
-
-void __cdecl YYCreateString(RValue* _pVal, const char* _pS);
-
-const char* __cdecl YYStrDup(const char* _pS);
-
-void* WrapperYYAlloc(size_t size, bool zero);
-
-void WrapperYYFree(void* block);
-
-
-template <typename T>
-struct _RefThing
-{
-	T m_Thing;
-	int m_refCount;
-	int m_Size;
-
-	//This is entirely transcripted from IDA disassembly, as I'm too dumb to code this
-	_RefThing(T thing, size_t size)
-	{
-		void* block = nullptr;
-
-		if (thing)
-		{
-			this->m_Size = size;
-			block = WrapperYYAlloc(size + 1, false);
-			memcpy(block, thing, size + 1);
-		}
-		else
-		{
-			this->m_Size = 0;
-		}
-
-		this->m_Thing = cast<T>(block);
-		this->m_refCount = 'PD3'; //Start with a large refcount, to trick the game into not freeing our memory
-	}
-
-	bool Dec()
-	{
-		auto ShouldFree = this->m_refCount-- == 'PD3'; //Free manually if the refCount is 'PD3'.
-		//The game handles normal refcounts itself, so I don't need to worry about that.
-
-		if (ShouldFree)
-		{
-			WrapperYYFree(cast<void*>(this->m_Thing));
-			this->m_Size = 0;
-			this->m_Thing = nullptr;
-			return true;
-		}
-		return false;
-	}
-
-	void Inc()
-	{
-		this->m_refCount += 1;
-	}
-
-	~_RefThing()
-	{
-		this->Dec();
-	}
-
-	static _RefThing<T>* assign(_RefThing<T>* _other) { if (_other != nullptr) { _other->Inc(); } return _other; }
-	static _RefThing<T>* remove(_RefThing<T>* _other) { if (_other != nullptr) { _other->Dec(); } return nullptr; }
-};
-
-using RefString = _RefThing<const char*>;
-
-#pragma pack(push, 4)
-struct RValue
-{
-	union
-	{
-		double DoubleValue;
-		Int32 Int32Value;
-		Int64 Int64Value;
-		void* PointerValue;
-		const char** ppCharValue;
-		RArrayRef* ArrayValue;
-		RefString* StringValue;
-		struct
-		{
-			RefString* pStringVal;
-			int ChecksumValid;
-		};
-	};
-
-	Int32 Flags;
-	Int32 Kind;
-
-	RValue() : PointerValue(nullptr) {}
-
-	RValue(const double& Value);
-
-	RValue(const std::string& str);
-
-	RValue(const RValue& Other);
-
-	RValue(const char** Value);
-
-	RValue(void* Value);
-
-	RValue& operator[](int index);
-
-	RValue* operator& ();
-
-	RValue& at(const int& index);
-
-	std::vector<RValue> GetArrayVec();
-
-	~RValue();
-};
-#pragma pack(pop)
-
 //Data.win files, everyone!
 //Shoutout to colinator27 for linking me to his awesome github repo:
 //https://github.com/colinator27/dog-scepter/blob/master/DogScepterLib/Core/Chunks/GMChunkGEN8.cs
@@ -174,30 +23,30 @@ struct RValue
 //Note: The offsets are offset from the GameForm_t base.
 struct GEN8Chunk_t
 {
-	Int32 Length;
+	int32_t Length;
 	bool DisableDebug;
 	char FormatID; //The bytecode version probably
 	short Unknown;
-	Int32 FileNameOffset;
-	Int32 ConfigOffset;
-	Int32 LastObjectID;
-	Int32 LastTileID;
-	Int32 GameID;
+	int32_t FileNameOffset;
+	int32_t ConfigOffset;
+	int32_t LastObjectID;
+	int32_t LastTileID;
+	int32_t GameID;
 	GUID LegacyGUID;
-	Int32 GameNameOffset;
-	Int32 Major, Minor, Release, Build;
-	Int32 DefWindowWidth, DefWindowHeight;
-	Int32 Info;
+	int32_t GameNameOffset;
+	int32_t Major, Minor, Release, Build;
+	int32_t DefWindowWidth, DefWindowHeight;
+	int32_t Info;
 	char MD5Hash[16];
-	Int32 CRCHash;
+	int32_t CRCHash;
 	char Timestamp[8];
-	Int32 DisplayNameOffset;
+	int32_t DisplayNameOffset;
 };
 
 struct GameForm_t
 {
 	char FORM[4]; //Literally has the string FORM, not null terminated.
-	Int32 FileLength; //Self-explanatory.
+	int32_t FileLength; //Self-explanatory.
 	char GEN8String[4];
 	GEN8Chunk_t Gen8;
 

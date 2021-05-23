@@ -16,6 +16,7 @@ public:
 	template <typename Fn>
 	Fn GetOriginal(const char* Name)
 	{
+		//TODO: Check if it's valid memory
 		return reinterpret_cast<Fn>(prHookMap.at(std::string(Name)).Origin);
 	}
 	

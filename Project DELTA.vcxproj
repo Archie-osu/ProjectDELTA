@@ -181,6 +181,9 @@
     <ClInclude Include="src\PD\SDK\Hook System\Hook System.hpp" />
     <ClInclude Include="src\PD\SDK\Invoker\Invoker.hpp" />
     <ClInclude Include="src\PD\SDK\Lua Engine\Lua Engine.hpp" />
+    <ClInclude Include="src\PD\SDK\Structs\RArray\RArray.hpp" />
+    <ClInclude Include="src\PD\SDK\Structs\RefThing\RefThing.hpp" />
+    <ClInclude Include="src\PD\SDK\Structs\RValue\RValue.hpp" />
     <ClInclude Include="src\PD\SDK\Structs\Structs.hpp" />
     <ClInclude Include="src\PD\SDK\Memory Manager\Memory Manager.hpp" />
     <ClInclude Include="src\PD\SDK\Void.hpp" />
@@ -209,6 +212,8 @@
     <ClCompile Include="src\PD\SDK\Invoker\Invoker.cpp" />
     <ClCompile Include="src\PD\SDK\Lua Engine\Lua Engine.cpp" />
     <ClCompile Include="src\PD\SDK\Memory Manager\Memory Manager.cpp" />
+    <ClCompile Include="src\PD\SDK\Structs\RefThing\RefThing.cpp" />
+    <ClCompile Include="src\PD\SDK\Structs\RValue\RValue.cpp" />
     <ClCompile Include="src\PD\SDK\Structs\Structs.cpp" />
     <ClCompile Include="src\PD\SDK\Void.cpp" />
     <ClCompile Include="src\PD\UI\Game-exclusive\Deltarune.cpp" />
