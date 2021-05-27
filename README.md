@@ -11,9 +11,9 @@ Tested releases:
 Libraries used: MinHook, ImGui, sol2
 
 # TODO List (in order of how it will be done)
-- Add a room selector into the main Menu (teleporting without Lua)
-- Move project into bugfix-only mode for a good while
-- Start work on Project V, the successor of Project DELTA.
+- Add a room selector into the main Menu (teleporting without Lua) - DONE
+- Move project into bugfix-only mode for a good while - DONE
+- Start work on Project V, the successor of Project DELTA. - In progress
   - *The following is for Project V, not Project DELTA*
   - C# Frontend with a Lua Executor and integrated injection options.
   - Index all GameMaker functions upon loading, loading progress bar.
