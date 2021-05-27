@@ -10,8 +10,20 @@ Tested releases:
 
 Libraries used: MinHook, ImGui, sol2
 
-# TODO List (in order of importance)
-- Maintain the release, fix bugs that arise
+# TODO List (in order of how it will be done)
+- Add a room selector into the main Menu (teleporting without Lua)
+- Move project into bugfix-only mode for a good while
+- Start work on Project V, the successor of Project DELTA.
+  - *The following is for Project V, not Project DELTA*
+  - C# Frontend with a Lua Executor and integrated injection options.
+  - Index all GameMaker functions upon loading, loading progress bar.
+  - Speedrun Mode, protect important game variables from being tampered with.
+  - New menu, make it window based rather than tab-based.
+  - Rework options menu, resolution changer, optional game fixes (fast text-skipping maybe?)
+  - Runtime decompilation of game scripts
+  - GML Editor, disassembler
+  - Lua / Python modding API
+  - and more.
 
 # FAQ
 **Q:** Where are the releases? Where can I download this tool?
