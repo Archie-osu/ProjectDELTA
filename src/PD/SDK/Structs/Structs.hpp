@@ -112,61 +112,21 @@ struct CCode
 };
 #pragma pack(pop)
 
-/*
-struct CInstance : public YYObjectBase
+
+struct YYRECT
 {
-	int64 m_CreateCounter;
-	CObjectGM *m_pObject;
-	CPhysicsObject *m_pPhysicsObject;
-	CSkeletonInstance *m_pSkeletonAnimation;
-	CSequenceInstance *m_pControllingSeqInst;
-	unsigned int m_Instflags;
-	int i_id;
-	int i_objectindex;
-	int i_spriteindex;
-	float i_sequencePos;
-	float i_lastSequencePos;
-	float i_sequenceDir;
-	float i_imageindex;
-	float i_imagespeed;
-	float i_imagescalex;
-	float i_imagescaley;
-	float i_imageangle;
-	float i_imagealpha;
-	unsigned int i_imageblend;
-	float i_x;
-	float i_y;
-	float i_xstart;
-	float i_ystart;
-	float i_xprevious;
-	float i_yprevious;
-	float i_direction;
-	float i_speed;
-	float i_friction;
-	float i_gravitydir;
-	float i_gravity;
-	float i_hspeed;
-	float i_vspeed;
-	YYRECT i_bbox;
-	int i_timer[12];
-	cInstancePathAndTimeline *m_pPathAndTimeline;
-	CCode *i_initcode;
-	CCode *i_precreatecode;
-	CObjectGM *m_pOldObject;
-	int m_nLayerID;
-	int i_maskindex;
-	__int16 m_nMouseOver;
-	CInstance *m_pNext;
-	CInstance *m_pPrev;
-	SLink m_collisionLink;
-	SLink m_dirtyLink;
-	SLink m_withLink;
-	float i_depth;
-	float i_currentdepth;
-	float i_lastImageNumber;
-	unsigned int m_collisionTestNumber;
+	int32_t left;
+	int32_t top;
+	int32_t right;
+	int32_t bottom;
 };
-*/
+
+struct SLink
+{
+	SLink* next;
+	SLink* prev;
+	struct SLinkListEx* list;
+};
 
 template <typename Key, typename Value>
 struct CHashMapElement
@@ -223,7 +183,60 @@ struct YYObjectBase : CInstanceBase
 	int m_rvalueInitType;
 	int m_curSlot;
 };
-
+/*
+struct CInstance : public YYObjectBase
+{
+	int64_t m_CreateCounter;
+	void* m_pObject;
+	void* m_pPhysicsObject;
+	void* m_pSkeletonAnimation;
+	void* m_pControllingSeqInst;
+	unsigned int m_Instflags;
+	int i_id;
+	int i_objectindex;
+	int i_spriteindex;
+	float i_sequencePos;
+	float i_lastSequencePos;
+	float i_sequenceDir;
+	float i_imageindex;
+	float i_imagespeed;
+	float i_imagescalex;
+	float i_imagescaley;
+	float i_imageangle;
+	float i_imagealpha;
+	unsigned int i_imageblend;
+	float i_x;
+	float i_y;
+	float i_xstart;
+	float i_ystart;
+	float i_xprevious;
+	float i_yprevious;
+	float i_direction;
+	float i_speed;
+	float i_friction;
+	float i_gravitydir;
+	float i_gravity;
+	float i_hspeed;
+	float i_vspeed;
+	YYRECT i_bbox;
+	int i_timer[12];
+	void* m_pPathAndTimeline;
+	CCode* i_initcode;
+	CCode* i_precreatecode;
+	void* m_pOldObject;
+	int m_nLayerID;
+	int i_maskindex;
+	__int16 m_nMouseOver;
+	CInstance* m_pNext;
+	CInstance* m_pPrev;
+	SLink m_collisionLink;
+	SLink m_dirtyLink;
+	SLink m_withLink;
+	float i_depth;
+	float i_currentdepth;
+	float i_lastImageNumber;
+	unsigned int m_collisionTestNumber;
+};*/
 
 struct CStream
 {

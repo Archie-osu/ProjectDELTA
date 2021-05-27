@@ -4,6 +4,7 @@
 #include "../../SDK/Memory Manager/Memory Manager.hpp"
 #include "../../SDK/Callback Manager/Callback Manager.hpp"
 #include "../../SDK/Lua Engine/Lua Engine.hpp"
+#include <intrin.h>
 
 bool __cdecl Hooks::ExecuteIt::Hook(CInstance* Self, CInstance* Other, CCode* pCode, RValue* pArgs)
 {

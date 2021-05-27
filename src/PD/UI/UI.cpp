@@ -1,5 +1,5 @@
 #include "UI.hpp"
-#include <ImGui/imgui.h>
+#include <ImGui/imgui_cpp.hpp>
 #include <string>
 
 #include "../SDK/Void.hpp"
@@ -182,7 +182,9 @@ void UI::ShowGameWarning()
 
 void UI::DrawMainMenuBar()
 {
+    static std::vector<std::string> vRooms;
     static bool bShowDemo = false;
+    static int nTPBuffer = 0;
 
     ImGui::BeginMainMenuBar();
 
@@ -197,12 +199,33 @@ void UI::DrawMainMenuBar()
         };
 
         if (ImGui::BeginMenu("Debug"))
-        {
-            
+        {  
             ImGui::Text("data.win base: %p", Void.GetGameData());
             ImGui::Text("device: %p", Void.GetGameDevice());
             ImGui::Checkbox("Use experimental sig", &UI::bUseExperimentalSig);
             ImGui::Checkbox("Show Demo Window", &bShowDemo);
+
+            if (vRooms.empty())
+            {
+                //Cache the rooms
+                int idx = 0;
+                std::string str;
+
+                while (str != "<undefined>")
+                {
+                    auto rv = Void.Invoker->Call("room_get_name", { RValue(idx) });
+                    str = rv.StringValue->m_Thing;
+
+                    if (std::string(str) != "<undefined>")
+                        vRooms.push_back(str);
+
+                    idx++;
+                }
+            }
+
+            ImGui::Combo("Room TP", &nTPBuffer, vRooms);
+            if (ImGui::Button("Teleport", ImVec2(80, 30)))
+                Void.Invoker->Call("room_goto", { RValue(nTPBuffer) });
 
             ImGui::EndMenu();
         }

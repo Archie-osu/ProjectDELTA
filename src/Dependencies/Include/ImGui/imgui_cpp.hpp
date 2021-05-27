@@ -13,10 +13,10 @@ namespace ImGui
         return true;
     };
 
-    inline bool Combo(const char* label, int* currIndex, std::vector<std::string>& values)
+    inline bool Combo(const char* label, int* currIndex, const std::vector<std::string>& values)
     {
         if (values.empty()) { return false; }
         return Combo(label, currIndex, vector_getter,
-            static_cast<void*>(&values), values.size());
+            (void*)(&values), values.size());
     }
 }

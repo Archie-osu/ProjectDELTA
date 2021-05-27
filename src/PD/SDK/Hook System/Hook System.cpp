@@ -1,10 +1,15 @@
 #include "Hook System.hpp"
 #include "../Void.hpp"
+#include "../Memory Manager/Memory Manager.hpp"
 #include <MinHook.h>
 
 void* CHookSystem::Hook(const char* lpFuncName, void* lpTarget, void* lpDetour)
 {
 	void* lpOriginal = nullptr;
+
+	if (!Void.PatternManager->IsValidMemory(lpTarget)) {
+		Void.Error("Hook %s is in invalid memory %p!", lpFuncName, lpTarget);
+	}
 
 	auto Status = MH_CreateHook(lpTarget, lpDetour, &lpOriginal);
 

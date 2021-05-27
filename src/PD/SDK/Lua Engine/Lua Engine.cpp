@@ -3,6 +3,7 @@
 #include "../Void.hpp"
 #include "../Invoker/Invoker.hpp"
 #include "../Memory Manager/Memory Manager.hpp"
+#include <intrin.h>
 
 std::string CLuaEngine::RunScript(std::string Script)
 {
@@ -23,7 +24,7 @@ sol::state& CLuaEngine::GetState()
 void CLuaEngine::Init()
 {
 	sol::state& State = GetState();
-	State.open_libraries();
+	State.open_libraries(sol::lib::base);
 
 	SetupLanguage(this->puTextEditor);
 
@@ -222,7 +223,9 @@ void CLuaEngine::SetupLanguage(TextEditor& editor)
 		"HookFunction",
 		"UnhookFunction",
 		"ToString",
-		"LCT"
+		"LCT",
+		//"HookFunction",
+		//"UnhookFunction"
 	};
 	std::vector<std::string> szAPIDecls =
 	{
@@ -247,12 +250,12 @@ void CLuaEngine::SetupLanguage(TextEditor& editor)
 		//ArrayGetSize
 		"Get the size of a given RValue array (legacy function)\n"
 		"<RValue> ArrayGetSize(<RValue> Array)",
-		//HookFunction
-		"Run your function whenever a game calls a script\n"
+		//HookScript
+		"Run your code whenever a game calls a function\n"
 		"<void> HookFunction(<string / LCT> GameScript, <string> LuaFunctionName, <boolean> RunBeforeScript)\n"
 		"Remarks: If RunBeforeScript is false, hooks run after the game script has finished.",
-		//UnhookFunction
-		"Stop a hooked function from running\n"
+		//UnhookScript
+		"Stop a hooked script from running\n"
 		"<void> UnhookFunction(<string / LCT> GameScript, <string> LuaFunctionName)",
 		//ToString
 		"Get a string stored in an RValue\n"
@@ -260,6 +263,13 @@ void CLuaEngine::SetupLanguage(TextEditor& editor)
 		//LCT
 		"Lua Callback Type\n"
 		"Valid values: LCT.Frame, LCT.DrawEvent, LCT.Script",
+		//HookFunction
+		/*"Hooks function \"OldFunction\", replacing it with the function \"NewFunction\".\n"
+		"The old function is returned, and you MUST use this function in order to call the original.\n"
+		"<function> HookFunction(<string> OldFunction>, <function> NewFunction)",
+		//UnhookFunction
+		"Removes all hooks from a GML function\n"
+		"<void> UnhookFunction(<string> FunctionName>"*/
 	};
 
 	for (size_t n = 0; n < szAPINames.size(); n++)
@@ -270,6 +280,16 @@ void CLuaEngine::SetupLanguage(TextEditor& editor)
 	}
 
 	editor.SetLanguageDefinition(Language);
+}
+
+void CLuaEngine::CreateDirectHook(std::string GameFn, sol::function LuaFn)
+{
+	this->prDirectHooks[GameFn] = LuaFn;
+}
+
+void CLuaEngine::RemoveDirectHook(std::string GameFn)
+{
+	this->prDirectHooks.erase(GameFn);
 }
 
 void CLuaEngine::CreateCallback(std::string GameEvent, std::string LuaFunction, bool RunBeforeScript)
@@ -306,6 +326,26 @@ void CLuaEngine::RunCallbacks(bool BeginScript, std::string GameEvent, std::stri
 			}
 		}
 	}
+}
+
+void HookHandler(RValue* pResult, CInstance* pSelf, CInstance* pOther, int argc, RValue* pArgs)
+{
+	//First resolve the return address to check which function is calling this (we can have multiple hooks, remember?)
+	unsigned char* pRetAddr = cast<unsigned char*>(_ReturnAddress());
+	/*
+		Layout of return address:
+			0x00 | E8 ???????? | call <ThisFunction>
+			0x05 | 0xFF		   | some other instruction | <--- return address
+	*/
+
+	auto pFuncOffset = pRetAddr - 0x4; //We don't want to read the E8, right...
+	long FuncOffset = *cast<long*>(pFuncOffset); //Get the offset from the E8 call instruction (marked with ??'s in the layout)
+
+	//http://jbremer.org/x86-api-hooking-demystified/#ah-basic
+	//Essentially E8 is a relative jump, so the call destination is EIP + 5 + FuncOffset
+
+	unsigned char* pFunc = pRetAddr + 0x5 + FuncOffset;
+
 }
 
 void LuaScriptCallback(std::vector<void*> vpArgs)
