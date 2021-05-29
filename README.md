@@ -13,10 +13,10 @@ Libraries used: MinHook, ImGui, sol2
 # TODO List (in order of how it will be done)
 - Add a room selector into the main Menu (teleporting without Lua) - DONE
 - Move project into bugfix-only mode for a good while - DONE
-- Start work on Project V, the successor of Project DELTA. - In progress
+- Start work on Project V, the successor of Project DELTA
   - *The following is for Project V, not Project DELTA*
-  - C# Frontend with a Lua Executor and integrated injection options.
-  - Index all GameMaker functions upon loading, loading progress bar.
+  - C# Frontend with a Lua Executor and integrated injection options. - DONE
+  - Multithreaded caching of GM functions upon inject, loading progress bar. - In Progress,
   - Speedrun Mode, protect important game variables from being tampered with.
   - New menu, make it window based rather than tab-based.
   - Rework options menu, resolution changer, optional game fixes (fast text-skipping maybe?)
