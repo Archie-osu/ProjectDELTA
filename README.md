@@ -9,21 +9,8 @@ Tested releases:
 -  TS!UNDERSWAP
 
 Libraries used: MinHook, ImGui, sol2
-
-# TODO List (in order of how it will be done)
-- Add a room selector into the main Menu (teleporting without Lua) - DONE
-- Move project into bugfix-only mode for a good while - DONE
-- Start work on Project V, the successor of Project DELTA
-  - *The following is for Project V, not Project DELTA*
-  - C# Frontend with a Lua Executor and integrated injection options. - DONE
-  - Multithreaded caching of GM functions upon inject, loading progress bar. - In Progress,
-  - Speedrun Mode, protect important game variables from being tampered with.
-  - New menu, make it window based rather than tab-based.
-  - Rework options menu, resolution changer, optional game fixes (fast text-skipping maybe?)
-  - Runtime decompilation of game scripts
-  - GML Editor, disassembler
-  - Lua / Python modding API
-  - and more.
+# The future of PD
+This repository will only be maintained if issues arise, for new features see [YYToolkit](https://github.com/Archie-osu/YYToolkit)
 
 # FAQ
 **Q:** Where are the releases? Where can I download this tool?
