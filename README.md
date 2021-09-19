@@ -11,9 +11,12 @@ Tested releases:
 Libraries used: MinHook, ImGui, sol2
 # The future of PD
 ~~This repository will only be maintained if issues arise,~~ for new features see [YYToolkit](https://github.com/Archie-osu/YYToolkit)
+
 Speaking of issues, the current version 3.0.4b crashes instantly on inject.
+
 This issue will **not** be fixed as it's rooted deep within the project.
-For a working release, see YYToolkit and the PD UI plugin (WIP).
+
+For a working release, see YYToolkit.
 
 # FAQ
 **Q:** Where are the releases? Where can I download this tool?
