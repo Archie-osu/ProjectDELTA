@@ -12,7 +12,7 @@ Libraries used: MinHook, ImGui, sol2
 # The future of PD
 ~~This repository will only be maintained if issues arise,~~ for new features see [YYToolkit](https://github.com/Archie-osu/YYToolkit)
 
-Speaking of issues, the current version 3.0.4b crashes instantly on inject.
+Speaking of issues, the current version 3.0.4b crashes instantly on inject (DR Chapter 2).
 
 This issue will **not** be fixed as it's rooted deep within the project.
 
